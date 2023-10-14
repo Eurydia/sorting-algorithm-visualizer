@@ -22,6 +22,16 @@ const bubble_sort = (
 	size: number,
 	states: frameStateData[][],
 ): void => {
+	states.push([]);
+	for (let i = 0; i < size; i++) {
+		states[states.length - 1][i] = {
+			value: xs[i],
+			isBeingCompared: false,
+			isBeingSwapped: false,
+			isSwapped: false,
+		};
+	}
+
 	let offset, k, a, b;
 
 	for (offset = 0; offset < size; offset++) {
@@ -64,6 +74,15 @@ const bubble_sort = (
 				}
 			}
 		}
+	}
+	states.push([]);
+	for (let i = 0; i < size; i++) {
+		states[states.length - 1][i] = {
+			value: xs[i],
+			isBeingCompared: false,
+			isBeingSwapped: false,
+			isSwapped: false,
+		};
 	}
 };
 
@@ -141,11 +160,11 @@ export const App = () => {
 							}
 
 							if (isBeingSwapped) {
-								bgColor = orange[400];
+								bgColor = blue[700];
 							}
 
 							if (isSwapped) {
-								bgColor = green[400];
+								bgColor = blue[900];
 							}
 
 							return (
