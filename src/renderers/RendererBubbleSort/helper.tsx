@@ -66,7 +66,11 @@ export const bubbleSort = (
 		() => false,
 	);
 
-	for (let offset = 0; offset < size; offset++) {
+	for (
+		let offset = 0;
+		offset < size - 1;
+		offset++
+	) {
 		for (let k = 0; k < size - offset - 1; k++) {
 			comparisonCount++;
 
@@ -118,9 +122,9 @@ export const bubbleSort = (
 		}
 
 		generateFrameState(
-			size - offset - 1,
-			`Decreased size of working by one (current: [0] to [${
-				size - offset - 1
+			size - offset - 2,
+			`Decreased size of working region by one (current: [0] to [${
+				size - offset - 2
 			}]).`,
 			() => false,
 			() => false,

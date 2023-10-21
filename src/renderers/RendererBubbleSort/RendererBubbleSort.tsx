@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import {
 	Button,
 	Grid,
@@ -36,6 +36,13 @@ export const RendererBubbleSort: FC<
 		if (frame >= frameStates.length - 1) {
 			return;
 		}
+
+		const element: HTMLElement | null =
+			document.getElementById("bubble-sort");
+		if (element === null) {
+			return;
+		}
+		element.scrollIntoView(false);
 
 		setFrame((prevFrame) => {
 			return prevFrame + 1;
@@ -78,7 +85,10 @@ export const RendererBubbleSort: FC<
 					<Typography variant="body1">
 						{`Swap: ${currFrame.swapCount}`}
 					</Typography>
-					<Typography variant="body1">
+					<Typography
+						variant="body1"
+						minHeight="3rem"
+					>
 						{`Status: ${currFrame.frameDescription}`}
 					</Typography>
 				</Stack>
@@ -114,7 +124,9 @@ export const RendererBubbleSort: FC<
 						} else if (isSwapped) {
 							bgColor = blue.A700;
 						} else if (
-							(index === 0 && frame > 0) ||
+							(index === 0 &&
+								frame > 0 &&
+								frame < frameStates.length - 1) ||
 							index ===
 								currFrame.workingRegionLastIndex
 						) {

@@ -1,3 +1,5 @@
+import "./styles/App.css";
+
 import { Fragment } from "react";
 
 import {
