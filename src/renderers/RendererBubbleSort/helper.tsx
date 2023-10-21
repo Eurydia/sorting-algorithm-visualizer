@@ -1,43 +1,66 @@
-export type FrameState = {
+export type ElementState = {
 	value: number;
 	isBeingCompared: boolean;
 	isBeingSwapped: boolean;
 	isSwapped: boolean;
 };
 
+export type FrameState = {
+	elementStates: ElementState[];
+	frameDescription: string;
+	swapCount: number;
+	comparisonCount: number;
+	workingRegionLastIndex: number;
+};
+
 export const bubbleSort = (
 	xs: number[],
 	size: number,
-	frameStates: FrameState[][],
-	frameDescs: string[],
-	swapCounter: number[],
-	comparisonCounter: number[],
+	frameStates: FrameState[],
 ): void => {
 	let swapCount: number = 0;
 	let comparisonCount: number = 0;
 
 	const generateFrameState = (
-		frameDesc: string,
+		workingRegionLastIndex: number,
+		frameDescription: string,
 		isCompared: (k: number) => boolean,
 		isBeingSwapped: (k: number) => boolean,
 		isSwapped: (k: number) => boolean,
 	): void => {
-		swapCounter.push(swapCount);
-		comparisonCounter.push(comparisonCount);
-		frameDescs.push(frameDesc);
-		frameStates.push([]);
+		const elementStates: ElementState[] = [];
 		for (let i = 0; i < xs.length; i++) {
-			frameStates[frameStates.length - 1][i] = {
+			elementStates.push({
 				value: xs[i],
 				isBeingCompared: isCompared(i),
 				isBeingSwapped: isBeingSwapped(i),
 				isSwapped: isSwapped(i),
-			};
+			});
 		}
+
+		const currFrameState: FrameState = {
+			swapCount,
+			comparisonCount,
+			elementStates,
+			frameDescription,
+			workingRegionLastIndex,
+		};
+		frameStates.push(currFrameState);
 	};
 
 	generateFrameState(
+		-2,
 		"Unsorted input.",
+		() => false,
+		() => false,
+		() => false,
+	);
+
+	generateFrameState(
+		size - 1,
+		`Set size of working region to ${size} (current: [0] to [${
+			size - 1
+		}]).`,
 		() => false,
 		() => false,
 		() => false,
@@ -48,9 +71,8 @@ export const bubbleSort = (
 			comparisonCount++;
 
 			generateFrameState(
-				`Comparing [${k + 1}] against [${
-					k + 2
-				}].`,
+				size - offset - 1,
+				`Comparing [${k}] against [${k + 1}].`,
 				(x) => x === k || x === k + 1,
 				() => false,
 				() => false,
@@ -61,8 +83,11 @@ export const bubbleSort = (
 
 			if (b >= a) {
 				generateFrameState(
-					`Skipping [${k + 1}] and [${k + 2}].`,
-					() => false,
+					size - offset - 1,
+					`[${k}] is smaller than [${
+						k + 1
+					}]. Do not swap [${k}] and [${k + 1}].`,
+					(x) => x === k || x === k + 1,
 					() => false,
 					() => false,
 				);
@@ -70,7 +95,10 @@ export const bubbleSort = (
 			}
 
 			generateFrameState(
-				`Swapping [${k + 1}] and [${k + 2}].`,
+				size - offset - 1,
+				`[${k}] is larger than [${
+					k + 1
+				}]. Swapping [${k}] and [${k + 1}].`,
 				() => false,
 				(x) => x === k || x === k + 1,
 				() => false,
@@ -81,14 +109,35 @@ export const bubbleSort = (
 			swapCount++;
 
 			generateFrameState(
-				`Swapped [${k + 1}] and [${k + 2}].`,
+				size - offset - 1,
+				`Swapped [${k}] and [${k + 1}].`,
 				() => false,
 				() => false,
 				(x) => x === k || x === k + 1,
 			);
 		}
+
+		generateFrameState(
+			size - offset - 1,
+			`Decreased size of working by one (current: [0] to [${
+				size - offset - 1
+			}]).`,
+			() => false,
+			() => false,
+			() => false,
+		);
 	}
+
 	generateFrameState(
+		0,
+		`Size of working region is one. Sorting complete.`,
+		() => false,
+		() => false,
+		() => false,
+	);
+
+	generateFrameState(
+		-1,
 		`Sorted input in ascending order.`,
 		() => false,
 		() => false,

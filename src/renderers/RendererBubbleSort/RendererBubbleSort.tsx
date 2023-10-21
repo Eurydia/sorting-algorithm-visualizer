@@ -5,7 +5,7 @@ import {
 	Stack,
 	Typography,
 } from "@mui/material";
-import { blue } from "@mui/material/colors";
+import { blue, red } from "@mui/material/colors";
 
 import { bubbleSort, FrameState } from "./helper";
 
@@ -22,41 +22,15 @@ export const RendererBubbleSort: FC<
 
 	const [frame, setFrame] = useState<number>(0);
 
-	const [
-		{
-			frameStates,
-			frameDescs,
-			swapCounter,
-			comparisonCounter,
+	const [frameStates, _] = useState<FrameState[]>(
+		() => {
+			const frameStates: FrameState[] = [];
+
+			bubbleSort([...dataset], size, frameStates);
+
+			return frameStates;
 		},
-		_,
-	] = useState<{
-		frameStates: FrameState[][];
-		frameDescs: string[];
-		swapCounter: number[];
-		comparisonCounter: number[];
-	}>(() => {
-		const newFrameStates: FrameState[][] = [];
-		const newFrameDescs: string[] = [];
-		const newSwapCounter: number[] = [];
-		const newComparisonCounter: number[] = [];
-
-		bubbleSort(
-			[...dataset],
-			size,
-			newFrameStates,
-			newFrameDescs,
-			newSwapCounter,
-			newComparisonCounter,
-		);
-
-		return {
-			swapCounter: newSwapCounter,
-			comparisonCounter: newComparisonCounter,
-			frameStates: newFrameStates,
-			frameDescs: newFrameDescs,
-		};
-	});
+	);
 
 	const getNextFrame = () => {
 		if (frame >= frameStates.length - 1) {
@@ -78,6 +52,9 @@ export const RendererBubbleSort: FC<
 		});
 	};
 
+	const currFrame: FrameState =
+		frameStates[frame];
+
 	return (
 		<Grid
 			width="100%"
@@ -96,13 +73,13 @@ export const RendererBubbleSort: FC<
 						}`}
 					</Typography>
 					<Typography variant="body1">
-						{`Comparison: ${comparisonCounter[frame]}`}
+						{`Comparison: ${currFrame.comparisonCount}`}
 					</Typography>
 					<Typography variant="body1">
-						{`Swap: ${swapCounter[frame]}`}
+						{`Swap: ${currFrame.swapCount}`}
 					</Typography>
 					<Typography variant="body1">
-						Status: {`${frameDescs[frame]}`}
+						{`Status: ${currFrame.frameDescription}`}
 					</Typography>
 				</Stack>
 			</Grid>
@@ -113,13 +90,16 @@ export const RendererBubbleSort: FC<
 				width="100%"
 				height="500px"
 			>
-				{frameStates[frame].map(
-					({
-						value,
-						isBeingCompared,
-						isBeingSwapped,
-						isSwapped,
-					}) => {
+				{currFrame.elementStates.map(
+					(
+						{
+							value,
+							isBeingCompared,
+							isBeingSwapped,
+							isSwapped,
+						},
+						index,
+					) => {
 						const height: string = `${
 							(value / maxValue) * 500
 						}px`;
@@ -127,15 +107,19 @@ export const RendererBubbleSort: FC<
 						let bgColor: string = `hsl(0, 0%, ${
 							(value / maxValue) * 80
 						}%)`;
-
 						if (isBeingCompared) {
 							bgColor = blue.A100;
 						} else if (isBeingSwapped) {
 							bgColor = blue.A200;
 						} else if (isSwapped) {
 							bgColor = blue.A700;
+						} else if (
+							(index === 0 && frame > 0) ||
+							index ===
+								currFrame.workingRegionLastIndex
+						) {
+							bgColor = red.A100;
 						}
-
 						return (
 							<Grid
 								key={`k-${value}`}
