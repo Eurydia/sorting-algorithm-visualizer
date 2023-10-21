@@ -5,7 +5,7 @@ import {
 	Stack,
 	Typography,
 } from "@mui/material";
-import { blue } from "@mui/material/colors";
+import { blue, red } from "@mui/material/colors";
 
 import {
 	insertionSort,
@@ -25,41 +25,19 @@ export const RendererInsertionSort: FC<
 
 	const [frame, setFrame] = useState<number>(0);
 
-	const [
-		{
-			frameStates,
-			frameDescs,
-			swapCounter,
-			comparisonCounter,
+	const [frameStates, _] = useState<FrameState[]>(
+		() => {
+			const frameStates: FrameState[] = [];
+
+			insertionSort(
+				[...dataset],
+				size,
+				frameStates,
+			);
+
+			return frameStates;
 		},
-		_,
-	] = useState<{
-		frameStates: FrameState[][];
-		frameDescs: string[];
-		swapCounter: number[];
-		comparisonCounter: number[];
-	}>(() => {
-		const newFrameStates: FrameState[][] = [];
-		const newFrameDescs: string[] = [];
-		const newSwapCounter: number[] = [];
-		const newComparisonCounter: number[] = [];
-
-		insertionSort(
-			[...dataset],
-			size,
-			newFrameStates,
-			newFrameDescs,
-			newSwapCounter,
-			newComparisonCounter,
-		);
-
-		return {
-			swapCounter: newSwapCounter,
-			comparisonCounter: newComparisonCounter,
-			frameStates: newFrameStates,
-			frameDescs: newFrameDescs,
-		};
-	});
+	);
 
 	const getNextFrame = () => {
 		if (frame >= frameStates.length - 1) {
@@ -81,6 +59,9 @@ export const RendererInsertionSort: FC<
 		});
 	};
 
+	const currFrameState: FrameState =
+		frameStates[frame];
+
 	return (
 		<Grid
 			width="100%"
@@ -99,13 +80,16 @@ export const RendererInsertionSort: FC<
 						}`}
 					</Typography>
 					<Typography variant="body1">
-						{`Comparison: ${comparisonCounter[frame]}`}
+						{`Comparison: ${currFrameState.comparisonCount}`}
 					</Typography>
 					<Typography variant="body1">
-						{`Swap: ${swapCounter[frame]}`}
+						{`Swap: ${currFrameState.swapCount}`}
 					</Typography>
-					<Typography variant="body1">
-						Status: {`${frameDescs[frame]}`}
+					<Typography
+						variant="body1"
+						minHeight="3rem"
+					>
+						{`Status: ${currFrameState.frameDescription}`}
 					</Typography>
 				</Stack>
 			</Grid>
@@ -116,13 +100,16 @@ export const RendererInsertionSort: FC<
 				width="100%"
 				height="500px"
 			>
-				{frameStates[frame].map(
-					({
-						value,
-						isBeingCompared,
-						isBeingSwapped,
-						isSwapped,
-					}) => {
+				{currFrameState.elementStates.map(
+					(
+						{
+							value,
+							isBeingCompared,
+							isBeingSwapped,
+							isSwapped,
+						},
+						index,
+					) => {
 						const height: string = `${
 							(value / maxValue) * 500
 						}px`;
@@ -137,6 +124,10 @@ export const RendererInsertionSort: FC<
 							bgColor = blue.A200;
 						} else if (isSwapped) {
 							bgColor = blue.A700;
+						} else if (
+							index === currFrameState.pivotIndex
+						) {
+							bgColor = red.A100;
 						}
 
 						return (

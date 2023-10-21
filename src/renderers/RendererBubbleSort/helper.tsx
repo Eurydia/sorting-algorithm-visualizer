@@ -56,21 +56,21 @@ export const bubbleSort = (
 		() => false,
 	);
 
-	generateFrameState(
-		size - 1,
-		`Set size of working region to ${size} (current: [0] to [${
-			size - 1
-		}]).`,
-		() => false,
-		() => false,
-		() => false,
-	);
-
 	for (
 		let offset = 0;
 		offset < size - 1;
 		offset++
 	) {
+		generateFrameState(
+			size - 1,
+			`Unsorted region starts from [0] to [${
+				size - 1
+			}].`,
+			() => false,
+			() => false,
+			() => false,
+		);
+
 		for (let k = 0; k < size - offset - 1; k++) {
 			comparisonCount++;
 
@@ -90,7 +90,7 @@ export const bubbleSort = (
 					size - offset - 1,
 					`[${k}] is smaller than [${
 						k + 1
-					}]. Do not swap [${k}] and [${k + 1}].`,
+					}]. Do not swap.`,
 					(x) => x === k || x === k + 1,
 					() => false,
 					() => false,
@@ -102,7 +102,7 @@ export const bubbleSort = (
 				size - offset - 1,
 				`[${k}] is larger than [${
 					k + 1
-				}]. Swapping [${k}] and [${k + 1}].`,
+				}]. Swap them.`,
 				() => false,
 				(x) => x === k || x === k + 1,
 				() => false,
@@ -120,16 +120,6 @@ export const bubbleSort = (
 				(x) => x === k || x === k + 1,
 			);
 		}
-
-		generateFrameState(
-			size - offset - 2,
-			`Decreased size of working region by one (current: [0] to [${
-				size - offset - 2
-			}]).`,
-			() => false,
-			() => false,
-			() => false,
-		);
 	}
 
 	generateFrameState(
