@@ -37,13 +37,6 @@ export const RendererBubbleSort: FC<
 			return;
 		}
 
-		const element: HTMLElement | null =
-			document.getElementById("bubble-sort");
-		if (element === null) {
-			return;
-		}
-		element.scrollIntoView(false);
-
 		setFrame((prevFrame) => {
 			return prevFrame + 1;
 		});
