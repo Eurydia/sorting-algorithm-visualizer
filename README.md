@@ -1,5 +1,13 @@
 # sorting-algorithm-visualizer
 
+## Useful tools
+
+Pushing `dist/` directory to `branch_name` branch.
+
+```bash
+npx gh-pages -d path/to/dist/ -b branch_name
+```
+
 ## Sources
 
 - Bubble sort (Wikipedia): https://en.wikipedia.org/wiki/Bubble_sort

@@ -122,7 +122,7 @@ export const mergeSort = (
 		() => false,
 	);
 
-	__top_down_merge_sort(0, xs.length - 1);
+	__top_down_merge_sort(0, size - 1);
 
 	generateFrameState(
 		"Sorted input in ascening order.",

@@ -12,6 +12,7 @@ import { RendererInsertionSort } from "./renderers/RendererInsertionSort";
 import { RendererMergeSort } from "./renderers/RendererMergeSort";
 import { RendererSelectionSort } from "./renderers/RendererSelectionSort";
 import { RendererHeapSort } from "./renderers/RendererHeapSort";
+import { RendererQuickSort } from "./renderers/RendererQuickSort";
 
 export const App = () => {
 	const dataset: number[] = [
@@ -69,6 +70,16 @@ export const App = () => {
 					</Typography>
 					<div id="heap-sort">
 						<RendererHeapSort
+							dataset={dataset}
+							size={dataset.length}
+							maxValue={Math.max(...dataset)}
+						/>
+					</div>
+					<Typography variant="h2">
+						Quick Sort
+					</Typography>
+					<div id="quick-sort">
+						<RendererQuickSort
 							dataset={dataset}
 							size={dataset.length}
 							maxValue={Math.max(...dataset)}
