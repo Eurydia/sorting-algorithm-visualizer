@@ -1,4 +1,4 @@
-export type ElementState = {
+type ElementState = {
 	value: number;
 	isBeingCompared: boolean;
 	isBeingSwapped: boolean;
@@ -110,7 +110,7 @@ export const insertionSort = (
 
 		if (mover === 0) {
 			generateFrameState(
-				`Pivot is the first element. Skipping to next pivot.`,
+				`[0] (pivot) is the first element. Skipping to next pivot.`,
 				0,
 				() => false,
 				() => false,

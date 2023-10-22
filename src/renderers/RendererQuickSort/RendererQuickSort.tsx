@@ -5,7 +5,11 @@ import {
 	Stack,
 	Typography,
 } from "@mui/material";
-import { blue } from "@mui/material/colors";
+import {
+	blue,
+	green,
+	red,
+} from "@mui/material/colors";
 
 import { quickSort, FrameState } from "./helper";
 
@@ -22,41 +26,15 @@ export const RendererQuickSort: FC<
 
 	const [frame, setFrame] = useState<number>(0);
 
-	const [
-		{
-			frameStates,
-			frameDescs,
-			swapCounter,
-			comparisonCounter,
+	const [frameStates, _] = useState<FrameState[]>(
+		() => {
+			const frameStates: FrameState[] = [];
+
+			quickSort([...dataset], size, frameStates);
+
+			return frameStates;
 		},
-		_,
-	] = useState<{
-		frameStates: FrameState[][];
-		frameDescs: string[];
-		swapCounter: number[];
-		comparisonCounter: number[];
-	}>(() => {
-		const newFrameStates: FrameState[][] = [];
-		const newFrameDescs: string[] = [];
-		const newSwapCounter: number[] = [];
-		const newComparisonCounter: number[] = [];
-
-		quickSort(
-			[...dataset],
-			size,
-			newFrameStates,
-			newFrameDescs,
-			newSwapCounter,
-			newComparisonCounter,
-		);
-
-		return {
-			swapCounter: newSwapCounter,
-			comparisonCounter: newComparisonCounter,
-			frameStates: newFrameStates,
-			frameDescs: newFrameDescs,
-		};
-	});
+	);
 
 	const getNextFrame = () => {
 		if (frame >= frameStates.length - 1) {
@@ -78,6 +56,9 @@ export const RendererQuickSort: FC<
 		});
 	};
 
+	const currFrameState: FrameState =
+		frameStates[frame];
+
 	return (
 		<Grid
 			width="100%"
@@ -96,13 +77,13 @@ export const RendererQuickSort: FC<
 						}`}
 					</Typography>
 					<Typography variant="body1">
-						{`Comparison: ${comparisonCounter[frame]}`}
+						{`Comparison: ${currFrameState.comparisonCount}`}
 					</Typography>
 					<Typography variant="body1">
-						{`Swap: ${swapCounter[frame]}`}
+						{`Swap: ${currFrameState.swapCount}`}
 					</Typography>
 					<Typography variant="body1">
-						Status: {`${frameDescs[frame]}`}
+						{`Status: ${currFrameState.frameDescription}`}
 					</Typography>
 				</Stack>
 			</Grid>
@@ -113,13 +94,16 @@ export const RendererQuickSort: FC<
 				width="100%"
 				height="500px"
 			>
-				{frameStates[frame].map(
-					({
-						value,
-						isBeingCompared,
-						isBeingSwapped,
-						isSwapped,
-					}) => {
+				{currFrameState.elementStates.map(
+					(
+						{
+							value,
+							isBeingCompared,
+							isBeingSwapped,
+							isSwapped,
+						},
+						index,
+					) => {
 						const height: string = `${
 							(value / maxValue) * 500
 						}px`;
@@ -128,17 +112,34 @@ export const RendererQuickSort: FC<
 							(value / maxValue) * 80
 						}%)`;
 
+						if (
+							index ===
+								currFrameState.workingRegionFirstIndex ||
+							index ===
+								currFrameState.workingRegionLastIndex
+						) {
+							bgColor = red.A100;
+						}
+
+						if (
+							index === currFrameState.pivotIndex
+						) {
+							bgColor = green[400];
+						}
+
 						if (isBeingCompared) {
 							bgColor = blue.A100;
-						} else if (isBeingSwapped) {
+						}
+						if (isBeingSwapped) {
 							bgColor = blue.A200;
-						} else if (isSwapped) {
+						}
+						if (isSwapped) {
 							bgColor = blue.A700;
 						}
 
 						return (
 							<Grid
-								key={`k-${value}`}
+								key={`k-${index}`}
 								item
 								xs={1}
 								height={height}

@@ -1,4 +1,4 @@
-export type ElementState = {
+type ElementState = {
 	value: number;
 	isBeingCompared: boolean;
 	isBeingSwapped: boolean;
@@ -22,8 +22,8 @@ export const bubbleSort = (
 	let comparisonCount: number = 0;
 
 	const generateFrameState = (
-		workingRegionLastIndex: number,
 		frameDescription: string,
+		workingRegionLastIndex: number,
 		isCompared: (k: number) => boolean,
 		isBeingSwapped: (k: number) => boolean,
 		isSwapped: (k: number) => boolean,
@@ -49,8 +49,8 @@ export const bubbleSort = (
 	};
 
 	generateFrameState(
-		-2,
 		"Unsorted input.",
+		-2,
 		() => false,
 		() => false,
 		() => false,
@@ -62,10 +62,10 @@ export const bubbleSort = (
 		offset++
 	) {
 		generateFrameState(
-			size - 1,
-			`Unsorted region starts from [0] to [${
-				size - 1
-			}].`,
+			`[${
+				size - offset - 1
+			}] is the last element of unsorted region.`,
+			size - offset - 1,
 			() => false,
 			() => false,
 			() => false,
@@ -75,8 +75,8 @@ export const bubbleSort = (
 			comparisonCount++;
 
 			generateFrameState(
-				size - offset - 1,
 				`Comparing [${k}] against [${k + 1}].`,
+				size - offset - 1,
 				(x) => x === k || x === k + 1,
 				() => false,
 				() => false,
@@ -87,10 +87,10 @@ export const bubbleSort = (
 
 			if (b >= a) {
 				generateFrameState(
-					size - offset - 1,
 					`[${k}] is smaller than [${
 						k + 1
 					}]. Do not swap.`,
+					size - offset - 1,
 					(x) => x === k || x === k + 1,
 					() => false,
 					() => false,
@@ -99,10 +99,10 @@ export const bubbleSort = (
 			}
 
 			generateFrameState(
-				size - offset - 1,
 				`[${k}] is larger than [${
 					k + 1
 				}]. Swap them.`,
+				size - offset - 1,
 				() => false,
 				(x) => x === k || x === k + 1,
 				() => false,
@@ -113,8 +113,8 @@ export const bubbleSort = (
 			swapCount++;
 
 			generateFrameState(
-				size - offset - 1,
 				`Swapped [${k}] and [${k + 1}].`,
+				size - offset - 1,
 				() => false,
 				() => false,
 				(x) => x === k || x === k + 1,
@@ -123,16 +123,16 @@ export const bubbleSort = (
 	}
 
 	generateFrameState(
-		0,
 		`Size of working region is one. Sorting complete.`,
+		0,
 		() => false,
 		() => false,
 		() => false,
 	);
 
 	generateFrameState(
-		-1,
 		`Sorted input in ascending order.`,
+		-1,
 		() => false,
 		() => false,
 		() => false,

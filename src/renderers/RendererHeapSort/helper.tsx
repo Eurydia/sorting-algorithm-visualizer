@@ -1,45 +1,80 @@
-export type FrameState = {
+type ElementState = {
 	value: number;
 	isBeingCompared: boolean;
 	isBeingSwapped: boolean;
 	isSwapped: boolean;
 };
 
+export type FrameState = {
+	elementStates: ElementState[];
+	swapCount: number;
+	comparisonCount: number;
+	frameDescription: string;
+	parentIndex: number;
+	leftChildIndex: number;
+	rightChildIndex: number;
+	unsortedRegionLastIndex: number;
+};
+
 export const heapSort = (
 	xs: number[],
 	size: number,
-	frameStates: FrameState[][],
-	frameDescs: string[],
-	swapCounter: number[],
-	comparisonCounter: number[],
+	frameStates: FrameState[],
 ): void => {
 	let swapCount: number = 0;
 	let comparisonCount: number = 0;
 
 	const generateFrameState = (
-		frameDesc: string,
+		frameDescription: string,
+		parentIndex: number,
+		leftChildIndex: number,
+		rightChildIndex: number,
+		unsortedRegionLastIndex: number,
+
 		isCompared: (k: number) => boolean,
 		isBeingSwapped: (k: number) => boolean,
 		isSwapped: (k: number) => boolean,
 	): void => {
-		swapCounter.push(swapCount);
-		comparisonCounter.push(comparisonCount);
-		frameDescs.push(frameDesc);
-		frameStates.push([]);
+		const elementStates: ElementState[] = [];
+
 		for (let i = 0; i < xs.length; i++) {
-			frameStates[frameStates.length - 1][i] = {
+			elementStates[i] = {
 				value: xs[i],
 				isBeingCompared: isCompared(i),
 				isBeingSwapped: isBeingSwapped(i),
 				isSwapped: isSwapped(i),
 			};
 		}
+
+		const currFrameState: FrameState = {
+			swapCount,
+			comparisonCount,
+			frameDescription,
+			elementStates,
+			parentIndex,
+			leftChildIndex,
+			rightChildIndex,
+			unsortedRegionLastIndex,
+		};
+
+		frameStates.push(currFrameState);
 	};
 
 	const __heapsort_rebuild = (
 		_size: number,
 		parentIndex: number,
 	): void => {
+		generateFrameState(
+			`Consider [${parentIndex}] as a parent.`,
+			parentIndex,
+			-1,
+			-1,
+			_size - 1,
+			() => false,
+			() => false,
+			() => false,
+		);
+
 		while (parentIndex * 2 + 1 < _size) {
 			const leftChildIndex: number =
 				parentIndex * 2 + 1;
@@ -47,13 +82,28 @@ export const heapSort = (
 				leftChildIndex;
 
 			if (leftChildIndex + 1 < _size) {
+				generateFrameState(
+					`[${parentIndex}] has two children [${leftChildIndex}] and [${
+						leftChildIndex + 1
+					}].`,
+					parentIndex,
+					leftChildIndex,
+					leftChildIndex + 1,
+					_size - 1,
+					() => false,
+					() => false,
+					() => false,
+				);
+
 				comparisonCount++;
 				generateFrameState(
-					`Comparing [${
+					`Comparing [${leftChildIndex}] (left child) against [${
 						leftChildIndex + 1
-					}] (left child) against [${
-						leftChildIndex + 2
-					}] (right child)`,
+					}] (right child).`,
+					parentIndex,
+					-1,
+					-1,
+					_size - 1,
 					(k) =>
 						k === leftChildIndex ||
 						k === leftChildIndex + 1,
@@ -66,27 +116,55 @@ export const heapSort = (
 				) {
 					targetChildIndex++;
 				}
-			}
 
-			comparisonCount++;
-			generateFrameState(
-				`Comparing [${
-					parentIndex + 1
-				}] (parent) against [${
-					targetChildIndex + 1
-				}] (child)`,
-				(k) =>
-					k === parentIndex ||
-					k === targetChildIndex,
-				() => false,
-				() => false,
-			);
+				comparisonCount++;
+				generateFrameState(
+					`Comparing [${parentIndex}] against [${targetChildIndex}] (larger child).`,
+					-1,
+					-1,
+					-1,
+					_size - 1,
+					(k) =>
+						k === parentIndex ||
+						k === targetChildIndex,
+					() => false,
+					() => false,
+				);
+			} else {
+				generateFrameState(
+					`[${parentIndex}] has one child [${leftChildIndex}].`,
+					parentIndex,
+					leftChildIndex,
+					-1,
+					_size - 1,
+					() => false,
+					() => false,
+					() => false,
+				);
+				comparisonCount++;
+				generateFrameState(
+					`Comparing [${parentIndex}] against [${targetChildIndex}] (only child).`,
+					-1,
+					-1,
+					-1,
+					_size - 1,
+					(k) =>
+						k === parentIndex ||
+						k === targetChildIndex,
+					() => false,
+					() => false,
+				);
+			}
 
 			if (
 				xs[parentIndex] >= xs[targetChildIndex]
 			) {
 				generateFrameState(
-					`Skipping since heap property holds.`,
+					`Parent is not smaller. Heap property holds. Do not swap.`,
+					parentIndex,
+					-1,
+					-1,
+					_size - 1,
 					(k) =>
 						k === parentIndex ||
 						k === targetChildIndex,
@@ -97,11 +175,11 @@ export const heapSort = (
 			}
 
 			generateFrameState(
-				`Swapping [${
-					parentIndex + 1
-				}] (parent) with [${
-					targetChildIndex + 1
-				}] (child)`,
+				`Parent is smaller. Heap property does not hold. Swapping [${parentIndex}] and [${targetChildIndex}].`,
+				-1,
+				-1,
+				-1,
+				_size - 1,
 				() => false,
 				(k) =>
 					k === parentIndex ||
@@ -115,11 +193,11 @@ export const heapSort = (
 
 			swapCount++;
 			generateFrameState(
-				`Swapped [${
-					parentIndex + 1
-				}] (parent) with [${
-					targetChildIndex + 1
-				}] (child)`,
+				`Swapped [${parentIndex}] and [${targetChildIndex}].`,
+				-1,
+				-1,
+				-1,
+				_size - 1,
 				() => false,
 				() => false,
 				(k) =>
@@ -128,11 +206,50 @@ export const heapSort = (
 			);
 
 			parentIndex = targetChildIndex;
+
+			generateFrameState(
+				`[${targetChildIndex}] has been swapped. Consider it as a parent.`,
+				targetChildIndex,
+				-1,
+				-1,
+				_size - 1,
+				() => false,
+				() => false,
+				() => false,
+			);
 		}
+
+		generateFrameState(
+			`[${parentIndex}] do not have a child. Skipping.`,
+			parentIndex,
+			-1,
+			-1,
+			_size - 1,
+			() => false,
+			() => false,
+			() => false,
+		);
 	};
 
 	generateFrameState(
 		"Unsorted input.",
+		-1,
+		-1,
+		-1,
+		-1,
+		() => false,
+		() => false,
+		() => false,
+	);
+
+	generateFrameState(
+		`Forming initial heap. [${
+			size - 1
+		}] is the last element of unsorted region.`,
+		-1,
+		-1,
+		-1,
+		size - 1,
 		() => false,
 		() => false,
 		() => false,
@@ -142,9 +259,24 @@ export const heapSort = (
 		__heapsort_rebuild(size, i);
 	}
 
+	generateFrameState(
+		"Initial heap is formed. Consider [0] as a root.",
+		0,
+		-1,
+		-1,
+		size - 1,
+		() => false,
+		() => false,
+		() => false,
+	);
+
 	for (let i = size - 1; i > 0; i--) {
 		generateFrameState(
-			`Swapping [${1}]  with [${i + 1}] `,
+			`Swapping [0] (root) and [${i}] (last element).`,
+			0,
+			-1,
+			-1,
+			-1,
 			() => false,
 			(k) => k === 0 || k === i,
 			() => false,
@@ -156,17 +288,60 @@ export const heapSort = (
 
 		swapCount++;
 		generateFrameState(
-			`Swapped [${1}]  with [${i + 1}] `,
+			`Swapped [${0}] with [${i}].`,
+			0,
+			-1,
+			-1,
+			-1,
 			() => false,
 			() => false,
 			(k) => k === 0 || k === i,
+		);
+
+		generateFrameState(
+			`Decrease size of unsorted region by one. [${
+				i - 1
+			}] is the last element of unsorted region.`,
+			-1,
+			-1,
+			-1,
+			i - 1,
+			() => false,
+			() => false,
+			() => false,
+		);
+
+		generateFrameState(
+			`Rebuild heap.`,
+			-1,
+			-1,
+			-1,
+			i - 1,
+			() => false,
+			() => false,
+			() => false,
 		);
 
 		__heapsort_rebuild(i, 0);
 	}
 
 	generateFrameState(
+		"No more root to consider. Sorting complete.",
+		-1,
+		-1,
+		-1,
+		-1,
+		() => false,
+		() => false,
+		() => false,
+	);
+
+	generateFrameState(
 		"Sorted input in ascending order.",
+		-1,
+		-1,
+		-1,
+		-1,
 		() => false,
 		() => false,
 		() => false,

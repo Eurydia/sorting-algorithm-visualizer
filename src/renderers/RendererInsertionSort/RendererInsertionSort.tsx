@@ -5,7 +5,10 @@ import {
 	Stack,
 	Typography,
 } from "@mui/material";
-import { blue, red } from "@mui/material/colors";
+import {
+	blue,
+	green,
+} from "@mui/material/colors";
 
 import {
 	insertionSort,
@@ -118,21 +121,24 @@ export const RendererInsertionSort: FC<
 							(value / maxValue) * 80
 						}%)`;
 
-						if (isBeingCompared) {
-							bgColor = blue.A100;
-						} else if (isBeingSwapped) {
-							bgColor = blue.A200;
-						} else if (isSwapped) {
-							bgColor = blue.A700;
-						} else if (
+						if (
 							index === currFrameState.pivotIndex
 						) {
-							bgColor = red.A100;
+							bgColor = green[400];
+						}
+						if (isBeingCompared) {
+							bgColor = blue.A100;
+						}
+						if (isBeingSwapped) {
+							bgColor = blue.A200;
+						}
+						if (isSwapped) {
+							bgColor = blue.A700;
 						}
 
 						return (
 							<Grid
-								key={`k-${value}`}
+								key={`k-${index}`}
 								item
 								xs={1}
 								height={height}

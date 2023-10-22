@@ -110,24 +110,26 @@ export const RendererBubbleSort: FC<
 						let bgColor: string = `hsl(0, 0%, ${
 							(value / maxValue) * 80
 						}%)`;
-						if (isBeingCompared) {
-							bgColor = blue.A100;
-						} else if (isBeingSwapped) {
-							bgColor = blue.A200;
-						} else if (isSwapped) {
-							bgColor = blue.A700;
-						} else if (
-							(index === 0 &&
-								frame > 0 &&
-								frame < frameStates.length - 1) ||
+
+						if (
 							index ===
-								currFrame.workingRegionLastIndex
+							currFrame.workingRegionLastIndex
 						) {
 							bgColor = red.A100;
 						}
+
+						if (isBeingCompared) {
+							bgColor = blue.A100;
+						}
+						if (isBeingSwapped) {
+							bgColor = blue.A200;
+						}
+						if (isSwapped) {
+							bgColor = blue.A700;
+						}
 						return (
 							<Grid
-								key={`k-${value}`}
+								key={`k-${index}`}
 								item
 								xs={1}
 								height={height}

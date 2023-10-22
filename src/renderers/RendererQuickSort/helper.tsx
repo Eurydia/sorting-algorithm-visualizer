@@ -1,39 +1,56 @@
-export type FrameState = {
+type ElementState = {
 	value: number;
 	isBeingCompared: boolean;
 	isBeingSwapped: boolean;
 	isSwapped: boolean;
 };
 
+export type FrameState = {
+	swapCount: number;
+	comparisonCount: number;
+	elementStates: ElementState[];
+	frameDescription: string;
+	workingRegionFirstIndex: number;
+	workingRegionLastIndex: number;
+	pivotIndex: number;
+};
+
 export const quickSort = (
 	xs: number[],
 	size: number,
-	frameStates: FrameState[][],
-	frameDescs: string[],
-	swapCounter: number[],
-	comparisonCounter: number[],
+	frameStates: FrameState[],
 ) => {
 	let swapCount: number = 0;
 	let comparisonCount: number = 0;
 
 	const generateFrameState = (
-		frameDesc: string,
+		frameDescription: string,
+		pivotIndex: number,
+		workingRegionFirstIndex: number,
+		workingRegionLastIndex: number,
 		isCompared: (k: number) => boolean,
 		isBeingSwapped: (k: number) => boolean,
 		isSwapped: (k: number) => boolean,
 	): void => {
-		swapCounter.push(swapCount);
-		comparisonCounter.push(comparisonCount);
-		frameDescs.push(frameDesc);
-		frameStates.push([]);
+		const elementStates: ElementState[] = [];
 		for (let i = 0; i < xs.length; i++) {
-			frameStates[frameStates.length - 1][i] = {
+			elementStates[i] = {
 				value: xs[i],
 				isBeingCompared: isCompared(i),
 				isBeingSwapped: isBeingSwapped(i),
 				isSwapped: isSwapped(i),
 			};
 		}
+
+		frameStates.push({
+			frameDescription,
+			comparisonCount,
+			swapCount,
+			elementStates,
+			pivotIndex,
+			workingRegionFirstIndex,
+			workingRegionLastIndex,
+		});
 	};
 
 	const __partition = (
@@ -41,12 +58,36 @@ export const quickSort = (
 		highIndex: number,
 	): number => {
 		const pivot: number = xs[highIndex];
+
+		generateFrameState(
+			`Consider elements between [${lowIndex}] and [${highIndex}] inclusive.`,
+			-1,
+			lowIndex,
+			highIndex,
+			() => false,
+			() => false,
+			() => false,
+		);
+
+		generateFrameState(
+			`Consider [${highIndex}] as pivot.`,
+			highIndex,
+			lowIndex,
+			highIndex,
+			() => false,
+			() => false,
+			() => false,
+		);
+
 		let pivotIndex: number = lowIndex - 1;
 
 		for (let i = lowIndex; i < highIndex; i++) {
 			comparisonCount++;
 			generateFrameState(
 				`Comparing [${i}] against [${highIndex}] (pivot).`,
+				highIndex,
+				lowIndex,
+				highIndex,
 				(k) => k === i || k === highIndex,
 				() => false,
 				() => false,
@@ -54,9 +95,11 @@ export const quickSort = (
 
 			if (xs[i] <= pivot) {
 				pivotIndex++;
-
 				generateFrameState(
-					`Swapping [${i}] with [${pivotIndex}].`,
+					`[${i}] is smaller than [${highIndex}]. Move it to left partition.`,
+					highIndex,
+					lowIndex,
+					highIndex,
 					() => false,
 					(k) => k === i || k === pivotIndex,
 					() => false,
@@ -68,17 +111,33 @@ export const quickSort = (
 
 				swapCount++;
 				generateFrameState(
-					`Swapped [${i}] with [${pivotIndex}].`,
+					`Swapped [${i}] and [${pivotIndex}].`,
+					highIndex,
+					lowIndex,
+					highIndex,
 					() => false,
 					() => false,
 					(k) => k === i || k === pivotIndex,
+				);
+			} else {
+				generateFrameState(
+					`[${i}] is greater than [${pivotIndex}]. Leave it as is.`,
+					highIndex,
+					lowIndex,
+					highIndex,
+					() => false,
+					(k) => k === i || k === pivotIndex,
+					() => false,
 				);
 			}
 		}
 
 		pivotIndex++;
 		generateFrameState(
-			`Swapping [${pivot}] with [${highIndex}]`,
+			`Swapping [${highIndex}] (pivot) with [${pivotIndex}] (between smaller and larger partitions).`,
+			highIndex,
+			lowIndex,
+			highIndex,
 			() => false,
 			(k) => k === pivotIndex || k === highIndex,
 			() => false,
@@ -90,7 +149,10 @@ export const quickSort = (
 
 		swapCount++;
 		generateFrameState(
-			`Swapped [${pivot}] with [${highIndex}].`,
+			`Swapped [${highIndex}] with [${pivotIndex}].`,
+			highIndex,
+			lowIndex,
+			highIndex,
 			() => false,
 			() => false,
 			(k) => k === pivotIndex || k === highIndex,
@@ -117,6 +179,9 @@ export const quickSort = (
 
 	generateFrameState(
 		"Unsorted input.",
+		-1,
+		-1,
+		-1,
 		() => false,
 		() => false,
 		() => false,
@@ -126,6 +191,9 @@ export const quickSort = (
 
 	generateFrameState(
 		"Sorted input in ascening order.",
+		-1,
+		-1,
+		-1,
 		() => false,
 		() => false,
 		() => false,

@@ -1,74 +1,121 @@
-export type FrameState = {
+type ElementState = {
 	value: number;
 	isBeingCompared: boolean;
 	isBeingSwapped: boolean;
 	isSwapped: boolean;
 };
 
+export type FrameState = {
+	elementState: ElementState[];
+	swapCount: number;
+	comparisonCount: number;
+	frameDescription: string;
+	workingRegionFirstIndex: number;
+	workingRegionLastIndex: number;
+};
+
 export const mergeSort = (
 	xs: number[],
 	size: number,
-	frameStates: FrameState[][],
-	frameDescs: string[],
-	swapCounter: number[],
-	comparisonCounter: number[],
+	frameStates: FrameState[],
 ) => {
 	let swapCount: number = 0;
 	let comparisonCount: number = 0;
 
 	const generateFrameState = (
-		frameDesc: string,
+		frameDescription: string,
+		workingRegionFirstIndex: number,
+		workingRegionLastIndex: number,
 		isCompared: (k: number) => boolean,
 		isBeingSwapped: (k: number) => boolean,
 		isSwapped: (k: number) => boolean,
 	): void => {
-		swapCounter.push(swapCount);
-		comparisonCounter.push(comparisonCount);
-		frameDescs.push(frameDesc);
-		frameStates.push([]);
+		const elementState: ElementState[] = [];
 		for (let i = 0; i < xs.length; i++) {
-			frameStates[frameStates.length - 1][i] = {
+			elementState[i] = {
 				value: xs[i],
 				isBeingCompared: isCompared(i),
 				isBeingSwapped: isBeingSwapped(i),
 				isSwapped: isSwapped(i),
 			};
 		}
+
+		const currFrameState: FrameState = {
+			elementState,
+			swapCount,
+			comparisonCount,
+			frameDescription,
+			workingRegionFirstIndex,
+			workingRegionLastIndex,
+		};
+
+		frameStates.push(currFrameState);
 	};
 
 	const __top_down_merge_sort = (
-		start_index: number,
-		end_index: number,
+		startIndex: number,
+		endIndex: number,
 	): void => {
-		if (end_index - start_index === 0) {
+		generateFrameState(
+			`Consider elements between [${startIndex}] and [${endIndex}] (inclusive).`,
+			startIndex,
+			endIndex,
+			() => false,
+			() => false,
+			() => false,
+		);
+
+		if (endIndex - startIndex === 0) {
+			generateFrameState(
+				`Segment has one element. Skipping.`,
+				startIndex,
+				endIndex,
+				() => false,
+				() => false,
+				() => false,
+			);
+
 			return;
 		}
 
-		const middle_index: number = Math.floor(
-			(start_index + end_index) / 2,
+		const middleIndex: number = Math.floor(
+			(startIndex + endIndex) / 2,
 		);
 
 		__top_down_merge_sort(
-			start_index,
-			middle_index,
+			startIndex,
+			middleIndex,
 		);
 
 		__top_down_merge_sort(
-			middle_index + 1,
-			end_index,
+			middleIndex + 1,
+			endIndex,
 		);
 
-		let l_ptr: number = start_index;
-		let r_ptr: number = middle_index + 1;
+		generateFrameState(
+			`Merging left segment (between [${startIndex}] and [${middleIndex}]) and right segment (between [${
+				middleIndex + 1
+			}] and [${endIndex}]).`,
+			startIndex,
+			endIndex,
+			() => false,
+			() => false,
+			() => false,
+		);
+
+		let l_ptr: number = startIndex;
+		let r_ptr: number = middleIndex + 1;
 		const aux: number[] = [];
 
 		while (
-			l_ptr <= middle_index &&
-			r_ptr <= end_index
+			l_ptr <= middleIndex &&
+			r_ptr <= endIndex
 		) {
 			comparisonCount++;
 			generateFrameState(
-				`Comparing [${l_ptr}] against [${r_ptr}]`,
+				`Comparing [${l_ptr}] against [${r_ptr}].`,
+				startIndex,
+				endIndex,
 				(k) => k === r_ptr || k === l_ptr,
 				() => false,
 				() => false,
@@ -82,12 +129,12 @@ export const mergeSort = (
 			l_ptr++;
 		}
 
-		while (l_ptr <= middle_index) {
+		while (l_ptr <= middleIndex) {
 			aux.push(xs[l_ptr]);
 			l_ptr++;
 		}
 
-		while (r_ptr <= end_index) {
+		while (r_ptr <= endIndex) {
 			aux.push(xs[r_ptr]);
 			r_ptr++;
 		}
@@ -95,28 +142,34 @@ export const mergeSort = (
 		for (let i = 0; i < aux.length; i++) {
 			generateFrameState(
 				`Swapping [${
-					i + start_index
+					i + startIndex
 				}] from auxiliary memory.`,
+				startIndex,
+				endIndex,
 				() => false,
-				(k) => k === i + start_index,
+				(k) => k === i + startIndex,
 				() => false,
 			);
 
-			xs[i + start_index] = aux[i];
+			xs[i + startIndex] = aux[i];
 			swapCount++;
 			generateFrameState(
 				`Swapped [${
-					i + start_index
+					i + startIndex
 				}] from auxiliary memory.`,
+				startIndex,
+				endIndex,
 				() => false,
 				() => false,
-				(k) => k === i + start_index,
+				(k) => k === i + startIndex,
 			);
 		}
 	};
 
 	generateFrameState(
 		"Unsorted input.",
+		-1,
+		-1,
 		() => false,
 		() => false,
 		() => false,
@@ -126,6 +179,8 @@ export const mergeSort = (
 
 	generateFrameState(
 		"Sorted input in ascening order.",
+		-1,
+		-1,
 		() => false,
 		() => false,
 		() => false,
