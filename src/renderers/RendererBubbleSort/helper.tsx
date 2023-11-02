@@ -1,3 +1,6 @@
+import { Typography } from "@mui/material";
+import { Fragment } from "react";
+
 export type ElementState = {
 	compared: boolean;
 	beingSwapped: boolean;
@@ -13,7 +16,7 @@ export type FrameElement = {
 
 export type FrameState = {
 	elementStates: FrameElement[];
-	frameDescription: string;
+	frameDescription: React.ReactNode;
 	swapCount: number;
 	comparisonCount: number;
 };
@@ -27,7 +30,7 @@ export const bubbleSort = (
 	let comparisonCount: number = 0;
 
 	const generateFrameState = (
-		frameDescription: string,
+		frameDescription: React.ReactNode,
 		indexDetails: {
 			lastElementofUnsortedRegion: number;
 			bubbling: number;
@@ -82,9 +85,13 @@ export const bubbleSort = (
 		offset++
 	) {
 		generateFrameState(
-			`Set [${
-				size - offset - 1
-			}] as the last unsorted element.`,
+			<Typography>
+				Set{" "}
+				<code>
+					input[{`${size - offset - 1}`}]
+				</code>{" "}
+				as the last unsorted element.
+			</Typography>,
 			{
 				lastElementofUnsortedRegion:
 					size - offset - 1,
@@ -97,7 +104,11 @@ export const bubbleSort = (
 		for (let k = 0; k < size - offset - 1; k++) {
 			comparisonCount++;
 			generateFrameState(
-				`Compare [${k}] against [${k + 1}].`,
+				<Typography>
+					Compare <code>input[{`${k}`}]</code>{" "}
+					against <code>input[{`${k + 1}`}]</code>
+					.
+				</Typography>,
 				{
 					lastElementofUnsortedRegion:
 						size - offset - 1,
@@ -116,7 +127,10 @@ export const bubbleSort = (
 			}
 
 			generateFrameState(
-				`Swap [${k}] and [${k + 1}].`,
+				<Typography>
+					Swap <code>input[{`${k}`}]</code> and{" "}
+					<code>input[{`${k + 1}`}]</code>.
+				</Typography>,
 				{
 					lastElementofUnsortedRegion:
 						size - offset - 1,
@@ -132,7 +146,11 @@ export const bubbleSort = (
 			swapCount++;
 
 			generateFrameState(
-				`Swapped [${k}] and [${k + 1}].`,
+				<Typography>
+					Swapped <code>input[{`${k}`}]</code>{" "}
+					against <code>input[{`${k + 1}`}]</code>
+					.
+				</Typography>,
 				{
 					lastElementofUnsortedRegion:
 						size - offset - 1,
@@ -157,7 +175,10 @@ export const bubbleSort = (
 	}
 
 	generateFrameState(
-		`Set [0] as the last unsorted element.`,
+		<Typography>
+			Set <code>input[0]</code> as the last
+			unsorted element.
+		</Typography>,
 		{
 			lastElementofUnsortedRegion: 0,
 			bubbling: -1,
