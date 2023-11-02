@@ -36,8 +36,14 @@ npx gh-pages -d path/to/dist/ -b branch_name
 
 ## Sources
 
+Comparison-based sorting algorithms:
+
 - Bubble sort (Wikipedia): https://en.wikipedia.org/wiki/Bubble_sort
 - Insertion sort (Wikipedia): https://en.wikipedia.org/wiki/Insertion_sort
 - Selection sort (Wikipedia): https://en.wikipedia.org/wiki/Selection_sort
 - Merge sort (Wikipedia): https://en.wikipedia.org/wiki/Merge_sort
 - Heapsort (Wikipedia): https://en.wikipedia.org/wiki/Heapsort
+
+Non-comparison sorting algorithms:
+
+- Counting sort (Wikipedia): https://en.wikipedia.org/wiki/Counting_sort

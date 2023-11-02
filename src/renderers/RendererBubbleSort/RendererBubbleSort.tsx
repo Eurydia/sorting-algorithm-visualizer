@@ -1,28 +1,92 @@
 import { FC, useState } from "react";
 import {
+	Box,
 	Button,
-	Grid,
 	Stack,
 	Typography,
 } from "@mui/material";
-import { blue, red } from "@mui/material/colors";
+import {
+	blue,
+	orange,
+	red,
+} from "@mui/material/colors";
 
-import { bubbleSort, FrameState } from "./helper";
+import {
+	bubbleSort,
+	ElementState,
+	FrameState,
+} from "./helper";
+
+type ElementBubbleSortProps = {
+	value: number;
+	maxValue: number;
+	size: number;
+	states: ElementState;
+};
+const ElementBubbleSort: FC<
+	ElementBubbleSortProps
+> = (props) => {
+	const { value, maxValue, size, states } = props;
+
+	const {
+		compared,
+		beingSwapped,
+		swapped,
+		lastElementOfUnsortedRegion,
+		bubbling,
+	} = states;
+
+	const height: number = (value / maxValue) * 100;
+
+	const width: number = (1 / size) * 100;
+
+	let bgColor: string = `hsl(0, 0%, ${
+		(value / maxValue) * 80
+	}%)`;
+
+	if (lastElementOfUnsortedRegion) {
+		bgColor = red.A100;
+	}
+
+	if (compared) {
+		bgColor = blue.A100;
+	}
+
+	if (beingSwapped) {
+		bgColor = orange["A100"];
+	}
+
+	if (swapped) {
+		bgColor = orange["A200"];
+	}
+
+	return (
+		<Box
+			sx={{
+				width: `${width}%`,
+				height: `${height}%`,
+				backgroundColor: bgColor,
+			}}
+		>
+			{bubbling ? "🚀" : ""}
+		</Box>
+	);
+};
 
 type RendererBubbleSortProps = {
 	dataset: number[];
-	size: number;
-	maxValue: number;
 };
-
 export const RendererBubbleSort: FC<
 	RendererBubbleSortProps
 > = (props) => {
-	const { dataset, size, maxValue } = props;
+	const { dataset } = props;
+
+	const size: number = dataset.length;
+	const maxValue: number = Math.max(...dataset);
 
 	const [frame, setFrame] = useState<number>(0);
 
-	const [frameStates, _] = useState<FrameState[]>(
+	const [frameStates] = useState<FrameState[]>(
 		() => {
 			const frameStates: FrameState[] = [];
 
@@ -32,8 +96,8 @@ export const RendererBubbleSort: FC<
 		},
 	);
 
-	const getNextFrame = () => {
-		if (frame >= frameStates.length - 1) {
+	const onFrameAdvance = () => {
+		if (frame === frameStates.length - 1) {
 			return;
 		}
 
@@ -42,8 +106,8 @@ export const RendererBubbleSort: FC<
 		});
 	};
 
-	const getPrevFrame = () => {
-		if (frame < 1) {
+	const onFrameRewind = () => {
+		if (frame === 0) {
 			return;
 		}
 
@@ -52,21 +116,30 @@ export const RendererBubbleSort: FC<
 		});
 	};
 
+	const onKeyDown = (
+		event: React.KeyboardEvent<HTMLButtonElement>,
+	) => {
+		switch (event.key) {
+			case "ArrowRight":
+				onFrameAdvance();
+				break;
+			case "ArrowLeft":
+				onFrameRewind();
+				break;
+			default:
+				break;
+		}
+	};
+
+	const heightPx: number = 600;
+
 	const currFrame: FrameState =
 		frameStates[frame];
 
 	return (
-		<Grid
-			width="100%"
-			container
-			columns={12}
-			spacing={1}
-		>
-			<Grid
-				item
-				xs={12}
-			>
-				<Stack>
+		<Box>
+			<Stack spacing={2}>
+				<Box>
 					<Typography variant="body1">
 						{`Frame ${frame + 1}/${
 							frameStates.length
@@ -82,93 +155,57 @@ export const RendererBubbleSort: FC<
 						variant="body1"
 						minHeight="3rem"
 					>
-						{`Status: ${currFrame.frameDescription}`}
+						{currFrame.frameDescription}
 					</Typography>
-				</Stack>
-			</Grid>
-			<Grid
-				container
-				item
-				columns={size}
-				width="100%"
-				height="500px"
-			>
-				{currFrame.elementStates.map(
-					(
-						{
-							value,
-							isBeingCompared,
-							isBeingSwapped,
-							isSwapped,
+				</Box>
+				<Box
+					display="flex"
+					flexDirection="row"
+					alignItems="flex-end"
+					sx={{
+						width: "100%",
+						height: `${heightPx}px`,
+					}}
+				>
+					{currFrame.elementStates.map(
+						({ value, states }, index) => {
+							return (
+								<ElementBubbleSort
+									key={`key-${index}`}
+									value={value}
+									maxValue={maxValue}
+									size={size}
+									states={states}
+								/>
+							);
 						},
-						index,
-					) => {
-						const height: string = `${
-							(value / maxValue) * 500
-						}px`;
-
-						let bgColor: string = `hsl(0, 0%, ${
-							(value / maxValue) * 80
-						}%)`;
-
-						if (
-							index ===
-							currFrame.workingRegionLastIndex
-						) {
-							bgColor = red.A100;
-						}
-
-						if (isBeingCompared) {
-							bgColor = blue.A100;
-						}
-						if (isBeingSwapped) {
-							bgColor = blue.A200;
-						}
-						if (isSwapped) {
-							bgColor = blue.A700;
-						}
-						return (
-							<Grid
-								key={`k-${index}`}
-								item
-								xs={1}
-								height={height}
-								sx={{
-									backgroundColor: bgColor,
-								}}
-							/>
-						);
-					},
-				)}
-			</Grid>
-			<Grid
-				item
-				xs={6}
-			>
-				<Button
-					fullWidth
-					variant="contained"
-					onClick={getPrevFrame}
-					disabled={frame === 0}
+					)}
+				</Box>
+				<Stack
+					direction="row"
+					spacing={2}
 				>
-					Previous Frame
-				</Button>
-			</Grid>
-			<Grid
-				item
-				xs={6}
-			>
-				<Button
-					fullWidth
-					variant="contained"
-					onClick={getNextFrame}
-					disabled={
-						frame >= frameStates.length - 1
-					}
-				>
-					Next Frame
-				</Button>
-			</Grid>
-		</Grid>
+					<Button
+						fullWidth
+						variant="contained"
+						onClick={onFrameRewind}
+						disabled={frame === 0}
+					>
+						Previous Frame
+					</Button>
+					<Button
+						fullWidth
+						variant="contained"
+						onClick={onFrameAdvance}
+						onKeyDown={onKeyDown}
+						disabled={
+							frame === frameStates.length - 1
+						}
+					>
+						Next Frame
+					</Button>
+				</Stack>
+			</Stack>
+		</Box>
 	);
 };

@@ -1,20 +1,25 @@
-type ElementState = {
+export type ElementState = {
+	compared: boolean;
+	beingSwapped: boolean;
+	swapped: boolean;
+	lastElementOfUnsortedRegion: boolean;
+	bubbling: boolean;
+};
+
+export type FrameElement = {
 	value: number;
-	isBeingCompared: boolean;
-	isBeingSwapped: boolean;
-	isSwapped: boolean;
+	states: ElementState;
 };
 
 export type FrameState = {
-	elementStates: ElementState[];
+	elementStates: FrameElement[];
 	frameDescription: string;
 	swapCount: number;
 	comparisonCount: number;
-	workingRegionLastIndex: number;
 };
 
 export const bubbleSort = (
-	xs: number[],
+	dataset: number[],
 	size: number,
 	frameStates: FrameState[],
 ): void => {
@@ -23,18 +28,34 @@ export const bubbleSort = (
 
 	const generateFrameState = (
 		frameDescription: string,
-		workingRegionLastIndex: number,
-		isCompared: (k: number) => boolean,
-		isBeingSwapped: (k: number) => boolean,
-		isSwapped: (k: number) => boolean,
+		indexDetails: {
+			lastElementofUnsortedRegion: number;
+			bubbling: number;
+			compared: number[];
+			beingswapped: number[];
+			swapped: number[];
+		},
 	): void => {
-		const elementStates: ElementState[] = [];
-		for (let i = 0; i < xs.length; i++) {
+		const {
+			lastElementofUnsortedRegion,
+			bubbling,
+			compared,
+			beingswapped,
+			swapped,
+		} = indexDetails;
+
+		const elementStates: FrameElement[] = [];
+		for (let i = 0; i < dataset.length; i++) {
 			elementStates.push({
-				value: xs[i],
-				isBeingCompared: isCompared(i),
-				isBeingSwapped: isBeingSwapped(i),
-				isSwapped: isSwapped(i),
+				value: dataset[i],
+				states: {
+					compared: compared.includes(i),
+					beingSwapped: beingswapped.includes(i),
+					swapped: swapped.includes(i),
+					lastElementOfUnsortedRegion:
+						i === lastElementofUnsortedRegion,
+					bubbling: i === bubbling,
+				},
 			});
 		}
 
@@ -43,18 +64,17 @@ export const bubbleSort = (
 			comparisonCount,
 			elementStates,
 			frameDescription,
-			workingRegionLastIndex,
 		};
 		frameStates.push(currFrameState);
 	};
 
-	generateFrameState(
-		"Unsorted input.",
-		-2,
-		() => false,
-		() => false,
-		() => false,
-	);
+	generateFrameState("Unsorted input.", {
+		lastElementofUnsortedRegion: -1,
+		bubbling: -1,
+		compared: [],
+		beingswapped: [],
+		swapped: [],
+	});
 
 	for (
 		let offset = 0;
@@ -62,79 +82,110 @@ export const bubbleSort = (
 		offset++
 	) {
 		generateFrameState(
-			`[${
+			`Set [${
 				size - offset - 1
-			}] is the last element of unsorted region.`,
-			size - offset - 1,
-			() => false,
-			() => false,
-			() => false,
+			}] as the last unsorted element.`,
+			{
+				lastElementofUnsortedRegion:
+					size - offset - 1,
+				bubbling: -1,
+				compared: [],
+				beingswapped: [],
+				swapped: [],
+			},
 		);
-
 		for (let k = 0; k < size - offset - 1; k++) {
 			comparisonCount++;
-
 			generateFrameState(
-				`Comparing [${k}] against [${k + 1}].`,
-				size - offset - 1,
-				(x) => x === k || x === k + 1,
-				() => false,
-				() => false,
+				`Compare [${k}] against [${k + 1}].`,
+				{
+					lastElementofUnsortedRegion:
+						size - offset - 1,
+					bubbling: k,
+					compared: [k, k + 1],
+					beingswapped: [],
+					swapped: [],
+				},
 			);
 
-			const a = xs[k];
-			const b = xs[k + 1];
+			const a = dataset[k];
+			const b = dataset[k + 1];
 
 			if (b >= a) {
-				generateFrameState(
-					`[${k}] is smaller than [${
-						k + 1
-					}]. Do not swap.`,
-					size - offset - 1,
-					(x) => x === k || x === k + 1,
-					() => false,
-					() => false,
-				);
 				continue;
 			}
 
 			generateFrameState(
-				`[${k}] is larger than [${
-					k + 1
-				}]. Swap them.`,
-				size - offset - 1,
-				() => false,
-				(x) => x === k || x === k + 1,
-				() => false,
+				`Swap [${k}] and [${k + 1}].`,
+				{
+					lastElementofUnsortedRegion:
+						size - offset - 1,
+					bubbling: k,
+					compared: [],
+					beingswapped: [k, k + 1],
+					swapped: [],
+				},
 			);
 
-			xs[k] = b;
-			xs[k + 1] = a;
+			dataset[k] = b;
+			dataset[k + 1] = a;
 			swapCount++;
 
 			generateFrameState(
 				`Swapped [${k}] and [${k + 1}].`,
-				size - offset - 1,
-				() => false,
-				() => false,
-				(x) => x === k || x === k + 1,
+				{
+					lastElementofUnsortedRegion:
+						size - offset - 1,
+					bubbling: k + 1,
+					compared: [],
+					beingswapped: [],
+					swapped: [k, k + 1],
+				},
 			);
 		}
+		generateFrameState(
+			"Largest element is the last element of the unsorted region.",
+			{
+				lastElementofUnsortedRegion:
+					size - offset - 1,
+				bubbling: size - offset - 1,
+				compared: [],
+				beingswapped: [],
+				swapped: [],
+			},
+		);
 	}
 
 	generateFrameState(
-		`Size of working region is one. Sorting complete.`,
-		0,
-		() => false,
-		() => false,
-		() => false,
+		`Set [0] as the last unsorted element.`,
+		{
+			lastElementofUnsortedRegion: 0,
+			bubbling: -1,
+			compared: [],
+			beingswapped: [],
+			swapped: [],
+		},
+	);
+
+	generateFrameState(
+		`Size of unsorted region is one. Sorting complete.`,
+		{
+			lastElementofUnsortedRegion: 0,
+			bubbling: -1,
+			compared: [],
+			beingswapped: [],
+			swapped: [],
+		},
 	);
 
 	generateFrameState(
 		`Sorted input in ascending order.`,
-		-1,
-		() => false,
-		() => false,
-		() => false,
+		{
+			lastElementofUnsortedRegion: -1,
+			bubbling: -1,
+			compared: [],
+			beingswapped: [],
+			swapped: [],
+		},
 	);
 };
