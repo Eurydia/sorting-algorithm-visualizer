@@ -7,15 +7,22 @@ import {
 } from "@mui/material";
 import {
 	blue,
+	deepOrange,
 	orange,
-	red,
+	pink,
 } from "@mui/material/colors";
+
+import { IconLabel } from "components/IconLabel";
 
 import {
 	bubbleSort,
 	ElementState,
 	FrameState,
 } from "./helper";
+import {
+	SquareRounded,
+	RocketLaunchRounded,
+} from "@mui/icons-material";
 
 type ElementBubbleSortProps = {
 	value: number;
@@ -45,7 +52,7 @@ const ElementBubbleSort: FC<
 	}%)`;
 
 	if (lastElementOfUnsortedRegion) {
-		bgColor = red.A100;
+		bgColor = pink.A100;
 	}
 
 	if (compared) {
@@ -57,7 +64,7 @@ const ElementBubbleSort: FC<
 	}
 
 	if (swapped) {
-		bgColor = orange["A200"];
+		bgColor = deepOrange["A100"];
 	}
 
 	return (
@@ -116,21 +123,6 @@ export const RendererBubbleSort: FC<
 		});
 	};
 
-	const onKeyDown = (
-		event: React.KeyboardEvent<HTMLButtonElement>,
-	) => {
-		switch (event.key) {
-			case "ArrowRight":
-				onFrameAdvance();
-				break;
-			case "ArrowLeft":
-				onFrameRewind();
-				break;
-			default:
-				break;
-		}
-	};
-
 	const heightPx: number = 600;
 
 	const currFrame: FrameState =
@@ -139,6 +131,44 @@ export const RendererBubbleSort: FC<
 	return (
 		<Box>
 			<Stack spacing={2}>
+				<Box>
+					<IconLabel
+						icon={
+							<SquareRounded
+								htmlColor={pink.A100}
+							/>
+						}
+						label="Last element of unsorted region"
+					/>
+					<IconLabel
+						icon={
+							<SquareRounded
+								htmlColor={blue.A100}
+							/>
+						}
+						label="Elements are being compared"
+					/>
+					<IconLabel
+						icon={
+							<SquareRounded
+								htmlColor={orange.A100}
+							/>
+						}
+						label="Elements are being swapped"
+					/>
+					<IconLabel
+						icon={
+							<SquareRounded
+								htmlColor={deepOrange.A100}
+							/>
+						}
+						label="Elements are swapped"
+					/>
+					<IconLabel
+						icon={<RocketLaunchRounded />}
+						label="Element is being bubbled up"
+					/>
+				</Box>
 				<Box>
 					<Typography variant="body1">
 						{`Frame ${frame + 1}/${
@@ -151,13 +181,11 @@ export const RendererBubbleSort: FC<
 					<Typography variant="body1">
 						{`Swap: ${currFrame.swapCount}`}
 					</Typography>
-					<Typography
-						variant="body1"
-						minHeight="3rem"
-					>
+					<Typography variant="body1">
 						{currFrame.frameDescription}
 					</Typography>
 				</Box>
+
 				<Box
 					display="flex"
 					flexDirection="row"
@@ -197,7 +225,6 @@ export const RendererBubbleSort: FC<
 						fullWidth
 						variant="contained"
 						onClick={onFrameAdvance}
-						onKeyDown={onKeyDown}
 						disabled={
 							frame === frameStates.length - 1
 						}

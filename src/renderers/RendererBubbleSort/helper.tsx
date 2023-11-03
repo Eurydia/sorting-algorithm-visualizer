@@ -1,4 +1,3 @@
-import { Typography } from "@mui/material";
 import { Fragment } from "react";
 
 export type ElementState = {
@@ -85,13 +84,13 @@ export const bubbleSort = (
 		offset++
 	) {
 		generateFrameState(
-			<Typography>
+			<Fragment>
 				Set{" "}
 				<code>
 					input[{`${size - offset - 1}`}]
 				</code>{" "}
 				as the last unsorted element.
-			</Typography>,
+			</Fragment>,
 			{
 				lastElementofUnsortedRegion:
 					size - offset - 1,
@@ -104,11 +103,11 @@ export const bubbleSort = (
 		for (let k = 0; k < size - offset - 1; k++) {
 			comparisonCount++;
 			generateFrameState(
-				<Typography>
+				<Fragment>
 					Compare <code>input[{`${k}`}]</code>{" "}
 					against <code>input[{`${k + 1}`}]</code>
 					.
-				</Typography>,
+				</Fragment>,
 				{
 					lastElementofUnsortedRegion:
 						size - offset - 1,
@@ -127,10 +126,10 @@ export const bubbleSort = (
 			}
 
 			generateFrameState(
-				<Typography>
+				<Fragment>
 					Swap <code>input[{`${k}`}]</code> and{" "}
 					<code>input[{`${k + 1}`}]</code>.
-				</Typography>,
+				</Fragment>,
 				{
 					lastElementofUnsortedRegion:
 						size - offset - 1,
@@ -146,11 +145,11 @@ export const bubbleSort = (
 			swapCount++;
 
 			generateFrameState(
-				<Typography>
+				<Fragment>
 					Swapped <code>input[{`${k}`}]</code>{" "}
 					against <code>input[{`${k + 1}`}]</code>
 					.
-				</Typography>,
+				</Fragment>,
 				{
 					lastElementofUnsortedRegion:
 						size - offset - 1,
@@ -175,10 +174,10 @@ export const bubbleSort = (
 	}
 
 	generateFrameState(
-		<Typography>
+		<Fragment>
 			Set <code>input[0]</code> as the last
 			unsorted element.
-		</Typography>,
+		</Fragment>,
 		{
 			lastElementofUnsortedRegion: 0,
 			bubbling: -1,

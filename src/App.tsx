@@ -74,11 +74,11 @@ export const App = () => {
 						/>
 						<Tab
 							value={2}
-							label="Merge sort"
+							label="Selection sort"
 						/>
 						<Tab
 							value={3}
-							label="Selection sort"
+							label="Merge sort"
 						/>
 						<Tab
 							value={4}
@@ -114,7 +114,7 @@ export const App = () => {
 						index={tabIndex}
 						value={2}
 					>
-						<RendererMergeSort
+						<RendererSelectionSort
 							dataset={dataset}
 						/>
 					</TabPanel>
@@ -122,7 +122,7 @@ export const App = () => {
 						index={tabIndex}
 						value={3}
 					>
-						<RendererSelectionSort
+						<RendererMergeSort
 							dataset={dataset}
 						/>
 					</TabPanel>
