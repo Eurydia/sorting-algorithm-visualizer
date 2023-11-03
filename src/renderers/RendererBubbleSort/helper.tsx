@@ -146,9 +146,8 @@ export const bubbleSort = (
 
 			generateFrameState(
 				<Fragment>
-					Swapped <code>input[{`${k}`}]</code>{" "}
-					against <code>input[{`${k + 1}`}]</code>
-					.
+					Swapped <code>input[{`${k}`}]</code> and{" "}
+					<code>input[{`${k + 1}`}]</code>.
 				</Fragment>,
 				{
 					lastElementofUnsortedRegion:

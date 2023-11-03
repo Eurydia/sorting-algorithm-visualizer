@@ -22,6 +22,10 @@ So far, common sorting algorithms are included:
 
 Also, the visualizer looks better on tall screens on wide screens for some reason.
 
+## Screenshots
+
+![Bubble sort](./medias/images/bubble-sort-screenshot.png)
+
 ## Useful CLs
 
 Pushing `dist/` directory to `branch_name` branch.

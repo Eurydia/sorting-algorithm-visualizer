@@ -7,11 +7,6 @@ import {
 	Tabs,
 	Typography,
 } from "@mui/material";
-import {
-	blue,
-	green,
-	red,
-} from "@mui/material/colors";
 
 import {
 	countingSort,
@@ -32,7 +27,7 @@ export const RendererCountingSort: FC<
 		useState<number>(0);
 	const [frame, setFrame] = useState<number>(0);
 
-	const [frameStates, _] = useState<FrameState[]>(
+	const [frameStates] = useState<FrameState[]>(
 		() => {
 			const frameStates: FrameState[] = [];
 

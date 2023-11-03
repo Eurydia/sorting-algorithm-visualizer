@@ -6,28 +6,27 @@ import {
 	Container,
 	Stack,
 	CssBaseline,
-	Typography,
 	Box,
 	Tabs,
 	Tab,
 } from "@mui/material";
 
 import { RendererBubbleSort } from "./renderers/RendererBubbleSort";
-import { RendererInsertionSort } from "./renderers/RendererInsertionSort";
-import { RendererMergeSort } from "./renderers/RendererMergeSort";
-import { RendererSelectionSort } from "./renderers/RendererSelectionSort";
-import { RendererHeapSort } from "./renderers/RendererHeapSort";
-import { RendererQuickSort } from "./renderers/RendererQuickSort";
-import { RendererCountingSort } from "./renderers/RendererCountingSort";
+// import { RendererInsertionSort } from "./renderers/RendererInsertionSort";
+// import { RendererMergeSort } from "./renderers/RendererMergeSort";
+// import { RendererSelectionSort } from "./renderers/RendererSelectionSort";
+// import { RendererHeapSort } from "./renderers/RendererHeapSort";
+// import { RendererQuickSort } from "./renderers/RendererQuickSort";
+// import { RendererCountingSort } from "./renderers/RendererCountingSort";
 
-type TabPanleProps = {
+type TabPanelProps = {
 	index: number;
 	value: number;
 	children:
 		| React.ReactElement[]
 		| React.ReactElement;
 };
-const TabPanel: FC<TabPanleProps> = (props) => {
+const TabPanel: FC<TabPanelProps> = (props) => {
 	const { index, value, children } = props;
 
 	if (value !== index) {
@@ -68,7 +67,7 @@ export const App = () => {
 							value={0}
 							label="Bubble sort"
 						/>
-						<Tab
+						{/* <Tab
 							value={1}
 							label="Insertion sort"
 						/>
@@ -91,9 +90,8 @@ export const App = () => {
 						<Tab
 							value={6}
 							label="Counting sort"
-						/>
+						/> */}
 					</Tabs>
-
 					<TabPanel
 						index={tabIndex}
 						value={0}
@@ -102,7 +100,7 @@ export const App = () => {
 							dataset={dataset}
 						/>
 					</TabPanel>
-					<TabPanel
+					{/* <TabPanel
 						index={tabIndex}
 						value={1}
 					>
@@ -147,7 +145,7 @@ export const App = () => {
 						<RendererCountingSort
 							dataset={dataset}
 						/>
-					</TabPanel>
+					</TabPanel> */}
 				</Stack>
 			</Container>
 		</Fragment>
