@@ -1,49 +1,112 @@
 import { FC, useState } from "react";
 import {
 	Button,
-	Grid,
+	Box,
 	Stack,
 	Typography,
 } from "@mui/material";
 import {
 	blue,
-	green,
+	orange,
+	deepOrange,
+	pink,
 } from "@mui/material/colors";
+import { SquareRounded } from "@mui/icons-material";
+
+import { IconLabel } from "components/IconLabel";
 
 import {
 	insertionSort,
 	FrameState,
+	FrameElement,
 } from "./helper";
+
+type RendererElemenetProps = {
+	size: number;
+	maxValue: number;
+	elementData: FrameElement;
+};
+const RendererElement: FC<
+	RendererElemenetProps
+> = (props) => {
+	const { size, maxValue, elementData } = props;
+	const { value, states } = elementData;
+
+	const {
+		compared,
+		beingSwapped,
+		swapped,
+		pivot,
+		lastElementOfSortedRegion,
+	} = states;
+
+	const height: number = (value / maxValue) * 100;
+
+	const width: number = (1 / size) * 100;
+
+	let bgColor: string = `hsl(0, 0%, ${
+		(value / maxValue) * 90
+	}%)`;
+
+	if (lastElementOfSortedRegion) {
+		bgColor = pink.A100;
+	}
+
+	if (compared) {
+		bgColor = blue.A100;
+	}
+
+	if (beingSwapped) {
+		bgColor = orange["A100"];
+	}
+
+	if (swapped) {
+		bgColor = deepOrange["A100"];
+	}
+
+	return (
+		<Box
+			display="flex"
+			alignItems="baseline"
+			justifyContent="center"
+			sx={{
+				width: `${width}%`,
+				height: `${height}%`,
+				backgroundColor: bgColor,
+			}}
+		>
+			{pivot ? "🗿" : ""}
+		</Box>
+	);
+};
 
 type RendererInsertionSortProps = {
 	dataset: number[];
-	size: number;
-	maxValue: number;
+	heightPx: number;
 };
-
 export const RendererInsertionSort: FC<
 	RendererInsertionSortProps
 > = (props) => {
-	const { dataset, size, maxValue } = props;
+	const { dataset, heightPx } = props;
+
+	const size: number = dataset.length;
+	const maxValue: number = Math.max(...dataset);
 
 	const [frame, setFrame] = useState<number>(0);
-
-	const [frameStates, _] = useState<FrameState[]>(
+	const [frameStates] = useState<FrameState[]>(
 		() => {
 			const frameStates: FrameState[] = [];
-
 			insertionSort(
 				[...dataset],
 				size,
 				frameStates,
 			);
-
 			return frameStates;
 		},
 	);
 
-	const getNextFrame = () => {
-		if (frame >= frameStates.length - 1) {
+	const onFrameAdvance = () => {
+		if (frame === frameStates.length - 1) {
 			return;
 		}
 
@@ -52,7 +115,7 @@ export const RendererInsertionSort: FC<
 		});
 	};
 
-	const getPrevFrame = () => {
+	const onFrameRewind = () => {
 		if (frame < 1) {
 			return;
 		}
@@ -62,122 +125,113 @@ export const RendererInsertionSort: FC<
 		});
 	};
 
-	const currFrameState: FrameState =
+	const currFrame: FrameState =
 		frameStates[frame];
 
 	return (
-		<Grid
-			width="100%"
-			container
-			columns={12}
-			spacing={1}
-		>
-			<Grid
-				item
-				xs={12}
-			>
-				<Stack>
+		<Box>
+			<Stack spacing={2}>
+				<Box>
+					<IconLabel
+						icon={
+							<SquareRounded
+								htmlColor={pink.A100}
+							/>
+						}
+						label="Last element of sorted region"
+					/>
+					<IconLabel
+						icon={
+							<SquareRounded
+								htmlColor={blue.A100}
+							/>
+						}
+						label="Elements are being compared"
+					/>
+					<IconLabel
+						icon={
+							<SquareRounded
+								htmlColor={orange.A100}
+							/>
+						}
+						label="Elements are being swapped"
+					/>
+					<IconLabel
+						icon={
+							<SquareRounded
+								htmlColor={deepOrange.A100}
+							/>
+						}
+						label="Elements are swapped"
+					/>
+					<IconLabel
+						icon="🗿"
+						label="Pivot element"
+					/>
+				</Box>
+				<Box>
 					<Typography variant="body1">
 						{`Frame ${frame + 1}/${
 							frameStates.length
 						}`}
 					</Typography>
 					<Typography variant="body1">
-						{`Comparison: ${currFrameState.comparisonCount}`}
+						{`Comparison: ${currFrame.comparisonCount}`}
 					</Typography>
 					<Typography variant="body1">
-						{`Swap: ${currFrameState.swapCount}`}
+						{`Swap: ${currFrame.swapCount}`}
 					</Typography>
-					<Typography
-						variant="body1"
-						minHeight="3rem"
-					>
-						{`Status: ${currFrameState.frameDescription}`}
+					<Typography variant="body1">
+						{currFrame.frameDescription}
 					</Typography>
-				</Stack>
-			</Grid>
-			<Grid
-				container
-				item
-				columns={size}
-				width="100%"
-				height="500px"
-			>
-				{currFrameState.elementStates.map(
-					(
-						{
-							value,
-							isBeingCompared,
-							isBeingSwapped,
-							isSwapped,
+				</Box>
+
+				<Box
+					display="flex"
+					flexDirection="row"
+					alignItems="flex-end"
+					sx={{
+						width: "100%",
+						height: `${heightPx}px`,
+					}}
+				>
+					{currFrame.elementStates.map(
+						(elementData, index) => {
+							return (
+								<RendererElement
+									key={`key-${index}`}
+									maxValue={maxValue}
+									size={size}
+									elementData={elementData}
+								/>
+							);
 						},
-						index,
-					) => {
-						const height: string = `${
-							(value / maxValue) * 500
-						}px`;
-
-						let bgColor: string = `hsl(0, 0%, ${
-							(value / maxValue) * 80
-						}%)`;
-
-						if (
-							index === currFrameState.pivotIndex
-						) {
-							bgColor = green[400];
-						}
-						if (isBeingCompared) {
-							bgColor = blue.A100;
-						}
-						if (isBeingSwapped) {
-							bgColor = blue.A200;
-						}
-						if (isSwapped) {
-							bgColor = blue.A700;
-						}
-
-						return (
-							<Grid
-								key={`k-${index}`}
-								item
-								xs={1}
-								height={height}
-								sx={{
-									backgroundColor: bgColor,
-								}}
-							/>
-						);
-					},
-				)}
-			</Grid>
-			<Grid
-				item
-				xs={6}
-			>
-				<Button
-					fullWidth
-					variant="contained"
-					onClick={getPrevFrame}
-					disabled={frame === 0}
+					)}
+				</Box>
+				<Stack
+					direction="row"
+					spacing={2}
 				>
-					Previous Frame
-				</Button>
-			</Grid>
-			<Grid
-				item
-				xs={6}
-			>
-				<Button
-					fullWidth
-					variant="contained"
-					onClick={getNextFrame}
-					disabled={
-						frame >= frameStates.length - 1
-					}
-				>
-					Next Frame
-				</Button>
-			</Grid>
-		</Grid>
+					<Button
+						fullWidth
+						variant="contained"
+						onClick={onFrameRewind}
+						disabled={frame === 0}
+					>
+						Previous Frame
+					</Button>
+					<Button
+						fullWidth
+						variant="contained"
+						onClick={onFrameAdvance}
+						disabled={
+							frame === frameStates.length - 1
+						}
+					>
+						Next Frame
+					</Button>
+				</Stack>
+			</Stack>
+		</Box>
 	);
 };

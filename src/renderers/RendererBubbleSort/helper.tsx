@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 
-export type ElementState = {
+type ElementState = {
 	compared: boolean;
 	beingSwapped: boolean;
 	swapped: boolean;
@@ -34,7 +34,7 @@ export const bubbleSort = (
 			lastElementofUnsortedRegion: number;
 			bubbling: number;
 			compared: number[];
-			beingswapped: number[];
+			beingSwapped: number[];
 			swapped: number[];
 		},
 	): void => {
@@ -42,7 +42,7 @@ export const bubbleSort = (
 			lastElementofUnsortedRegion,
 			bubbling,
 			compared,
-			beingswapped,
+			beingSwapped,
 			swapped,
 		} = indexDetails;
 
@@ -52,7 +52,7 @@ export const bubbleSort = (
 				value: dataset[i],
 				states: {
 					compared: compared.includes(i),
-					beingSwapped: beingswapped.includes(i),
+					beingSwapped: beingSwapped.includes(i),
 					swapped: swapped.includes(i),
 					lastElementOfUnsortedRegion:
 						i === lastElementofUnsortedRegion,
@@ -70,13 +70,18 @@ export const bubbleSort = (
 		frameStates.push(currFrameState);
 	};
 
-	generateFrameState("Unsorted input.", {
-		lastElementofUnsortedRegion: -1,
-		bubbling: -1,
-		compared: [],
-		beingswapped: [],
-		swapped: [],
-	});
+	generateFrameState(
+		<Fragment>
+			Unsorted <code>input[0:{size - 1}]</code>.
+		</Fragment>,
+		{
+			lastElementofUnsortedRegion: -1,
+			bubbling: -1,
+			compared: [],
+			beingSwapped: [],
+			swapped: [],
+		},
+	);
 
 	for (
 		let offset = 0;
@@ -86,17 +91,15 @@ export const bubbleSort = (
 		generateFrameState(
 			<Fragment>
 				Set{" "}
-				<code>
-					input[{`${size - offset - 1}`}]
-				</code>{" "}
-				as the last unsorted element.
+				<code>input[{size - offset - 1}]</code> as
+				the last unsorted element.
 			</Fragment>,
 			{
 				lastElementofUnsortedRegion:
 					size - offset - 1,
 				bubbling: -1,
 				compared: [],
-				beingswapped: [],
+				beingSwapped: [],
 				swapped: [],
 			},
 		);
@@ -104,16 +107,15 @@ export const bubbleSort = (
 			comparisonCount++;
 			generateFrameState(
 				<Fragment>
-					Compare <code>input[{`${k}`}]</code>{" "}
-					against <code>input[{`${k + 1}`}]</code>
-					.
+					Compare <code>input[{k}]</code> against{" "}
+					<code>input[{k + 1}]</code>.
 				</Fragment>,
 				{
 					lastElementofUnsortedRegion:
 						size - offset - 1,
 					bubbling: k,
 					compared: [k, k + 1],
-					beingswapped: [],
+					beingSwapped: [],
 					swapped: [],
 				},
 			);
@@ -127,15 +129,16 @@ export const bubbleSort = (
 
 			generateFrameState(
 				<Fragment>
-					Swap <code>input[{`${k}`}]</code> and{" "}
-					<code>input[{`${k + 1}`}]</code>.
+					Swap <code>input[{k}]</code> and{" "}
+					<code>input[{k + 1}]</code>. So the
+					larger element is on the right.
 				</Fragment>,
 				{
 					lastElementofUnsortedRegion:
 						size - offset - 1,
 					bubbling: k,
 					compared: [],
-					beingswapped: [k, k + 1],
+					beingSwapped: [k, k + 1],
 					swapped: [],
 				},
 			);
@@ -146,15 +149,15 @@ export const bubbleSort = (
 
 			generateFrameState(
 				<Fragment>
-					Swapped <code>input[{`${k}`}]</code> and{" "}
-					<code>input[{`${k + 1}`}]</code>.
+					Swapped <code>input[{k}]</code> and{" "}
+					<code>input[{k + 1}]</code>.
 				</Fragment>,
 				{
 					lastElementofUnsortedRegion:
 						size - offset - 1,
 					bubbling: k + 1,
 					compared: [],
-					beingswapped: [],
+					beingSwapped: [],
 					swapped: [k, k + 1],
 				},
 			);
@@ -166,7 +169,7 @@ export const bubbleSort = (
 					size - offset - 1,
 				bubbling: size - offset - 1,
 				compared: [],
-				beingswapped: [],
+				beingSwapped: [],
 				swapped: [],
 			},
 		);
@@ -181,7 +184,7 @@ export const bubbleSort = (
 			lastElementofUnsortedRegion: 0,
 			bubbling: -1,
 			compared: [],
-			beingswapped: [],
+			beingSwapped: [],
 			swapped: [],
 		},
 	);
@@ -192,18 +195,20 @@ export const bubbleSort = (
 			lastElementofUnsortedRegion: 0,
 			bubbling: -1,
 			compared: [],
-			beingswapped: [],
+			beingSwapped: [],
 			swapped: [],
 		},
 	);
 
 	generateFrameState(
-		`Sorted input in ascending order.`,
+		<Fragment>
+			Sorted <code>input[0:{size - 1}]</code>.
+		</Fragment>,
 		{
 			lastElementofUnsortedRegion: -1,
 			bubbling: -1,
 			compared: [],
-			beingswapped: [],
+			beingSwapped: [],
 			swapped: [],
 		},
 	);

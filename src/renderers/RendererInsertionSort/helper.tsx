@@ -1,16 +1,23 @@
+import { Fragment, ReactNode } from "react";
+
 type ElementState = {
+	lastElementOfSortedRegion: boolean;
+	compared: boolean;
+	beingSwapped: boolean;
+	swapped: boolean;
+	pivot: boolean;
+};
+
+export type FrameElement = {
 	value: number;
-	isBeingCompared: boolean;
-	isBeingSwapped: boolean;
-	isSwapped: boolean;
+	states: ElementState;
 };
 
 export type FrameState = {
-	elementStates: ElementState[];
-	frameDescription: string;
+	elementStates: FrameElement[];
+	frameDescription: ReactNode;
 	swapCount: number;
 	comparisonCount: number;
-	pivotIndex: number;
 };
 
 export const insertionSort = (
@@ -22,19 +29,35 @@ export const insertionSort = (
 	let comparisonCount: number = 0;
 
 	const generateFrameState = (
-		frameDescription: string,
-		pivotIndex: number,
-		isCompared: (k: number) => boolean,
-		isBeingSwapped: (k: number) => boolean,
-		isSwapped: (k: number) => boolean,
+		frameDescription: ReactNode,
+		indexDetails: {
+			lastElementOfSortedRegion: number;
+			pivot: number;
+			compared: number[];
+			beginSwapped: number[];
+			swapped: number[];
+		},
 	): void => {
-		const elementStates: ElementState[] = [];
+		const {
+			pivot,
+			compared,
+			beginSwapped,
+			swapped,
+			lastElementOfSortedRegion,
+		} = indexDetails;
+
+		const elementStates: FrameElement[] = [];
 		for (let i = 0; i < xs.length; i++) {
 			elementStates[i] = {
 				value: xs[i],
-				isBeingCompared: isCompared(i),
-				isBeingSwapped: isBeingSwapped(i),
-				isSwapped: isSwapped(i),
+				states: {
+					lastElementOfSortedRegion:
+						i === lastElementOfSortedRegion,
+					compared: compared.includes(i),
+					beingSwapped: beginSwapped.includes(i),
+					swapped: swapped.includes(i),
+					pivot: i === pivot,
+				},
 			};
 		}
 		const currFrameState: FrameState = {
@@ -42,17 +65,21 @@ export const insertionSort = (
 			comparisonCount,
 			elementStates,
 			frameDescription,
-			pivotIndex,
 		};
 		frameStates.push(currFrameState);
 	};
 
 	generateFrameState(
-		"Unsorted input.",
-		-1,
-		() => false,
-		() => false,
-		() => false,
+		<Fragment>
+			Unsorted <code>input[0:{size - 1}]</code>.
+		</Fragment>,
+		{
+			lastElementOfSortedRegion: -1,
+			pivot: -1,
+			compared: [],
+			beginSwapped: [],
+			swapped: [],
+		},
 	);
 
 	for (
@@ -61,11 +88,18 @@ export const insertionSort = (
 		pivotIndex++
 	) {
 		generateFrameState(
-			`Set [${pivotIndex}] as pivot.`,
-			pivotIndex,
-			() => false,
-			() => false,
-			() => false,
+			<Fragment>
+				Consider <code>input[{pivotIndex}]</code>{" "}
+				as pivot.
+			</Fragment>,
+
+			{
+				lastElementOfSortedRegion: pivotIndex - 1,
+				pivot: pivotIndex,
+				compared: [],
+				beginSwapped: [],
+				swapped: [],
+			},
 		);
 
 		let mover: number = pivotIndex;
@@ -75,22 +109,30 @@ export const insertionSort = (
 		) {
 			comparisonCount++;
 			generateFrameState(
-				`Comparing [${mover}] against [${
-					mover - 1
-				}].`,
-				mover,
-				(k) => k === mover - 1 || k === mover,
-				() => false,
-				() => false,
+				<Fragment>
+					Compare <code>input[{mover}]</code>{" "}
+					against <code>input[{mover - 1}]</code>.
+				</Fragment>,
+				{
+					lastElementOfSortedRegion: pivotIndex,
+					pivot: mover,
+					compared: [mover, mover - 1],
+					beginSwapped: [],
+					swapped: [],
+				},
 			);
 			generateFrameState(
-				`[${mover}] is smaller than [${
-					mover - 1
-				}]. Swapping.`,
-				mover,
-				() => false,
-				(k) => k === mover - 1 || k === mover,
-				() => false,
+				<Fragment>
+					Swap <code>input[{mover}]</code> and{" "}
+					<code>input[{mover - 1}]</code>.
+				</Fragment>,
+				{
+					lastElementOfSortedRegion: pivotIndex,
+					pivot: mover,
+					compared: [],
+					beginSwapped: [mover, mover - 1],
+					swapped: [],
+				},
 			);
 
 			const temp: number = xs[mover];
@@ -99,23 +141,32 @@ export const insertionSort = (
 
 			swapCount++;
 			generateFrameState(
-				`Swapped [${mover}] and [${mover - 1}].`,
-				mover,
-				() => false,
-				() => false,
-				(k) => k === mover - 1 || k === mover,
+				<Fragment>
+					Swapped <code>input[{mover}]</code> and{" "}
+					<code>input[{mover - 1}]</code>.
+				</Fragment>,
+				{
+					lastElementOfSortedRegion: pivotIndex,
+					pivot: mover - 1,
+					compared: [],
+					beginSwapped: [],
+					swapped: [mover, mover - 1],
+				},
 			);
 			mover--;
 		}
 
 		if (mover === 0) {
-			generateFrameState(
-				`[0] (pivot) is the first element. Skipping to next pivot.`,
-				0,
-				() => false,
-				() => false,
-				() => false,
-			);
+			// generateFrameState(
+			// 	"No more element to compare. Consider next pivot.",
+			// 	{
+			// 		lastElementOfSortedRegion: pivotIndex,
+			// 		pivot: 0,
+			// 		compared: [],
+			// 		beginSwapped: [],
+			// 		swapped: [],
+			// 	},
+			// );
 			continue;
 		}
 
@@ -124,35 +175,37 @@ export const insertionSort = (
 			`Comparing [${mover}] against [${
 				mover - 1
 			}].`,
-			mover,
-			(k) => k === mover - 1 || k === mover,
-			() => false,
-			() => false,
-		);
-		generateFrameState(
-			`[${mover}] is not smaller than [${
-				mover - 1
-			}]. Do not swap. Skip to next pivot.`,
-			mover,
-			(k) => k === mover - 1 || k === mover,
-			() => false,
-			() => false,
+			{
+				lastElementOfSortedRegion: pivotIndex,
+				pivot: mover,
+				compared: [mover, mover - 1],
+				beginSwapped: [],
+				swapped: [],
+			},
 		);
 	}
 
 	generateFrameState(
-		`No more pivot to consider. Sorting complete`,
-		-1,
-		() => false,
-		() => false,
-		() => false,
+		"No more pivot to consider. Sorting complete",
+		{
+			lastElementOfSortedRegion: -1,
+			pivot: -1,
+			compared: [],
+			beginSwapped: [],
+			swapped: [],
+		},
 	);
 
 	generateFrameState(
-		`Sorted input in ascending order.`,
-		-1,
-		() => false,
-		() => false,
-		() => false,
+		<Fragment>
+			Sorted <code>input[0:{size - 1}]</code>.
+		</Fragment>,
+		{
+			lastElementOfSortedRegion: -1,
+			pivot: -1,
+			compared: [],
+			beginSwapped: [],
+			swapped: [],
+		},
 	);
 };

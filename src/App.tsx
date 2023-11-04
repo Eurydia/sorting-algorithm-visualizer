@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 
 import { RendererBubbleSort } from "./renderers/RendererBubbleSort";
-// import { RendererInsertionSort } from "./renderers/RendererInsertionSort";
+import { RendererInsertionSort } from "./renderers/RendererInsertionSort";
 // import { RendererMergeSort } from "./renderers/RendererMergeSort";
 // import { RendererSelectionSort } from "./renderers/RendererSelectionSort";
 // import { RendererHeapSort } from "./renderers/RendererHeapSort";
@@ -67,11 +67,11 @@ export const App = () => {
 							value={0}
 							label="Bubble sort"
 						/>
-						{/* <Tab
+						<Tab
 							value={1}
 							label="Insertion sort"
 						/>
-						<Tab
+						{/*	<Tab
 							value={2}
 							label="Selection sort"
 						/>
@@ -97,18 +97,20 @@ export const App = () => {
 						value={0}
 					>
 						<RendererBubbleSort
-							dataset={dataset}
-						/>
-					</TabPanel>
-					{/* <TabPanel
-						index={tabIndex}
-						value={1}
-					>
-						<RendererInsertionSort
+							heightPx={400}
 							dataset={dataset}
 						/>
 					</TabPanel>
 					<TabPanel
+						index={tabIndex}
+						value={1}
+					>
+						<RendererInsertionSort
+							heightPx={400}
+							dataset={dataset}
+						/>
+					</TabPanel>
+					{/*<TabPanel
 						index={tabIndex}
 						value={2}
 					>

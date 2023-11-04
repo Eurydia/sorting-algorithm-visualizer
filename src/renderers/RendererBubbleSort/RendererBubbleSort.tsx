@@ -11,30 +11,25 @@ import {
 	orange,
 	pink,
 } from "@mui/material/colors";
+import { SquareRounded } from "@mui/icons-material";
 
 import { IconLabel } from "components/IconLabel";
-
 import {
 	bubbleSort,
-	ElementState,
 	FrameState,
+	FrameElement,
 } from "./helper";
-import {
-	SquareRounded,
-	RocketLaunchRounded,
-} from "@mui/icons-material";
 
-type ElementBubbleSortProps = {
-	value: number;
+type RendererElemenetProps = {
 	maxValue: number;
 	size: number;
-	states: ElementState;
+	elementData: FrameElement;
 };
-const ElementBubbleSort: FC<
-	ElementBubbleSortProps
+const RendererElement: FC<
+	RendererElemenetProps
 > = (props) => {
-	const { value, maxValue, size, states } = props;
-
+	const { maxValue, size, elementData } = props;
+	const { value, states } = elementData;
 	const {
 		compared,
 		beingSwapped,
@@ -48,7 +43,7 @@ const ElementBubbleSort: FC<
 	const width: number = (1 / size) * 100;
 
 	let bgColor: string = `hsl(0, 0%, ${
-		(value / maxValue) * 80
+		(value / maxValue) * 90
 	}%)`;
 
 	if (lastElementOfUnsortedRegion) {
@@ -69,6 +64,9 @@ const ElementBubbleSort: FC<
 
 	return (
 		<Box
+			display="flex"
+			alignItems="baseline"
+			justifyContent="center"
 			sx={{
 				width: `${width}%`,
 				height: `${height}%`,
@@ -82,17 +80,17 @@ const ElementBubbleSort: FC<
 
 type RendererBubbleSortProps = {
 	dataset: number[];
+	heightPx: number;
 };
 export const RendererBubbleSort: FC<
 	RendererBubbleSortProps
 > = (props) => {
-	const { dataset } = props;
+	const { dataset, heightPx } = props;
 
 	const size: number = dataset.length;
 	const maxValue: number = Math.max(...dataset);
 
 	const [frame, setFrame] = useState<number>(0);
-
 	const [frameStates] = useState<FrameState[]>(
 		() => {
 			const frameStates: FrameState[] = [];
@@ -123,8 +121,6 @@ export const RendererBubbleSort: FC<
 		});
 	};
 
-	const heightPx: number = 600;
-
 	const currFrame: FrameState =
 		frameStates[frame];
 
@@ -146,7 +142,7 @@ export const RendererBubbleSort: FC<
 								htmlColor={blue.A100}
 							/>
 						}
-						label="Elements are being compared"
+						label="Comparing elements"
 					/>
 					<IconLabel
 						icon={
@@ -154,7 +150,7 @@ export const RendererBubbleSort: FC<
 								htmlColor={orange.A100}
 							/>
 						}
-						label="Elements are being swapped"
+						label="Elements are swapping"
 					/>
 					<IconLabel
 						icon={
@@ -162,11 +158,11 @@ export const RendererBubbleSort: FC<
 								htmlColor={deepOrange.A100}
 							/>
 						}
-						label="Elements are swapped"
+						label="Elements have swapped"
 					/>
 					<IconLabel
-						icon={<RocketLaunchRounded />}
-						label="Element is being bubbled up"
+						icon="🚀"
+						label="Element is bubbling up"
 					/>
 				</Box>
 				<Box>
@@ -196,14 +192,13 @@ export const RendererBubbleSort: FC<
 					}}
 				>
 					{currFrame.elementStates.map(
-						({ value, states }, index) => {
+						(elementData, index) => {
 							return (
-								<ElementBubbleSort
+								<RendererElement
 									key={`key-${index}`}
-									value={value}
 									maxValue={maxValue}
 									size={size}
-									states={states}
+									elementData={elementData}
 								/>
 							);
 						},
