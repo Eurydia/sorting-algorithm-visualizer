@@ -138,7 +138,7 @@ export const RendererInsertionSort: FC<
 								htmlColor={pink.A100}
 							/>
 						}
-						label="Last element of sorted region"
+						label="This element is the last element of the sorted region"
 					/>
 					<IconLabel
 						icon={
@@ -146,7 +146,7 @@ export const RendererInsertionSort: FC<
 								htmlColor={blue.A100}
 							/>
 						}
-						label="Elements are being compared"
+						label="This element is being compared to another element"
 					/>
 					<IconLabel
 						icon={
@@ -154,7 +154,7 @@ export const RendererInsertionSort: FC<
 								htmlColor={orange.A100}
 							/>
 						}
-						label="Elements are being swapped"
+						label="This element is being swapped with another element"
 					/>
 					<IconLabel
 						icon={
@@ -162,11 +162,11 @@ export const RendererInsertionSort: FC<
 								htmlColor={deepOrange.A100}
 							/>
 						}
-						label="Elements are swapped"
+						label="This element has swapped places with another element"
 					/>
 					<IconLabel
 						icon="🗿"
-						label="Pivot element"
+						label="This element is the a pivot"
 					/>
 				</Box>
 				<Box>

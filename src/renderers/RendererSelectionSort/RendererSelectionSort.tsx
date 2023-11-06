@@ -140,7 +140,7 @@ export const RendererSelectionSort: FC<
 								htmlColor={pink.A100}
 							/>
 						}
-						label="First element of unsorted region"
+						label="This element is the last element of the sorted region"
 					/>
 					<IconLabel
 						icon={
@@ -148,7 +148,7 @@ export const RendererSelectionSort: FC<
 								htmlColor={blue.A100}
 							/>
 						}
-						label="Elements are being compared"
+						label="This element is being compared to another element"
 					/>
 					<IconLabel
 						icon={
@@ -156,7 +156,7 @@ export const RendererSelectionSort: FC<
 								htmlColor={orange.A100}
 							/>
 						}
-						label="Elements are being swapped"
+						label="This element is swapping places with another element"
 					/>
 					<IconLabel
 						icon={
@@ -164,11 +164,11 @@ export const RendererSelectionSort: FC<
 								htmlColor={deepOrange.A100}
 							/>
 						}
-						label="Elements are swapped"
+						label="This element has swapped places with another element"
 					/>
 					<IconLabel
 						icon="👻"
-						label="Pivot element"
+						label="This element is the pivot."
 					/>
 				</Box>
 				<Box>
