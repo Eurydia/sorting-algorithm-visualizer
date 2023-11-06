@@ -1,39 +1,113 @@
-import { FC, useState } from "react";
+import {
+	FC,
+	useState,
+	SyntheticEvent,
+} from "react";
 import {
 	Button,
-	Grid,
+	Box,
 	Stack,
 	Typography,
+	Tab,
+	Tabs,
 } from "@mui/material";
-import { blue, red } from "@mui/material/colors";
+import {
+	blue,
+	orange,
+	pink,
+	green,
+} from "@mui/material/colors";
+import { SquareRounded } from "@mui/icons-material";
+
+import { IconLabel } from "components/IconLabel";
 
 import { mergeSort, FrameState } from "./helper";
 
-type RendererMergeSortProps = {
-	dataset: number[];
+type RendererElemenetProps = {
 	size: number;
 	maxValue: number;
+	value: number;
+	stateCompare: boolean;
+	stateRead: boolean;
+	stateWrite: boolean;
+	stateFirstOrLastElement: boolean;
+};
+const RendererElement: FC<
+	RendererElemenetProps
+> = (props) => {
+	const {
+		size,
+		value,
+		maxValue,
+		stateCompare,
+		stateRead,
+		stateWrite,
+		stateFirstOrLastElement,
+	} = props;
+
+	const height: number = (value / maxValue) * 100;
+
+	const width: number = (1 / size) * 100;
+
+	let bgColor: string = `hsl(0, 0%, ${
+		(value / maxValue) * 90
+	}%)`;
+
+	if (stateFirstOrLastElement) {
+		bgColor = pink.A100;
+	}
+
+	if (stateCompare) {
+		bgColor = blue.A100;
+	}
+
+	if (stateRead) {
+		bgColor = orange.A100;
+	}
+
+	if (stateWrite) {
+		bgColor = green.A100;
+	}
+
+	return (
+		<Box
+			display="flex"
+			alignItems="baseline"
+			justifyContent="center"
+			sx={{
+				width: `${width}%`,
+				height: `${height}%`,
+				backgroundColor: bgColor,
+			}}
+		></Box>
+	);
 };
 
+type RendererMergeSortProps = {
+	dataset: number[];
+	heightPx: number;
+};
 export const RendererMergeSort: FC<
 	RendererMergeSortProps
 > = (props) => {
-	const { dataset, size, maxValue } = props;
+	const { dataset, heightPx } = props;
+
+	const size: number = dataset.length;
+	const maxValue: number = Math.max(...dataset);
 
 	const [frame, setFrame] = useState<number>(0);
-
-	const [frameStates, _] = useState<FrameState[]>(
+	const [tabPanelIndex, setTabPabelIndex] =
+		useState<number>(0);
+	const [frameStates] = useState<FrameState[]>(
 		() => {
 			const frameStates: FrameState[] = [];
-
 			mergeSort([...dataset], size, frameStates);
-
 			return frameStates;
 		},
 	);
 
-	const getNextFrame = () => {
-		if (frame >= frameStates.length - 1) {
+	const onFrameAdvance = () => {
+		if (frame === frameStates.length - 1) {
 			return;
 		}
 
@@ -42,7 +116,7 @@ export const RendererMergeSort: FC<
 		});
 	};
 
-	const getPrevFrame = () => {
+	const onFrameRewind = () => {
 		if (frame < 1) {
 			return;
 		}
@@ -52,126 +126,167 @@ export const RendererMergeSort: FC<
 		});
 	};
 
-	const currFrameState: FrameState =
+	const onTabPanelIndexChange = (
+		_: SyntheticEvent,
+		nextIndex: string,
+	) => {
+		setTabPabelIndex(Number.parseInt(nextIndex));
+	};
+
+	const currFrame: FrameState =
 		frameStates[frame];
 
 	return (
-		<Grid
-			width="100%"
-			container
-			columns={12}
-			spacing={1}
-		>
-			<Grid
-				item
-				xs={12}
-			>
-				<Stack>
+		<Box>
+			<Stack spacing={2}>
+				<Box>
+					<IconLabel
+						icon={
+							<SquareRounded
+								htmlColor={pink.A100}
+							/>
+						}
+						label="First and last element of working region"
+					/>
+					<IconLabel
+						icon={
+							<SquareRounded
+								htmlColor={blue.A100}
+							/>
+						}
+						label="Elements are being compared"
+					/>
+					<IconLabel
+						icon={
+							<SquareRounded
+								htmlColor={orange.A100}
+							/>
+						}
+						label="Element are being read"
+					/>
+					<IconLabel
+						icon={
+							<SquareRounded
+								htmlColor={green.A100}
+							/>
+						}
+						label="Elements are being written"
+					/>
+				</Box>
+				<Box>
 					<Typography variant="body1">
 						{`Frame ${frame + 1}/${
 							frameStates.length
 						}`}
 					</Typography>
 					<Typography variant="body1">
-						{`Comparison: ${currFrameState.comparisonCount}`}
+						{`Comparison: ${currFrame.comparisonCount}`}
 					</Typography>
 					<Typography variant="body1">
-						{`Swap: ${currFrameState.swapCount}`}
+						{`Read: ${currFrame.memReadCount}`}
 					</Typography>
-					<Typography
-						variant="body1"
-						minHeight="3rem"
+					<Typography variant="body1">
+						{`Write: ${currFrame.memWriteCount}`}
+					</Typography>
+					<Typography variant="body1">
+						{currFrame.frameDescription}
+					</Typography>
+				</Box>
+				<Tabs
+					value={tabPanelIndex}
+					onChange={onTabPanelIndexChange}
+				>
+					<Tab
+						label="Primary memory"
+						value={0}
+					/>
+					<Tab
+						label="Auxiliary memory"
+						value={1}
+					/>
+				</Tabs>
+				<Box
+					display="flex"
+					flexDirection="row"
+					alignItems="flex-end"
+					sx={{
+						width: "100%",
+						height: `${heightPx}px`,
+					}}
+				>
+					{tabPanelIndex === 0 &&
+						currFrame.elementStates.map(
+							(value, index) => {
+								return (
+									<RendererElement
+										key={`key-${index}`}
+										maxValue={maxValue}
+										size={size}
+										value={value}
+										stateFirstOrLastElement={currFrame.workingRegion.includes(
+											index,
+										)}
+										stateCompare={currFrame.compared.includes(
+											index,
+										)}
+										stateRead={currFrame.memRead.includes(
+											index,
+										)}
+										stateWrite={currFrame.memWrite.includes(
+											index,
+										)}
+									/>
+								);
+							},
+						)}
+					{tabPanelIndex === 1 &&
+						currFrame.auxMemory.map(
+							(value, index) => {
+								return (
+									<RendererElement
+										key={`key-aux-${index}`}
+										maxValue={maxValue}
+										size={size}
+										value={value}
+										stateCompare={false}
+										stateFirstOrLastElement={
+											false
+										}
+										stateRead={currFrame.memAuxRead.includes(
+											index,
+										)}
+										stateWrite={currFrame.memAuxWrite.includes(
+											index,
+										)}
+									/>
+								);
+							},
+						)}
+				</Box>
+				<Stack
+					direction="row"
+					spacing={2}
+				>
+					<Button
+						fullWidth
+						variant="contained"
+						onClick={onFrameRewind}
+						disabled={frame === 0}
 					>
-						{`Status: ${currFrameState.frameDescription}`}
-					</Typography>
+						Previous Frame
+					</Button>
+					<Button
+						fullWidth
+						variant="contained"
+						onClick={onFrameAdvance}
+						disabled={
+							frame === frameStates.length - 1
+						}
+					>
+						Next Frame
+					</Button>
 				</Stack>
-			</Grid>
-			<Grid
-				container
-				item
-				columns={size}
-				width="100%"
-				height="500px"
-			>
-				{currFrameState.elementState.map(
-					(
-						{
-							value,
-							isBeingCompared,
-							isBeingSwapped,
-							isSwapped,
-						},
-						index,
-					) => {
-						const height: string = `${
-							(value / maxValue) * 500
-						}px`;
-
-						let bgColor: string = `hsl(0, 0%, ${
-							(value / maxValue) * 80
-						}%)`;
-
-						if (
-							index ===
-								currFrameState.workingRegionFirstIndex ||
-							index ===
-								currFrameState.workingRegionLastIndex
-						) {
-							bgColor = red.A100;
-						}
-
-						if (isBeingCompared) {
-							bgColor = blue.A100;
-						}
-						if (isBeingSwapped) {
-							bgColor = blue.A200;
-						}
-						if (isSwapped) {
-							bgColor = blue.A700;
-						}
-
-						return (
-							<Grid
-								key={`k-${index}`}
-								item
-								xs={1}
-								height={height}
-								sx={{
-									backgroundColor: bgColor,
-								}}
-							/>
-						);
-					},
-				)}
-			</Grid>
-			<Grid
-				item
-				xs={6}
-			>
-				<Button
-					fullWidth
-					variant="contained"
-					onClick={getPrevFrame}
-					disabled={frame === 0}
-				>
-					Previous Frame
-				</Button>
-			</Grid>
-			<Grid
-				item
-				xs={6}
-			>
-				<Button
-					fullWidth
-					variant="contained"
-					onClick={getNextFrame}
-					disabled={
-						frame >= frameStates.length - 1
-					}
-				>
-					Next Frame
-				</Button>
-			</Grid>
-		</Grid>
+			</Stack>
+		</Box>
 	);
 };

@@ -14,7 +14,7 @@ import {
 import { RendererBubbleSort } from "./renderers/RendererBubbleSort";
 import { RendererInsertionSort } from "./renderers/RendererInsertionSort";
 import { RendererSelectionSort } from "./renderers/RendererSelectionSort";
-// import { RendererMergeSort } from "./renderers/RendererMergeSort";
+import { RendererMergeSort } from "./renderers/RendererMergeSort";
 // import { RendererHeapSort } from "./renderers/RendererHeapSort";
 // import { RendererQuickSort } from "./renderers/RendererQuickSort";
 // import { RendererCountingSort } from "./renderers/RendererCountingSort";
@@ -75,11 +75,11 @@ export const App = () => {
 							value={2}
 							label="Selection sort"
 						/>
-						{/*	<Tab
+						<Tab
 							value={3}
 							label="Merge sort"
 						/>
-						<Tab
+						{/*	<Tab
 							value={4}
 							label="Heapsort"
 						/>
@@ -119,15 +119,16 @@ export const App = () => {
 							dataset={dataset}
 						/>
 					</TabPanel>
-					{/*<TabPanel
+					<TabPanel
 						index={tabIndex}
 						value={3}
 					>
 						<RendererMergeSort
 							dataset={dataset}
+							heightPx={400}
 						/>
 					</TabPanel>
-					<TabPanel
+					{/*<TabPanel
 						index={tabIndex}
 						value={4}
 					>

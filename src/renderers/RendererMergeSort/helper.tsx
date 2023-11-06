@@ -1,17 +1,19 @@
-type ElementState = {
-	value: number;
-	isBeingCompared: boolean;
-	isBeingSwapped: boolean;
-	isSwapped: boolean;
-};
+import { Fragment, ReactNode } from "react";
 
 export type FrameState = {
-	elementState: ElementState[];
-	swapCount: number;
+	elementStates: number[];
+	auxMemory: number[];
+	frameDescription: ReactNode;
+	memWriteCount: number;
+	memReadCount: number;
 	comparisonCount: number;
-	frameDescription: string;
-	workingRegionFirstIndex: number;
-	workingRegionLastIndex: number;
+
+	workingRegion: number[];
+	compared: number[];
+	memRead: number[];
+	memWrite: number[];
+	memAuxRead: number[];
+	memAuxWrite: number[];
 };
 
 export const mergeSort = (
@@ -19,37 +21,32 @@ export const mergeSort = (
 	size: number,
 	frameStates: FrameState[],
 ) => {
-	let swapCount: number = 0;
+	let memWriteCount: number = 0;
+	let memReadCount: number = 0;
 	let comparisonCount: number = 0;
 
 	const generateFrameState = (
-		frameDescription: string,
-		workingRegionFirstIndex: number,
-		workingRegionLastIndex: number,
-		isCompared: (k: number) => boolean,
-		isBeingSwapped: (k: number) => boolean,
-		isSwapped: (k: number) => boolean,
+		frameDescription: ReactNode,
+		auxMemory: number[],
+		indexDetails: {
+			workingRegion: number[];
+			compared: number[];
+			memRead: number[];
+			memWrite: number[];
+			memAuxRead: number[];
+			memAuxWrite: number[];
+		},
 	): void => {
-		const elementState: ElementState[] = [];
-		for (let i = 0; i < xs.length; i++) {
-			elementState[i] = {
-				value: xs[i],
-				isBeingCompared: isCompared(i),
-				isBeingSwapped: isBeingSwapped(i),
-				isSwapped: isSwapped(i),
-			};
-		}
-
-		const currFrameState: FrameState = {
-			elementState,
-			swapCount,
-			comparisonCount,
+		frameStates.push({
 			frameDescription,
-			workingRegionFirstIndex,
-			workingRegionLastIndex,
-		};
+			auxMemory,
+			elementStates: [...xs],
+			memWriteCount,
+			memReadCount,
+			comparisonCount,
 
-		frameStates.push(currFrameState);
+			...indexDetails,
+		});
 	};
 
 	const __top_down_merge_sort = (
@@ -57,24 +54,40 @@ export const mergeSort = (
 		endIndex: number,
 	): void => {
 		generateFrameState(
-			`Consider elements between [${startIndex}] and [${endIndex}] (inclusive).`,
-			startIndex,
-			endIndex,
-			() => false,
-			() => false,
-			() => false,
+			<Fragment>
+				Consider elements between{" "}
+				<code>
+					input[{startIndex}:{endIndex}]
+				</code>{" "}
+				(inclusive).
+			</Fragment>,
+			[],
+			{
+				workingRegion: [startIndex, endIndex],
+				compared: [],
+				memRead: [],
+				memWrite: [],
+				memAuxRead: [],
+				memAuxWrite: [],
+			},
 		);
 
 		if (endIndex - startIndex === 0) {
 			generateFrameState(
-				`Segment has one element. Skipping.`,
-				startIndex,
-				endIndex,
-				() => false,
-				() => false,
-				() => false,
+				<Fragment>
+					Working region has only one element.
+					Consider it sorted.
+				</Fragment>,
+				[],
+				{
+					workingRegion: [startIndex, endIndex],
+					compared: [],
+					memRead: [],
+					memWrite: [],
+					memAuxRead: [],
+					memAuxWrite: [],
+				},
 			);
-
 			return;
 		}
 
@@ -93,96 +106,207 @@ export const mergeSort = (
 		);
 
 		generateFrameState(
-			`Merging left segment (between [${startIndex}] and [${middleIndex}]) and right segment (between [${
-				middleIndex + 1
-			}] and [${endIndex}]).`,
-			startIndex,
-			endIndex,
-			() => false,
-			() => false,
-			() => false,
+			<Fragment>
+				Merging left region (
+				<code>
+					input[{startIndex}:{middleIndex}]
+				</code>
+				) and right region (
+				<code>
+					input[
+					{middleIndex + 1}:{endIndex}]
+				</code>
+				).
+			</Fragment>,
+			[],
+			{
+				workingRegion: [startIndex, endIndex],
+				compared: [],
+				memRead: [],
+				memWrite: [],
+				memAuxRead: [],
+				memAuxWrite: [],
+			},
 		);
 
-		let l_ptr: number = startIndex;
-		let r_ptr: number = middleIndex + 1;
-		const aux: number[] = [];
+		let lPtr: number = startIndex;
+		let rPtr: number = middleIndex + 1;
+		let auxPtr: number = 0;
+		const auxMemory = [];
 
 		while (
-			l_ptr <= middleIndex &&
-			r_ptr <= endIndex
+			lPtr <= middleIndex &&
+			rPtr <= endIndex
 		) {
 			comparisonCount++;
 			generateFrameState(
-				`Comparing [${l_ptr}] against [${r_ptr}].`,
-				startIndex,
-				endIndex,
-				(k) => k === r_ptr || k === l_ptr,
-				() => false,
-				() => false,
+				<Fragment>
+					Compare <code>input[{lPtr}]</code>{" "}
+					against <code>input[{rPtr}]</code>.
+				</Fragment>,
+				[...auxMemory],
+				{
+					workingRegion: [startIndex, endIndex],
+					compared: [lPtr, rPtr],
+					memRead: [],
+					memWrite: [],
+					memAuxRead: [],
+					memAuxWrite: [],
+				},
 			);
-			if (xs[l_ptr] > xs[r_ptr]) {
-				aux.push(xs[r_ptr]);
-				r_ptr++;
+			if (xs[lPtr] > xs[rPtr]) {
+				memReadCount++;
+				memWriteCount++;
+				auxMemory[auxPtr] = xs[rPtr];
+
+				generateFrameState(
+					<Fragment>
+						Writing <code>input[{rPtr}]</code> to{" "}
+						<code>auxMem[{auxPtr}]</code>.
+					</Fragment>,
+					[...auxMemory],
+
+					{
+						workingRegion: [startIndex, endIndex],
+						compared: [],
+						memRead: [startIndex + rPtr],
+						memWrite: [],
+						memAuxRead: [],
+						memAuxWrite: [auxPtr],
+					},
+				);
+
+				auxPtr++;
+				rPtr++;
 				continue;
 			}
-			aux.push(xs[l_ptr]);
-			l_ptr++;
-		}
 
-		while (l_ptr <= middleIndex) {
-			aux.push(xs[l_ptr]);
-			l_ptr++;
-		}
+			memReadCount++;
+			memWriteCount++;
+			auxMemory[auxPtr] = xs[lPtr];
 
-		while (r_ptr <= endIndex) {
-			aux.push(xs[r_ptr]);
-			r_ptr++;
-		}
-
-		for (let i = 0; i < aux.length; i++) {
 			generateFrameState(
-				`Swapping [${
-					i + startIndex
-				}] from auxiliary memory.`,
-				startIndex,
-				endIndex,
-				() => false,
-				(k) => k === i + startIndex,
-				() => false,
+				<Fragment>
+					Writing <code>input[{lPtr}]</code> to{" "}
+					<code>auxMem[{auxPtr}]</code>.
+				</Fragment>,
+				[...auxMemory],
+				{
+					workingRegion: [startIndex, endIndex],
+					compared: [],
+					memRead: [startIndex + lPtr],
+					memWrite: [],
+					memAuxRead: [],
+					memAuxWrite: [auxPtr],
+				},
 			);
 
-			xs[i + startIndex] = aux[i];
-			swapCount++;
+			lPtr++;
+			auxPtr++;
+		}
+
+		while (lPtr <= middleIndex) {
+			memReadCount++;
+			memWriteCount++;
+
+			auxMemory[auxPtr] = xs[lPtr];
+
 			generateFrameState(
-				`Swapped [${
-					i + startIndex
-				}] from auxiliary memory.`,
-				startIndex,
-				endIndex,
-				() => false,
-				() => false,
-				(k) => k === i + startIndex,
+				<Fragment>
+					Writing <code>input[{lPtr}]</code> to{" "}
+					<code>auxMem[{auxPtr}]</code>.
+				</Fragment>,
+				[...auxMemory],
+				{
+					workingRegion: [startIndex, endIndex],
+					compared: [],
+					memRead: [startIndex + lPtr],
+					memWrite: [],
+					memAuxRead: [],
+					memAuxWrite: [auxPtr],
+				},
+			);
+
+			lPtr++;
+			auxPtr++;
+		}
+
+		while (rPtr <= endIndex) {
+			memReadCount++;
+			memWriteCount++;
+			auxMemory[auxPtr] = xs[rPtr];
+
+			generateFrameState(
+				<Fragment>
+					Writing <code>input[{lPtr}]</code> to{" "}
+					<code>auxMem[{auxPtr}]</code>.
+				</Fragment>,
+				[...auxMemory],
+				{
+					workingRegion: [startIndex, endIndex],
+					compared: [],
+					memRead: [startIndex + rPtr],
+					memWrite: [],
+					memAuxRead: [],
+					memAuxWrite: [auxPtr],
+				},
+			);
+
+			rPtr++;
+			auxPtr++;
+		}
+
+		for (let i = 0; i < auxPtr; i++) {
+			memReadCount++;
+			memWriteCount++;
+			xs[startIndex + i] = auxMemory[i];
+			generateFrameState(
+				<Fragment>
+					Writing <code>auxMem[{i}]</code> to{" "}
+					<code>input[{startIndex + i}]</code>.
+				</Fragment>,
+				[...auxMemory],
+				{
+					workingRegion: [startIndex, endIndex],
+					compared: [],
+					memRead: [],
+					memWrite: [startIndex + i],
+					memAuxRead: [i],
+					memAuxWrite: [],
+				},
 			);
 		}
 	};
 
 	generateFrameState(
-		"Unsorted input.",
-		-1,
-		-1,
-		() => false,
-		() => false,
-		() => false,
+		<Fragment>
+			Unsorted <code>input[0:{size - 1}]</code>.
+		</Fragment>,
+		[],
+		{
+			workingRegion: [],
+			compared: [],
+			memRead: [],
+			memWrite: [],
+			memAuxRead: [],
+			memAuxWrite: [],
+		},
 	);
 
 	__top_down_merge_sort(0, size - 1);
 
 	generateFrameState(
-		"Sorted input in ascening order.",
-		-1,
-		-1,
-		() => false,
-		() => false,
-		() => false,
+		<Fragment>
+			Sorted <code>input[0:{size - 1}]</code>.
+		</Fragment>,
+		[],
+		{
+			workingRegion: [],
+			compared: [],
+			memRead: [],
+			memWrite: [],
+			memAuxRead: [],
+			memAuxWrite: [],
+		},
 	);
 };

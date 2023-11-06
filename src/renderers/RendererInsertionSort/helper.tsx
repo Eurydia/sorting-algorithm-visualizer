@@ -1,6 +1,6 @@
 import { Fragment, ReactNode } from "react";
 
-type ElementState = {
+type FrameElementStates = {
 	lastElementOfSortedRegion: boolean;
 	compared: boolean;
 	beingSwapped: boolean;
@@ -10,7 +10,7 @@ type ElementState = {
 
 export type FrameElement = {
 	value: number;
-	states: ElementState;
+	states: FrameElementStates;
 };
 
 export type FrameState = {
