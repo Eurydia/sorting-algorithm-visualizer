@@ -146,7 +146,7 @@ export const RendererMergeSort: FC<
 								htmlColor={pink.A100}
 							/>
 						}
-						label="This element is the first or last element of the working region"
+						label="First and last element of the working region"
 					/>
 					<IconLabel
 						icon={
@@ -154,7 +154,7 @@ export const RendererMergeSort: FC<
 								htmlColor={blue.A100}
 							/>
 						}
-						label="This element is being compared to another element"
+						label="Being compared"
 					/>
 					<IconLabel
 						icon={
@@ -162,7 +162,7 @@ export const RendererMergeSort: FC<
 								htmlColor={orange.A100}
 							/>
 						}
-						label="This element is being read from"
+						label="Being read from"
 					/>
 					<IconLabel
 						icon={
@@ -170,7 +170,7 @@ export const RendererMergeSort: FC<
 								htmlColor={green.A100}
 							/>
 						}
-						label="This element is being written to"
+						label="Being written to"
 					/>
 				</Box>
 				<Box>

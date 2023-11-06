@@ -134,7 +134,7 @@ export const RendererBubbleSort: FC<
 								htmlColor={pink.A100}
 							/>
 						}
-						label="This element is the last element of the unsorted region"
+						label="Last element of the unsorted region"
 					/>
 					<IconLabel
 						icon={
@@ -142,7 +142,7 @@ export const RendererBubbleSort: FC<
 								htmlColor={blue.A100}
 							/>
 						}
-						label="This element is being compared to another element"
+						label="Being compared"
 					/>
 					<IconLabel
 						icon={
@@ -150,7 +150,7 @@ export const RendererBubbleSort: FC<
 								htmlColor={orange.A100}
 							/>
 						}
-						label="This element swapping places with another element"
+						label="Swapping places"
 					/>
 					<IconLabel
 						icon={
@@ -158,11 +158,11 @@ export const RendererBubbleSort: FC<
 								htmlColor={deepOrange.A100}
 							/>
 						}
-						label="This element has swapped places with another element"
+						label="Swapped places"
 					/>
 					<IconLabel
 						icon="🚀"
-						label="This element is bubbling up"
+						label="Bubbling up"
 					/>
 				</Box>
 				<Box>
