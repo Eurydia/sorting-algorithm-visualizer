@@ -27,10 +27,10 @@ type RendererElemenetProps = {
 	size: number;
 	maxValue: number;
 	value: number;
-	stateCompare: boolean;
+	compare: boolean;
 	stateRead: boolean;
 	stateWrite: boolean;
-	stateFirstOrLastElement: boolean;
+	firstOrLastElement: boolean;
 };
 const RendererElement: FC<
 	RendererElemenetProps
@@ -39,10 +39,10 @@ const RendererElement: FC<
 		size,
 		value,
 		maxValue,
-		stateCompare,
+		compare: stateCompare,
 		stateRead,
 		stateWrite,
-		stateFirstOrLastElement,
+		firstOrLastElement: stateFirstOrLastElement,
 	} = props;
 
 	const height: number = (value / maxValue) * 100;
@@ -223,10 +223,10 @@ export const RendererMergeSort: FC<
 										maxValue={maxValue}
 										size={size}
 										value={value}
-										stateFirstOrLastElement={currFrame.workingRegion.includes(
+										firstOrLastElement={currFrame.workingRegion.includes(
 											index,
 										)}
-										stateCompare={currFrame.compared.includes(
+										compare={currFrame.compared.includes(
 											index,
 										)}
 										stateRead={
@@ -252,10 +252,8 @@ export const RendererMergeSort: FC<
 										maxValue={maxValue}
 										size={size}
 										value={value}
-										stateCompare={false}
-										stateFirstOrLastElement={
-											false
-										}
+										compare={false}
+										firstOrLastElement={false}
 										stateRead={
 											index ===
 											currFrame.memAuxRead

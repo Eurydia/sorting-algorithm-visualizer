@@ -1,22 +1,22 @@
-type ElementState = {
-	value: number;
-	isBeingCompared: boolean;
-	isBeingSwapped: boolean;
-	isSwapped: boolean;
+import { ReactNode, Fragment } from "react";
+type IndexDetails = {
+	compared: number[];
+	swapped: number[];
+
+	workingRegion: number[];
+	pivot: number;
+	pivotPosition: number;
 };
 
-export type FrameState = {
+export type FrameState = IndexDetails & {
+	frameDescription: ReactNode;
 	swapCount: number;
 	comparisonCount: number;
-	elementStates: ElementState[];
-	frameDescription: string;
-	workingRegionFirstIndex: number;
-	workingRegionLastIndex: number;
-	pivotIndex: number;
+	elementStates: number[];
 };
 
 export const quickSort = (
-	xs: number[],
+	dataset: number[],
 	size: number,
 	frameStates: FrameState[],
 ) => {
@@ -24,32 +24,15 @@ export const quickSort = (
 	let comparisonCount: number = 0;
 
 	const generateFrameState = (
-		frameDescription: string,
-		pivotIndex: number,
-		workingRegionFirstIndex: number,
-		workingRegionLastIndex: number,
-		isCompared: (k: number) => boolean,
-		isBeingSwapped: (k: number) => boolean,
-		isSwapped: (k: number) => boolean,
+		frameDescription: ReactNode,
+		indexDetails: IndexDetails,
 	): void => {
-		const elementStates: ElementState[] = [];
-		for (let i = 0; i < xs.length; i++) {
-			elementStates[i] = {
-				value: xs[i],
-				isBeingCompared: isCompared(i),
-				isBeingSwapped: isBeingSwapped(i),
-				isSwapped: isSwapped(i),
-			};
-		}
-
 		frameStates.push({
 			frameDescription,
 			comparisonCount,
 			swapCount,
-			elementStates,
-			pivotIndex,
-			workingRegionFirstIndex,
-			workingRegionLastIndex,
+			elementStates: [...dataset],
+			...indexDetails,
 		});
 	};
 
@@ -57,106 +40,102 @@ export const quickSort = (
 		lowIndex: number,
 		highIndex: number,
 	): number => {
-		const pivot: number = xs[highIndex];
-
 		generateFrameState(
-			`Consider elements between [${lowIndex}] and [${highIndex}] inclusive.`,
-			-1,
-			lowIndex,
-			highIndex,
-			() => false,
-			() => false,
-			() => false,
+			<Fragment>
+				Consider elements between{" "}
+				<code>
+					input[{lowIndex}:{highIndex}]
+				</code>
+				.
+			</Fragment>,
+			{
+				compared: [],
+				swapped: [],
+				workingRegion: [lowIndex, highIndex],
+				pivot: -1,
+				pivotPosition: -1,
+			},
 		);
 
 		generateFrameState(
-			`Consider [${highIndex}] as pivot.`,
-			highIndex,
-			lowIndex,
-			highIndex,
-			() => false,
-			() => false,
-			() => false,
+			<Fragment>
+				Consider <code>input[{highIndex}]</code>{" "}
+				as a pivot.
+			</Fragment>,
+			{
+				compared: [],
+				swapped: [],
+				workingRegion: [lowIndex, highIndex],
+				pivot: highIndex,
+				pivotPosition: lowIndex,
+			},
 		);
 
-		let pivotIndex: number = lowIndex - 1;
-
+		let pivotIndex: number = lowIndex;
 		for (let i = lowIndex; i < highIndex; i++) {
 			comparisonCount++;
+
 			generateFrameState(
-				`Comparing [${i}] against [${highIndex}] (pivot).`,
-				highIndex,
-				lowIndex,
-				highIndex,
-				(k) => k === i || k === highIndex,
-				() => false,
-				() => false,
+				<Fragment>
+					Compare <code>input[{i}]</code> against{" "}
+					<code>input[{highIndex}]</code>.
+				</Fragment>,
+				{
+					compared: [i, highIndex],
+					swapped: [],
+					workingRegion: [lowIndex, highIndex],
+					pivot: highIndex,
+					pivotPosition: pivotIndex,
+				},
 			);
 
-			if (xs[i] <= pivot) {
-				pivotIndex++;
-				generateFrameState(
-					`[${i}] is smaller than [${highIndex}]. Move it to left partition.`,
-					highIndex,
-					lowIndex,
-					highIndex,
-					() => false,
-					(k) => k === i || k === pivotIndex,
-					() => false,
-				);
-
-				const temp: number = xs[pivotIndex];
-				xs[pivotIndex] = xs[i];
-				xs[i] = temp;
-
-				swapCount++;
-				generateFrameState(
-					`Swapped [${i}] and [${pivotIndex}].`,
-					highIndex,
-					lowIndex,
-					highIndex,
-					() => false,
-					() => false,
-					(k) => k === i || k === pivotIndex,
-				);
-			} else {
-				generateFrameState(
-					`[${i}] is greater than [${pivotIndex}]. Leave it as is.`,
-					highIndex,
-					lowIndex,
-					highIndex,
-					() => false,
-					(k) => k === i || k === pivotIndex,
-					() => false,
-				);
+			if (dataset[i] > dataset[highIndex]) {
+				continue;
 			}
+
+			const a = dataset[i];
+			const b = dataset[pivotIndex];
+			dataset[pivotIndex] = a;
+			dataset[i] = b;
+
+			swapCount++;
+
+			generateFrameState(
+				<Fragment>
+					Swapped <code>input[{i}]</code> with{" "}
+					<code>input[{pivotIndex}]</code>.
+				</Fragment>,
+				{
+					compared: [],
+					swapped: [i, pivotIndex],
+					workingRegion: [lowIndex, highIndex],
+					pivot: highIndex,
+					pivotPosition: pivotIndex,
+				},
+			);
+			pivotIndex++;
 		}
 
-		pivotIndex++;
-		generateFrameState(
-			`Swapping [${highIndex}] (pivot) with [${pivotIndex}] (between smaller and larger partitions).`,
-			highIndex,
-			lowIndex,
-			highIndex,
-			() => false,
-			(k) => k === pivotIndex || k === highIndex,
-			() => false,
-		);
-
-		const temp: number = xs[pivotIndex];
-		xs[pivotIndex] = xs[highIndex];
-		xs[highIndex] = temp;
+		const a: number = dataset[pivotIndex];
+		const b: number = dataset[highIndex];
+		dataset[pivotIndex] = b;
+		dataset[highIndex] = a;
 
 		swapCount++;
 		generateFrameState(
-			`Swapped [${highIndex}] with [${pivotIndex}].`,
-			highIndex,
-			lowIndex,
-			highIndex,
-			() => false,
-			() => false,
-			(k) => k === pivotIndex || k === highIndex,
+			<Fragment>
+				Swapped <code>input[{pivotIndex}]</code>{" "}
+				with <code>input[{highIndex}]</code>.
+			</Fragment>,
+			{
+				compared: [],
+				swapped: [pivotIndex, highIndex],
+				workingRegion: [lowIndex, highIndex],
+				pivot: highIndex,
+				pivotPosition: pivotIndex,
+			},
 		);
+
 		return pivotIndex;
 	};
 
@@ -178,24 +157,30 @@ export const quickSort = (
 	};
 
 	generateFrameState(
-		"Unsorted input.",
-		-1,
-		-1,
-		-1,
-		() => false,
-		() => false,
-		() => false,
+		<Fragment>
+			Unsorted <code>input[0:{size - 1}]</code>.
+		</Fragment>,
+		{
+			compared: [],
+			swapped: [],
+			workingRegion: [],
+			pivot: -1,
+			pivotPosition: -1,
+		},
 	);
 
 	__quickSort(0, size - 1);
 
 	generateFrameState(
-		"Sorted input in ascening order.",
-		-1,
-		-1,
-		-1,
-		() => false,
-		() => false,
-		() => false,
+		<Fragment>
+			Sorted <code>input[0:{size - 1}]</code>.
+		</Fragment>,
+		{
+			compared: [],
+			swapped: [],
+			workingRegion: [],
+			pivot: -1,
+			pivotPosition: -1,
+		},
 	);
 };

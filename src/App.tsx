@@ -16,7 +16,7 @@ import { RendererInsertionSort } from "./renderers/RendererInsertionSort";
 import { RendererSelectionSort } from "./renderers/RendererSelectionSort";
 import { RendererMergeSort } from "./renderers/RendererMergeSort";
 import { RendererHeapSort } from "./renderers/RendererHeapSort";
-// import { RendererQuickSort } from "./renderers/RendererQuickSort";
+import { RendererQuickSort } from "./renderers/RendererQuickSort";
 // import { RendererCountingSort } from "./renderers/RendererCountingSort";
 
 type TabPanelProps = {
@@ -83,11 +83,11 @@ export const App = () => {
 							value={4}
 							label="Heapsort"
 						/>
-						{/*	<Tab
+						<Tab
 							value={5}
 							label="Quicksort"
 						/>
-						<Tab
+						{/*							<Tab
 							value={6}
 							label="Counting sort"
 						/> */}
@@ -137,15 +137,16 @@ export const App = () => {
 							heightPx={400}
 						/>
 					</TabPanel>
-					{/*<TabPanel
+					<TabPanel
 						index={tabIndex}
 						value={5}
 					>
 						<RendererQuickSort
 							dataset={dataset}
+							heightPx={400}
 						/>
 					</TabPanel>
-					<TabPanel
+					{/*<TabPanel
 						index={tabIndex}
 						value={6}
 					>
