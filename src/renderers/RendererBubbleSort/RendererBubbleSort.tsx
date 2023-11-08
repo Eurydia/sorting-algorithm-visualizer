@@ -8,35 +8,35 @@ import {
 import {
 	blue,
 	deepOrange,
-	orange,
 	pink,
 } from "@mui/material/colors";
 import { SquareRounded } from "@mui/icons-material";
 
 import { IconLabel } from "components/IconLabel";
-import {
-	bubbleSort,
-	FrameState,
-	FrameElement,
-} from "./helper";
+import { bubbleSort, FrameState } from "./helper";
 
 type RendererElemenetProps = {
+	value: number;
 	maxValue: number;
 	size: number;
-	elementData: FrameElement;
+
+	compared: boolean;
+	swapped: boolean;
+	lastElementOfUnsortedRegion: boolean;
+	bubbling: boolean;
 };
 const RendererElement: FC<
 	RendererElemenetProps
 > = (props) => {
-	const { maxValue, size, elementData } = props;
-	const { value, states } = elementData;
 	const {
+		maxValue,
+		size,
+		value,
 		compared,
-		beingSwapped,
 		swapped,
 		lastElementOfUnsortedRegion,
 		bubbling,
-	} = states;
+	} = props;
 
 	const height: number = (value / maxValue) * 100;
 
@@ -52,10 +52,6 @@ const RendererElement: FC<
 
 	if (compared) {
 		bgColor = blue.A100;
-	}
-
-	if (beingSwapped) {
-		bgColor = orange["A100"];
 	}
 
 	if (swapped) {
@@ -134,7 +130,7 @@ export const RendererBubbleSort: FC<
 								htmlColor={pink.A100}
 							/>
 						}
-						label="Last element of the unsorted region"
+						label="Right-most unsorted element"
 					/>
 					<IconLabel
 						icon={
@@ -144,14 +140,7 @@ export const RendererBubbleSort: FC<
 						}
 						label="Being compared"
 					/>
-					<IconLabel
-						icon={
-							<SquareRounded
-								htmlColor={orange.A100}
-							/>
-						}
-						label="Swapping places"
-					/>
+
 					<IconLabel
 						icon={
 							<SquareRounded
@@ -192,13 +181,25 @@ export const RendererBubbleSort: FC<
 					}}
 				>
 					{currFrame.elementStates.map(
-						(elementData, index) => {
+						(value, index) => {
 							return (
 								<RendererElement
 									key={`key-${index}`}
 									maxValue={maxValue}
 									size={size}
-									elementData={elementData}
+									value={value}
+									compared={currFrame.compared.includes(
+										index,
+									)}
+									swapped={currFrame.swapped.includes(
+										index,
+									)}
+									lastElementOfUnsortedRegion={currFrame.lastElementOfUnsortedRegion.includes(
+										index,
+									)}
+									bubbling={currFrame.bubbling.includes(
+										index,
+									)}
 								/>
 							);
 						},

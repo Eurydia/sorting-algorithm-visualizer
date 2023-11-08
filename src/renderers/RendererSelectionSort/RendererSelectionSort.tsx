@@ -9,7 +9,6 @@ import { SquareRounded } from "@mui/icons-material";
 import {
 	blue,
 	pink,
-	orange,
 	deepOrange,
 } from "@mui/material/colors";
 
@@ -18,28 +17,30 @@ import { IconLabel } from "components/IconLabel";
 import {
 	selectionSort,
 	FrameState,
-	FrameElement,
 } from "./helper";
 
 type RendererElemenetProps = {
-	size: number;
+	value: number;
 	maxValue: number;
-	elementData: FrameElement;
+	size: number;
+
+	compared: boolean;
+	swapped: boolean;
+	firstOfUnsortedRegion: boolean;
+	pivot: boolean;
 };
 const RendererElement: FC<
 	RendererElemenetProps
 > = (props) => {
-	const { size, maxValue, elementData } = props;
-	const { value, states } = elementData;
-
 	const {
+		size,
+		maxValue,
+		value,
 		compared,
-		beingSwapped,
 		swapped,
-		firstElementOfUnsortedRegion:
-			lastElementOfSortedRegion,
+		firstOfUnsortedRegion,
 		pivot,
-	} = states;
+	} = props;
 
 	const height: number = (value / maxValue) * 100;
 
@@ -49,16 +50,12 @@ const RendererElement: FC<
 		(value / maxValue) * 90
 	}%)`;
 
-	if (lastElementOfSortedRegion) {
+	if (firstOfUnsortedRegion) {
 		bgColor = pink.A100;
 	}
 
 	if (compared) {
 		bgColor = blue.A100;
-	}
-
-	if (beingSwapped) {
-		bgColor = orange["A100"];
 	}
 
 	if (swapped) {
@@ -140,7 +137,7 @@ export const RendererSelectionSort: FC<
 								htmlColor={pink.A100}
 							/>
 						}
-						label="Last element of the sorted region"
+						label="Left-most unsorted element"
 					/>
 					<IconLabel
 						icon={
@@ -153,14 +150,6 @@ export const RendererSelectionSort: FC<
 					<IconLabel
 						icon={
 							<SquareRounded
-								htmlColor={orange.A100}
-							/>
-						}
-						label="Swapping places"
-					/>
-					<IconLabel
-						icon={
-							<SquareRounded
 								htmlColor={deepOrange.A100}
 							/>
 						}
@@ -168,7 +157,7 @@ export const RendererSelectionSort: FC<
 					/>
 					<IconLabel
 						icon="👻"
-						label="Pivot."
+						label="Pivot"
 					/>
 				</Box>
 				<Box>
@@ -198,13 +187,25 @@ export const RendererSelectionSort: FC<
 					}}
 				>
 					{currFrame.elementStates.map(
-						(elementData, index) => {
+						(value, index) => {
 							return (
 								<RendererElement
 									key={`key-${index}`}
 									maxValue={maxValue}
 									size={size}
-									elementData={elementData}
+									value={value}
+									compared={currFrame.compared.includes(
+										index,
+									)}
+									swapped={currFrame.swapped.includes(
+										index,
+									)}
+									firstOfUnsortedRegion={currFrame.leftMostOfUnsortedRegion.includes(
+										index,
+									)}
+									pivot={currFrame.pivot.includes(
+										index,
+									)}
 								/>
 							);
 						},

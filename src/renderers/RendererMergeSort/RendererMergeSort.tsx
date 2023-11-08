@@ -13,9 +13,9 @@ import {
 } from "@mui/material";
 import {
 	blue,
-	orange,
 	pink,
-	green,
+	teal,
+	orange,
 } from "@mui/material/colors";
 import { SquareRounded } from "@mui/icons-material";
 
@@ -62,11 +62,11 @@ const RendererElement: FC<
 	}
 
 	if (stateRead) {
-		bgColor = orange.A100;
+		bgColor = teal.A100;
 	}
 
 	if (stateWrite) {
-		bgColor = green.A100;
+		bgColor = orange.A100;
 	}
 
 	return (
@@ -141,36 +141,36 @@ export const RendererMergeSort: FC<
 			<Stack spacing={2}>
 				<Box>
 					<IconLabel
+						label="Left-most and right-most element of working region"
 						icon={
 							<SquareRounded
 								htmlColor={pink.A100}
 							/>
 						}
-						label="First and last element of the working region"
 					/>
 					<IconLabel
+						label="Being compared"
 						icon={
 							<SquareRounded
 								htmlColor={blue.A100}
 							/>
 						}
-						label="Being compared"
 					/>
 					<IconLabel
+						label="Being read from"
+						icon={
+							<SquareRounded
+								htmlColor={teal.A100}
+							/>
+						}
+					/>
+					<IconLabel
+						label="Being written to"
 						icon={
 							<SquareRounded
 								htmlColor={orange.A100}
 							/>
 						}
-						label="Being read from"
-					/>
-					<IconLabel
-						icon={
-							<SquareRounded
-								htmlColor={green.A100}
-							/>
-						}
-						label="Being written to"
 					/>
 				</Box>
 				<Box>
@@ -239,8 +239,14 @@ export const RendererMergeSort: FC<
 								);
 							},
 						)}
+
 					{tabPanelIndex === 1 &&
-						currFrame.auxMemory.map(
+						currFrame.auxMemoryStates.length ===
+							0 &&
+						"The auxiliary memory is not used in at this time."}
+
+					{tabPanelIndex === 1 &&
+						currFrame.auxMemoryStates.map(
 							(value, index) => {
 								return (
 									<RendererElement

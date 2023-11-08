@@ -7,7 +7,6 @@ import {
 } from "@mui/material";
 import {
 	blue,
-	orange,
 	deepOrange,
 	pink,
 } from "@mui/material/colors";
@@ -18,27 +17,31 @@ import { IconLabel } from "components/IconLabel";
 import {
 	insertionSort,
 	FrameState,
-	FrameElement,
 } from "./helper";
 
 type RendererElemenetProps = {
 	size: number;
 	maxValue: number;
-	elementData: FrameElement;
+	value: number;
+
+	compared: boolean;
+	swapped: boolean;
+	lastElementOfSortedRegion: boolean;
+	pivot: boolean;
 };
 const RendererElement: FC<
 	RendererElemenetProps
 > = (props) => {
-	const { size, maxValue, elementData } = props;
-	const { value, states } = elementData;
-
 	const {
+		value,
+		maxValue,
+		size,
+
 		compared,
-		beingSwapped,
 		swapped,
-		pivot,
 		lastElementOfSortedRegion,
-	} = states;
+		pivot,
+	} = props;
 
 	const height: number = (value / maxValue) * 100;
 
@@ -54,10 +57,6 @@ const RendererElement: FC<
 
 	if (compared) {
 		bgColor = blue.A100;
-	}
-
-	if (beingSwapped) {
-		bgColor = orange["A100"];
 	}
 
 	if (swapped) {
@@ -133,36 +132,29 @@ export const RendererInsertionSort: FC<
 			<Stack spacing={2}>
 				<Box>
 					<IconLabel
+						label="Left-most unsorted element"
 						icon={
 							<SquareRounded
 								htmlColor={pink.A100}
 							/>
 						}
-						label="Last element of the sorted region"
 					/>
 					<IconLabel
+						label="Being compared"
 						icon={
 							<SquareRounded
 								htmlColor={blue.A100}
 							/>
 						}
-						label="Being compared"
 					/>
+
 					<IconLabel
-						icon={
-							<SquareRounded
-								htmlColor={orange.A100}
-							/>
-						}
-						label="Swapping places"
-					/>
-					<IconLabel
+						label="Swapped places"
 						icon={
 							<SquareRounded
 								htmlColor={deepOrange.A100}
 							/>
 						}
-						label="Swapped places"
 					/>
 					<IconLabel
 						icon="🗿"
@@ -196,13 +188,25 @@ export const RendererInsertionSort: FC<
 					}}
 				>
 					{currFrame.elementStates.map(
-						(elementData, index) => {
+						(value, index) => {
 							return (
 								<RendererElement
 									key={`key-${index}`}
 									maxValue={maxValue}
 									size={size}
-									elementData={elementData}
+									value={value}
+									compared={currFrame.compared.includes(
+										index,
+									)}
+									swapped={currFrame.swapped.includes(
+										index,
+									)}
+									lastElementOfSortedRegion={currFrame.leftMostUnsorted.includes(
+										index,
+									)}
+									pivot={currFrame.pivot.includes(
+										index,
+									)}
 								/>
 							);
 						},

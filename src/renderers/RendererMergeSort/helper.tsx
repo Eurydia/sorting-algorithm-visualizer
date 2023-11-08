@@ -1,19 +1,21 @@
 import { Fragment, ReactNode } from "react";
 
-export type FrameState = {
-	elementStates: number[];
-	auxMemory: number[];
-	frameDescription: ReactNode;
-	memWriteCount: number;
-	memReadCount: number;
-	comparisonCount: number;
-
+type IndexDetails = {
 	workingRegion: number[];
 	compared: number[];
 	memRead: number[];
 	memWrite: number[];
 	memAuxRead: number[];
 	memAuxWrite: number[];
+};
+
+export type FrameState = IndexDetails & {
+	frameDescription: ReactNode;
+	elementStates: number[];
+	auxMemoryStates: number[];
+	memWriteCount: number;
+	memReadCount: number;
+	comparisonCount: number;
 };
 
 export const mergeSort = (
@@ -28,18 +30,11 @@ export const mergeSort = (
 	const generateFrameState = (
 		frameDescription: ReactNode,
 		auxMemory: number[],
-		indexDetails: {
-			workingRegion: number[];
-			compared: number[];
-			memRead: number[];
-			memWrite: number[];
-			memAuxRead: number[];
-			memAuxWrite: number[];
-		},
+		indexDetails: IndexDetails,
 	): void => {
 		frameStates.push({
 			frameDescription,
-			auxMemory,
+			auxMemoryStates: auxMemory,
 			elementStates: [...xs],
 			memWriteCount,
 			memReadCount,
@@ -73,21 +68,21 @@ export const mergeSort = (
 		);
 
 		if (endIndex - startIndex === 0) {
-			generateFrameState(
-				<Fragment>
-					Working region has only one element.
-					Consider it sorted.
-				</Fragment>,
-				[],
-				{
-					workingRegion: [startIndex, endIndex],
-					compared: [],
-					memRead: [],
-					memWrite: [],
-					memAuxRead: [],
-					memAuxWrite: [],
-				},
-			);
+			// generateFrameState(
+			// 	<Fragment>
+			// 		Working region has only one element.
+			// 		Consider it sorted.
+			// 	</Fragment>,
+			// 	[],
+			// 	{
+			// 		workingRegion: [startIndex, endIndex],
+			// 		compared: [],
+			// 		memRead: [],
+			// 		memWrite: [],
+			// 		memAuxRead: [],
+			// 		memAuxWrite: [],
+			// 	},
+			// );
 			return;
 		}
 
@@ -105,29 +100,29 @@ export const mergeSort = (
 			endIndex,
 		);
 
-		generateFrameState(
-			<Fragment>
-				Merging left region (
-				<code>
-					input[{startIndex}:{middleIndex}]
-				</code>
-				) and right region (
-				<code>
-					input[
-					{middleIndex + 1}:{endIndex}]
-				</code>
-				).
-			</Fragment>,
-			[],
-			{
-				workingRegion: [startIndex, endIndex],
-				compared: [],
-				memRead: [],
-				memWrite: [],
-				memAuxRead: [],
-				memAuxWrite: [],
-			},
-		);
+		// generateFrameState(
+		// 	<Fragment>
+		// 		Merging left region (
+		// 		<code>
+		// 			input[{startIndex}:{middleIndex}]
+		// 		</code>
+		// 		) and right region (
+		// 		<code>
+		// 			input[
+		// 			{middleIndex + 1}:{endIndex}]
+		// 		</code>
+		// 		).
+		// 	</Fragment>,
+		// 	[],
+		// 	{
+		// 		workingRegion: [startIndex, endIndex],
+		// 		compared: [],
+		// 		memRead: [],
+		// 		memWrite: [],
+		// 		memAuxRead: [],
+		// 		memAuxWrite: [],
+		// 	},
+		// );
 
 		let lPtr: number = startIndex;
 		let rPtr: number = middleIndex + 1;
@@ -161,7 +156,7 @@ export const mergeSort = (
 
 				generateFrameState(
 					<Fragment>
-						Writing <code>input[{rPtr}]</code> to{" "}
+						Write <code>input[{rPtr}]</code> to{" "}
 						<code>auxMem[{auxPtr}]</code>.
 					</Fragment>,
 					[...auxMemory],
@@ -169,7 +164,7 @@ export const mergeSort = (
 					{
 						workingRegion: [startIndex, endIndex],
 						compared: [],
-						memRead: [startIndex + rPtr],
+						memRead: [rPtr],
 						memWrite: [],
 						memAuxRead: [],
 						memAuxWrite: [auxPtr],
@@ -184,17 +179,16 @@ export const mergeSort = (
 			memReadCount++;
 			memWriteCount++;
 			auxMemory[auxPtr] = xs[lPtr];
-
 			generateFrameState(
 				<Fragment>
-					Writing <code>input[{lPtr}]</code> to{" "}
+					Write <code>input[{lPtr}]</code> to{" "}
 					<code>auxMem[{auxPtr}]</code>.
 				</Fragment>,
 				[...auxMemory],
 				{
 					workingRegion: [startIndex, endIndex],
 					compared: [],
-					memRead: [startIndex + lPtr],
+					memRead: [lPtr],
 					memWrite: [],
 					memAuxRead: [],
 					memAuxWrite: [auxPtr],
@@ -213,14 +207,14 @@ export const mergeSort = (
 
 			generateFrameState(
 				<Fragment>
-					Writing <code>input[{lPtr}]</code> to{" "}
+					Write <code>input[{lPtr}]</code> to{" "}
 					<code>auxMem[{auxPtr}]</code>.
 				</Fragment>,
 				[...auxMemory],
 				{
 					workingRegion: [startIndex, endIndex],
 					compared: [],
-					memRead: [startIndex + lPtr],
+					memRead: [lPtr],
 					memWrite: [],
 					memAuxRead: [],
 					memAuxWrite: [auxPtr],
@@ -238,14 +232,14 @@ export const mergeSort = (
 
 			generateFrameState(
 				<Fragment>
-					Writing <code>input[{lPtr}]</code> to{" "}
+					Write <code>input[{lPtr}]</code> to{" "}
 					<code>auxMem[{auxPtr}]</code>.
 				</Fragment>,
 				[...auxMemory],
 				{
 					workingRegion: [startIndex, endIndex],
 					compared: [],
-					memRead: [startIndex + rPtr],
+					memRead: [rPtr],
 					memWrite: [],
 					memAuxRead: [],
 					memAuxWrite: [auxPtr],
@@ -262,7 +256,7 @@ export const mergeSort = (
 			xs[startIndex + i] = auxMemory[i];
 			generateFrameState(
 				<Fragment>
-					Writing <code>auxMem[{i}]</code> to{" "}
+					Write <code>auxMem[{i}]</code> to{" "}
 					<code>input[{startIndex + i}]</code>.
 				</Fragment>,
 				[...auxMemory],
