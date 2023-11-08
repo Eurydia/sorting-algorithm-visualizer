@@ -1,10 +1,10 @@
 import { Fragment, ReactNode } from "react";
 
 type IndexDetails = {
-	leftMostUnsorted: number[];
 	compared: number[];
 	swapped: number[];
-	pivot: number[];
+	leftMostUnsortedElement: number;
+	pivot: number;
 };
 
 export type FrameState = IndexDetails & {
@@ -41,11 +41,10 @@ export const insertionSort = (
 			Unsorted <code>input[0:{size - 1}]</code>.
 		</Fragment>,
 		{
-			leftMostUnsorted: [],
-			pivot: [],
 			compared: [],
-			// beginSwapped: [],
 			swapped: [],
+			leftMostUnsortedElement: -1,
+			pivot: -1,
 		},
 	);
 
@@ -60,10 +59,10 @@ export const insertionSort = (
 				as pivot.
 			</Fragment>,
 			{
-				leftMostUnsorted: [pivotIndex],
-				pivot: [pivotIndex],
 				compared: [],
 				swapped: [],
+				leftMostUnsortedElement: pivotIndex,
+				pivot: pivotIndex,
 			},
 		);
 
@@ -79,17 +78,17 @@ export const insertionSort = (
 					against <code>input[{mover - 1}]</code>.
 				</Fragment>,
 				{
-					leftMostUnsorted: [pivotIndex + 1],
-					pivot: [mover],
 					compared: [mover, mover - 1],
-					// beginSwapped: [],
 					swapped: [],
+					leftMostUnsortedElement: pivotIndex + 1,
+					pivot: mover,
 				},
 			);
 
-			const temp: number = dataset[mover];
-			dataset[mover] = dataset[mover - 1];
-			dataset[mover - 1] = temp;
+			const a: number = dataset[mover];
+			const b: number = dataset[mover - 1];
+			dataset[mover] = b;
+			dataset[mover - 1] = a;
 
 			swapCount++;
 			generateFrameState(
@@ -98,11 +97,10 @@ export const insertionSort = (
 					<code>input[{mover - 1}]</code>.
 				</Fragment>,
 				{
-					leftMostUnsorted: [pivotIndex + 1],
-					pivot: [mover - 1],
 					compared: [],
-					// beginSwapped: [],
 					swapped: [mover, mover - 1],
+					leftMostUnsortedElement: pivotIndex + 1,
+					pivot: mover - 1,
 				},
 			);
 			mover--;
@@ -111,42 +109,17 @@ export const insertionSort = (
 		if (mover === 0) {
 			continue;
 		}
-
-		comparisonCount++;
-		generateFrameState(
-			<Fragment>
-				Compare <code>input[{mover}]</code>{" "}
-				against <code>input[{mover - 1}]</code>.
-			</Fragment>,
-			{
-				leftMostUnsorted: [pivotIndex + 1],
-				pivot: [mover],
-				compared: [mover, mover - 1],
-				swapped: [],
-			},
-		);
 	}
-
-	generateFrameState(
-		"No more pivot to consider. Sorting complete",
-		{
-			leftMostUnsorted: [],
-			pivot: [],
-			compared: [],
-			// beginSwapped: [],
-			swapped: [],
-		},
-	);
 
 	generateFrameState(
 		<Fragment>
 			Sorted <code>input[0:{size - 1}]</code>.
 		</Fragment>,
 		{
-			leftMostUnsorted: [],
-			pivot: [],
 			compared: [],
 			swapped: [],
+			leftMostUnsortedElement: -1,
+			pivot: -1,
 		},
 	);
 };

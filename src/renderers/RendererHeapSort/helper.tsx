@@ -99,6 +99,29 @@ export const heapSort = (
 				}
 			}
 
+			generateFrameState(
+				<Fragment>
+					Compare{" "}
+					<code>input[{parentIndex}]</code>{" "}
+					against{" "}
+					<code>input[{targetChildIndex}]</code>.
+				</Fragment>,
+				{
+					compared: [
+						parentIndex,
+						targetChildIndex,
+					],
+					swapped: [],
+					_parent: parentIndex,
+					leftChild: leftChildIndex,
+					rightChild:
+						rightChildIndex < _size
+							? rightChildIndex
+							: -1,
+					rightMostUnsortedElement: _size - 1,
+				},
+			);
+
 			if (
 				dataset[parentIndex] >=
 				dataset[targetChildIndex]

@@ -3,16 +3,16 @@ import { Fragment, ReactNode } from "react";
 type IndexDetails = {
 	workingRegion: number[];
 	compared: number[];
-	memRead: number[];
-	memWrite: number[];
-	memAuxRead: number[];
-	memAuxWrite: number[];
+	memRead: number;
+	memWrite: number;
+	memAuxRead: number;
+	memAuxWrite: number;
 };
 
 export type FrameState = IndexDetails & {
 	frameDescription: ReactNode;
 	elementStates: number[];
-	auxMemoryStates: number[];
+	auxStates: number[];
 	memWriteCount: number;
 	memReadCount: number;
 	comparisonCount: number;
@@ -34,7 +34,7 @@ export const mergeSort = (
 	): void => {
 		frameStates.push({
 			frameDescription,
-			auxMemoryStates: auxMemory,
+			auxStates: auxMemory,
 			elementStates: [...xs],
 			memWriteCount,
 			memReadCount,
@@ -53,36 +53,21 @@ export const mergeSort = (
 				Consider elements between{" "}
 				<code>
 					input[{startIndex}:{endIndex}]
-				</code>{" "}
-				(inclusive).
+				</code>
+				.
 			</Fragment>,
 			[],
 			{
 				workingRegion: [startIndex, endIndex],
 				compared: [],
-				memRead: [],
-				memWrite: [],
-				memAuxRead: [],
-				memAuxWrite: [],
+				memRead: -1,
+				memWrite: -1,
+				memAuxRead: -1,
+				memAuxWrite: -1,
 			},
 		);
 
 		if (endIndex - startIndex === 0) {
-			// generateFrameState(
-			// 	<Fragment>
-			// 		Working region has only one element.
-			// 		Consider it sorted.
-			// 	</Fragment>,
-			// 	[],
-			// 	{
-			// 		workingRegion: [startIndex, endIndex],
-			// 		compared: [],
-			// 		memRead: [],
-			// 		memWrite: [],
-			// 		memAuxRead: [],
-			// 		memAuxWrite: [],
-			// 	},
-			// );
 			return;
 		}
 
@@ -99,30 +84,6 @@ export const mergeSort = (
 			middleIndex + 1,
 			endIndex,
 		);
-
-		// generateFrameState(
-		// 	<Fragment>
-		// 		Merging left region (
-		// 		<code>
-		// 			input[{startIndex}:{middleIndex}]
-		// 		</code>
-		// 		) and right region (
-		// 		<code>
-		// 			input[
-		// 			{middleIndex + 1}:{endIndex}]
-		// 		</code>
-		// 		).
-		// 	</Fragment>,
-		// 	[],
-		// 	{
-		// 		workingRegion: [startIndex, endIndex],
-		// 		compared: [],
-		// 		memRead: [],
-		// 		memWrite: [],
-		// 		memAuxRead: [],
-		// 		memAuxWrite: [],
-		// 	},
-		// );
 
 		let lPtr: number = startIndex;
 		let rPtr: number = middleIndex + 1;
@@ -143,10 +104,10 @@ export const mergeSort = (
 				{
 					workingRegion: [startIndex, endIndex],
 					compared: [lPtr, rPtr],
-					memRead: [],
-					memWrite: [],
-					memAuxRead: [],
-					memAuxWrite: [],
+					memRead: -1,
+					memWrite: -1,
+					memAuxRead: -1,
+					memAuxWrite: -1,
 				},
 			);
 			if (xs[lPtr] > xs[rPtr]) {
@@ -164,10 +125,10 @@ export const mergeSort = (
 					{
 						workingRegion: [startIndex, endIndex],
 						compared: [],
-						memRead: [rPtr],
-						memWrite: [],
-						memAuxRead: [],
-						memAuxWrite: [auxPtr],
+						memRead: rPtr,
+						memWrite: -1,
+						memAuxRead: -1,
+						memAuxWrite: auxPtr,
 					},
 				);
 
@@ -188,10 +149,10 @@ export const mergeSort = (
 				{
 					workingRegion: [startIndex, endIndex],
 					compared: [],
-					memRead: [lPtr],
-					memWrite: [],
-					memAuxRead: [],
-					memAuxWrite: [auxPtr],
+					memRead: lPtr,
+					memWrite: -1,
+					memAuxRead: -1,
+					memAuxWrite: auxPtr,
 				},
 			);
 
@@ -214,10 +175,10 @@ export const mergeSort = (
 				{
 					workingRegion: [startIndex, endIndex],
 					compared: [],
-					memRead: [lPtr],
-					memWrite: [],
-					memAuxRead: [],
-					memAuxWrite: [auxPtr],
+					memRead: lPtr,
+					memWrite: -1,
+					memAuxRead: -1,
+					memAuxWrite: auxPtr,
 				},
 			);
 
@@ -239,10 +200,10 @@ export const mergeSort = (
 				{
 					workingRegion: [startIndex, endIndex],
 					compared: [],
-					memRead: [rPtr],
-					memWrite: [],
-					memAuxRead: [],
-					memAuxWrite: [auxPtr],
+					memRead: rPtr,
+					memWrite: -1,
+					memAuxRead: -1,
+					memAuxWrite: auxPtr,
 				},
 			);
 
@@ -263,10 +224,10 @@ export const mergeSort = (
 				{
 					workingRegion: [startIndex, endIndex],
 					compared: [],
-					memRead: [],
-					memWrite: [startIndex + i],
-					memAuxRead: [i],
-					memAuxWrite: [],
+					memRead: -1,
+					memWrite: startIndex + i,
+					memAuxRead: i,
+					memAuxWrite: -1,
 				},
 			);
 		}
@@ -280,10 +241,10 @@ export const mergeSort = (
 		{
 			workingRegion: [],
 			compared: [],
-			memRead: [],
-			memWrite: [],
-			memAuxRead: [],
-			memAuxWrite: [],
+			memRead: -1,
+			memWrite: -1,
+			memAuxRead: -1,
+			memAuxWrite: -1,
 		},
 	);
 
@@ -297,10 +258,10 @@ export const mergeSort = (
 		{
 			workingRegion: [],
 			compared: [],
-			memRead: [],
-			memWrite: [],
-			memAuxRead: [],
-			memAuxWrite: [],
+			memRead: -1,
+			memWrite: -1,
+			memAuxRead: -1,
+			memAuxWrite: -1,
 		},
 	);
 };

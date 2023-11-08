@@ -200,12 +200,13 @@ export const RendererSelectionSort: FC<
 									swapped={currFrame.swapped.includes(
 										index,
 									)}
-									firstOfUnsortedRegion={currFrame.leftMostOfUnsortedRegion.includes(
-										index,
-									)}
-									pivot={currFrame.pivot.includes(
-										index,
-									)}
+									firstOfUnsortedRegion={
+										index ===
+										currFrame.leftMostUnsortedElement
+									}
+									pivot={
+										index === currFrame.pivot
+									}
 								/>
 							);
 						},

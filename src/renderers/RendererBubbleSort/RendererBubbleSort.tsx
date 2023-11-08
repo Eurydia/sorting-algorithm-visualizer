@@ -22,7 +22,7 @@ type RendererElemenetProps = {
 
 	compared: boolean;
 	swapped: boolean;
-	lastElementOfUnsortedRegion: boolean;
+	rightMostUnsortedElement: boolean;
 	bubbling: boolean;
 };
 const RendererElement: FC<
@@ -34,7 +34,7 @@ const RendererElement: FC<
 		value,
 		compared,
 		swapped,
-		lastElementOfUnsortedRegion,
+		rightMostUnsortedElement,
 		bubbling,
 	} = props;
 
@@ -46,12 +46,12 @@ const RendererElement: FC<
 		(value / maxValue) * 90
 	}%)`;
 
-	if (lastElementOfUnsortedRegion) {
-		bgColor = pink.A100;
+	if (rightMostUnsortedElement) {
+		bgColor = pink["A100"];
 	}
 
 	if (compared) {
-		bgColor = blue.A100;
+		bgColor = blue["A100"];
 	}
 
 	if (swapped) {
@@ -90,9 +90,7 @@ export const RendererBubbleSort: FC<
 	const [frameStates] = useState<FrameState[]>(
 		() => {
 			const frameStates: FrameState[] = [];
-
 			bubbleSort([...dataset], size, frameStates);
-
 			return frameStates;
 		},
 	);
@@ -194,12 +192,13 @@ export const RendererBubbleSort: FC<
 									swapped={currFrame.swapped.includes(
 										index,
 									)}
-									lastElementOfUnsortedRegion={currFrame.lastElementOfUnsortedRegion.includes(
-										index,
-									)}
-									bubbling={currFrame.bubbling.includes(
-										index,
-									)}
+									rightMostUnsortedElement={
+										index ===
+										currFrame.rightMostUnsortedElement
+									}
+									bubbling={
+										index === currFrame.bubbling
+									}
 								/>
 							);
 						},

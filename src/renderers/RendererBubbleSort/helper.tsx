@@ -2,10 +2,9 @@ import { ReactNode, Fragment } from "react";
 
 export type IndexDetails = {
 	compared: number[];
-	// beingSwapped: number[];
 	swapped: number[];
-	lastElementOfUnsortedRegion: number[];
-	bubbling: number[];
+	rightMostUnsortedElement: number;
+	bubbling: number;
 };
 
 export type FrameState = IndexDetails & {
@@ -41,8 +40,8 @@ export const bubbleSort = (
 			Unsorted <code>input[0:{size - 1}]</code>.
 		</Fragment>,
 		{
-			lastElementOfUnsortedRegion: [],
-			bubbling: [],
+			bubbling: -1,
+			rightMostUnsortedElement: -1,
 			compared: [],
 			// beingSwapped: [],
 			swapped: [],
@@ -62,10 +61,9 @@ export const bubbleSort = (
 					<code>input[{i + 1}]</code>.
 				</Fragment>,
 				{
-					lastElementOfUnsortedRegion: [
+					rightMostUnsortedElement:
 						size - offset - 1,
-					],
-					bubbling: [i],
+					bubbling: i,
 					compared: [i, i + 1],
 					// beingSwapped: [],
 					swapped: [],
@@ -88,12 +86,10 @@ export const bubbleSort = (
 					<code>input[{i + 1}]</code>.
 				</Fragment>,
 				{
-					lastElementOfUnsortedRegion: [
+					rightMostUnsortedElement:
 						size - offset - 1,
-					],
-					bubbling: [i + 1],
+					bubbling: i + 1,
 					compared: [],
-					// beingSwapped: [],
 					swapped: [i, i + 1],
 				},
 			);
@@ -105,10 +101,9 @@ export const bubbleSort = (
 			Sorted <code>input[0:{size - 1}]</code>.
 		</Fragment>,
 		{
-			lastElementOfUnsortedRegion: [],
-			bubbling: [],
+			rightMostUnsortedElement: -1,
+			bubbling: -1,
 			compared: [],
-			// beingSwapped: [],
 			swapped: [],
 		},
 	);

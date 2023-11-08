@@ -229,24 +229,22 @@ export const RendererMergeSort: FC<
 										stateCompare={currFrame.compared.includes(
 											index,
 										)}
-										stateRead={currFrame.memRead.includes(
-											index,
-										)}
-										stateWrite={currFrame.memWrite.includes(
-											index,
-										)}
+										stateRead={
+											index === currFrame.memRead
+										}
+										stateWrite={
+											index === currFrame.memWrite
+										}
 									/>
 								);
 							},
 						)}
 
 					{tabPanelIndex === 1 &&
-						currFrame.auxMemoryStates.length ===
-							0 &&
+						currFrame.auxStates.length === 0 &&
 						"The auxiliary memory is not used in at this time."}
-
 					{tabPanelIndex === 1 &&
-						currFrame.auxMemoryStates.map(
+						currFrame.auxStates.map(
 							(value, index) => {
 								return (
 									<RendererElement
@@ -258,12 +256,14 @@ export const RendererMergeSort: FC<
 										stateFirstOrLastElement={
 											false
 										}
-										stateRead={currFrame.memAuxRead.includes(
-											index,
-										)}
-										stateWrite={currFrame.memAuxWrite.includes(
-											index,
-										)}
+										stateRead={
+											index ===
+											currFrame.memAuxRead
+										}
+										stateWrite={
+											index ===
+											currFrame.memAuxWrite
+										}
 									/>
 								);
 							},

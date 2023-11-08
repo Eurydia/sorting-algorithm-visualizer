@@ -3,8 +3,8 @@ import { Fragment, ReactNode } from "react";
 type IndexDetails = {
 	compared: number[];
 	swapped: number[];
-	pivot: number[];
-	leftMostOfUnsortedRegion: number[];
+	pivot: number;
+	leftMostUnsortedElement: number;
 };
 
 export type FrameState = IndexDetails & {
@@ -40,10 +40,10 @@ export const selectionSort = (
 			Unsorted <code>input[0:{size - 1}]</code>.
 		</Fragment>,
 		{
-			pivot: [],
-			leftMostOfUnsortedRegion: [],
 			compared: [],
 			swapped: [],
+			pivot: -1,
+			leftMostUnsortedElement: -1,
 		},
 	);
 
@@ -55,11 +55,10 @@ export const selectionSort = (
 				as pivot.
 			</Fragment>,
 			{
-				pivot: [offset],
-				leftMostOfUnsortedRegion: [offset],
 				compared: [],
-				// beginSwapped: [],
 				swapped: [],
+				pivot: offset,
+				leftMostUnsortedElement: offset,
 			},
 		);
 
@@ -71,11 +70,10 @@ export const selectionSort = (
 					against <code>input[{i}]</code>.
 				</Fragment>,
 				{
-					pivot: [pivotIndex],
-					leftMostOfUnsortedRegion: [offset],
 					compared: [i, pivotIndex],
-					// beginSwapped: [],
 					swapped: [],
+					pivot: pivotIndex,
+					leftMostUnsortedElement: offset,
 				},
 			);
 
@@ -91,11 +89,10 @@ export const selectionSort = (
 					new pivot.
 				</Fragment>,
 				{
-					pivot: [pivotIndex],
-					leftMostOfUnsortedRegion: [offset],
 					compared: [],
-					// beginSwapped: [],
 					swapped: [],
+					pivot: pivotIndex,
+					leftMostUnsortedElement: offset,
 				},
 			);
 		}
@@ -112,36 +109,23 @@ export const selectionSort = (
 				and <code>input[{offset}]</code>.
 			</Fragment>,
 			{
-				pivot: [offset],
-				leftMostOfUnsortedRegion: [offset],
 				compared: [],
-				// beginSwapped: [],
 				swapped: [offset, pivotIndex],
+				pivot: offset,
+				leftMostUnsortedElement: offset,
 			},
 		);
 	}
-
-	generateFrameState(
-		"No more pivot to consider. Sorting complete",
-		{
-			leftMostOfUnsortedRegion: [],
-			pivot: [],
-			compared: [],
-			// beginSwapped: [],
-			swapped: [],
-		},
-	);
 
 	generateFrameState(
 		<Fragment>
 			Sorted <code>input[0:{size - 1}]</code>.
 		</Fragment>,
 		{
-			leftMostOfUnsortedRegion: [],
-			pivot: [],
 			compared: [],
-			// beginSwapped: [],
 			swapped: [],
+			leftMostUnsortedElement: -1,
+			pivot: -1,
 		},
 	);
 };

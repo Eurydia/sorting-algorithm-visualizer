@@ -26,7 +26,7 @@ type RendererElemenetProps = {
 
 	compared: boolean;
 	swapped: boolean;
-	lastElementOfSortedRegion: boolean;
+	leftMostUnsortedElement: boolean;
 	pivot: boolean;
 };
 const RendererElement: FC<
@@ -39,7 +39,7 @@ const RendererElement: FC<
 
 		compared,
 		swapped,
-		lastElementOfSortedRegion,
+		leftMostUnsortedElement,
 		pivot,
 	} = props;
 
@@ -51,7 +51,7 @@ const RendererElement: FC<
 		(value / maxValue) * 90
 	}%)`;
 
-	if (lastElementOfSortedRegion) {
+	if (leftMostUnsortedElement) {
 		bgColor = pink.A100;
 	}
 
@@ -201,12 +201,13 @@ export const RendererInsertionSort: FC<
 									swapped={currFrame.swapped.includes(
 										index,
 									)}
-									lastElementOfSortedRegion={currFrame.leftMostUnsorted.includes(
-										index,
-									)}
-									pivot={currFrame.pivot.includes(
-										index,
-									)}
+									leftMostUnsortedElement={
+										index ===
+										currFrame.leftMostUnsortedElement
+									}
+									pivot={
+										index === currFrame.pivot
+									}
 								/>
 							);
 						},

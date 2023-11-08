@@ -66,7 +66,7 @@ const RendererElement: FC<
 		label = "🐔";
 	}
 	if (_child) {
-		label = "🥚";
+		label = "🐤";
 	}
 
 	return (
@@ -163,7 +163,7 @@ export const RendererHeapSort: FC<
 						label="Parent"
 					/>
 					<IconLabel
-						icon="🥚"
+						icon="🐤"
 						label="Child"
 					/>
 				</Box>
