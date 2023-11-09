@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useState, useEffect } from "react";
 import {
 	Box,
 	Button,
@@ -42,36 +42,57 @@ const RendererElement: FC<
 
 	const width: number = (1 / size) * 100;
 
-	let bgColor: string = `hsl(0, 0%, ${
+	let bgcolor: string = `hsl(0, 0%, ${
 		(value / maxValue) * 90
 	}%)`;
 
 	if (rightMostUnsortedElement) {
-		bgColor = pink["A100"];
+		bgcolor = pink["A100"];
 	}
 
 	if (compared) {
-		bgColor = blue["A100"];
+		bgcolor = blue["A100"];
 	}
 
 	if (swapped) {
-		bgColor = deepOrange["A100"];
+		bgcolor = deepOrange["A100"];
 	}
 
 	return (
 		<Box
-			display="flex"
-			alignItems="baseline"
-			justifyContent="center"
 			sx={{
 				width: `${width}%`,
 				height: `${height}%`,
-				backgroundColor: bgColor,
+				display: "flex",
+				flexDirection: "column",
+				justifyContent: "center",
+				alignItems: "center",
 			}}
 		>
-			{bubbling ? "🚀" : ""}
+			<Box
+				sx={{
+					width: "100%",
+					minHeight: "100%",
+					justifyContent: "center",
+					alignItems: "center",
+					display: "flex",
+					bgcolor,
+				}}
+			>
+				{bubbling ? "🚀" : ""}
+			</Box>
+			<code>{value}</code>
 		</Box>
 	);
+};
+
+const prepareFrameStates = (
+	dataset: number[],
+): FrameState[] => {
+	const size: number = dataset.length;
+	const frameStates: FrameState[] = [];
+	bubbleSort([...dataset], size, frameStates);
+	return frameStates;
 };
 
 type RendererBubbleSortProps = {
@@ -87,13 +108,14 @@ export const RendererBubbleSort: FC<
 	const maxValue: number = Math.max(...dataset);
 
 	const [frame, setFrame] = useState<number>(0);
-	const [frameStates] = useState<FrameState[]>(
-		() => {
-			const frameStates: FrameState[] = [];
-			bubbleSort([...dataset], size, frameStates);
-			return frameStates;
-		},
-	);
+	const [frameStates, setFrameStates] = useState<
+		FrameState[]
+	>(prepareFrameStates(dataset));
+
+	useEffect(() => {
+		setFrame(0);
+		setFrameStates(prepareFrameStates(dataset));
+	}, [dataset]);
 
 	const onFrameAdvance = () => {
 		if (frame === frameStates.length - 1) {
@@ -149,7 +171,7 @@ export const RendererBubbleSort: FC<
 					/>
 					<IconLabel
 						icon="🚀"
-						label="Bubbling up"
+						label="Element is bubbling up"
 					/>
 				</Box>
 				<Box>
@@ -168,7 +190,6 @@ export const RendererBubbleSort: FC<
 						{currFrame.frameDescription}
 					</Typography>
 				</Box>
-
 				<Box
 					display="flex"
 					flexDirection="row"
@@ -204,29 +225,31 @@ export const RendererBubbleSort: FC<
 						},
 					)}
 				</Box>
-				<Stack
-					direction="row"
-					spacing={2}
-				>
-					<Button
-						fullWidth
-						variant="contained"
-						onClick={onFrameRewind}
-						disabled={frame === 0}
+				<Box>
+					<Stack
+						direction="row"
+						spacing={2}
 					>
-						Previous Frame
-					</Button>
-					<Button
-						fullWidth
-						variant="contained"
-						onClick={onFrameAdvance}
-						disabled={
-							frame === frameStates.length - 1
-						}
-					>
-						Next Frame
-					</Button>
-				</Stack>
+						<Button
+							fullWidth
+							variant="contained"
+							onClick={onFrameRewind}
+							disabled={frame === 0}
+						>
+							Previous Frame
+						</Button>
+						<Button
+							fullWidth
+							variant="contained"
+							onClick={onFrameAdvance}
+							disabled={
+								frame === frameStates.length - 1
+							}
+						>
+							Next Frame
+						</Button>
+					</Stack>
+				</Box>
 			</Stack>
 		</Box>
 	);

@@ -65,7 +65,6 @@ export const bubbleSort = (
 						size - offset - 1,
 					bubbling: i,
 					compared: [i, i + 1],
-					// beingSwapped: [],
 					swapped: [],
 				},
 			);
@@ -73,6 +72,23 @@ export const bubbleSort = (
 			const a = dataset[i];
 			const b = dataset[i + 1];
 			if (b >= a) {
+				// generateFrameState(
+				// 	<Fragment>
+				// 		Bubbles <code>input[{i + 1}]</code> up
+				// 		instead (since{" "}
+				// 		<code>
+				// 			input[{i}] &le; input[{i + 1}]
+				// 		</code>
+				// 		).
+				// 	</Fragment>,
+				// 	{
+				// 		rightMostUnsortedElement:
+				// 			size - offset - 1,
+				// 		bubbling: i + 1,
+				// 		compared: [i, i + 1],
+				// 		swapped: [],
+				// 	},
+				// );
 				continue;
 			}
 
@@ -85,6 +101,14 @@ export const bubbleSort = (
 					Swapped <code>input[{i}]</code> and{" "}
 					<code>input[{i + 1}]</code>.
 				</Fragment>,
+				// <Fragment>
+				// 	Swapped <code>input[{i}]</code> and{" "}
+				// 	<code>input[{i + 1}]</code> (since{" "}
+				// 	<code>
+				// 		input[{i}] &gt; input[{i + 1}]
+				// 	</code>
+				// 	).
+				// </Fragment>,
 				{
 					rightMostUnsortedElement:
 						size - offset - 1,
@@ -94,6 +118,21 @@ export const bubbleSort = (
 				},
 			);
 		}
+		// generateFrameState(
+		// 	<Fragment>
+		// 		Decrease unsorted region to{" "}
+		// 		<code>input[0:{size - offset - 2}]</code>{" "}
+		// 		and start again (the largest element is
+		// 		the right-most unsorted element).
+		// 	</Fragment>,
+		// 	{
+		// 		rightMostUnsortedElement:
+		// 			size - offset - 1,
+		// 		bubbling: size - offset - 1,
+		// 		compared: [],
+		// 		swapped: [],
+		// 	},
+		// );
 	}
 
 	generateFrameState(

@@ -1,6 +1,11 @@
-import "./styles/App.css";
+import {
+	FC,
+	Fragment,
+	useState,
+	ChangeEvent,
+} from "react";
 
-import { FC, Fragment, useState } from "react";
+import "./styles/App.css";
 
 import {
 	Container,
@@ -9,6 +14,9 @@ import {
 	Box,
 	Tabs,
 	Tab,
+	TextField,
+	Button,
+	Typography,
 } from "@mui/material";
 
 import { RendererBubbleSort } from "./renderers/RendererBubbleSort";
@@ -17,6 +25,7 @@ import { RendererSelectionSort } from "./renderers/RendererSelectionSort";
 import { RendererMergeSort } from "./renderers/RendererMergeSort";
 import { RendererHeapSort } from "./renderers/RendererHeapSort";
 import { RendererQuickSort } from "./renderers/RendererQuickSort";
+import { shuffle } from "renderers/helper/shuffle";
 // import { RendererCountingSort } from "./renderers/RendererCountingSort";
 
 type TabPanelProps = {
@@ -36,9 +45,46 @@ const TabPanel: FC<TabPanelProps> = (props) => {
 	return <Box>{children}</Box>;
 };
 
+const generateDataset = (
+	size: number,
+): number[] => {
+	const dataset: number[] = [];
+	for (let i = 1; i <= size; i++) {
+		dataset.push(i);
+	}
+	shuffle(dataset);
+	return dataset;
+};
+
 export const App = () => {
 	const [tabIndex, setTabIndex] =
 		useState<number>(0);
+
+	const [dataset, setDataset] = useState<
+		number[]
+	>(generateDataset(10));
+
+	const onDatasetSizeChange = (
+		event: ChangeEvent<
+			HTMLTextAreaElement | HTMLInputElement
+		>,
+	): void => {
+		const value: string = event.target.value;
+		let size: number = Number.parseInt(value);
+
+		if (Number.isNaN(size)) {
+			size = 3;
+		}
+		if (size > 25 || size < 3) {
+			return;
+		}
+
+		setDataset(generateDataset(size));
+	};
+
+	const onDatasetShuffle = (): void => {
+		setDataset([...shuffle(dataset)]);
+	};
 
 	const onTabIndexChange = (
 		_: React.SyntheticEvent,
@@ -47,16 +93,39 @@ export const App = () => {
 		setTabIndex(Number.parseInt(value));
 	};
 
-	const dataset: number[] = [
-		20, 14, 8, 5, 21, 17, 2, 11, 24, 13, 3, 6, 25,
-		15, 19, 16, 12, 18, 10, 1, 9, 4, 22, 7, 23,
-	];
-
 	return (
 		<Fragment>
 			<CssBaseline enableColorScheme />
 			<Container maxWidth="md">
-				<Stack spacing={2}>
+				<Stack
+					spacing={2}
+					marginY={2}
+				>
+					<Typography variant="h2">
+						Configuration
+					</Typography>
+					<Stack
+						alignContent="start"
+						direction="row"
+						spacing={2}
+					>
+						<TextField
+							fullWidth
+							label="Size"
+							defaultValue={25}
+							onChange={onDatasetSizeChange}
+						/>
+						<Button
+							fullWidth
+							variant="contained"
+							onClick={onDatasetShuffle}
+						>
+							Shuffle
+						</Button>
+					</Stack>
+					<Typography variant="h2">
+						Visualizers
+					</Typography>
 					<Tabs
 						value={tabIndex}
 						onChange={onTabIndexChange}
@@ -92,61 +161,62 @@ export const App = () => {
 							label="Counting sort"
 						/> */}
 					</Tabs>
-					<TabPanel
-						index={tabIndex}
-						value={0}
-					>
-						<RendererBubbleSort
-							heightPx={400}
-							dataset={dataset}
-						/>
-					</TabPanel>
-					<TabPanel
-						index={tabIndex}
-						value={1}
-					>
-						<RendererInsertionSort
-							heightPx={400}
-							dataset={dataset}
-						/>
-					</TabPanel>
-					<TabPanel
-						index={tabIndex}
-						value={2}
-					>
-						<RendererSelectionSort
-							heightPx={400}
-							dataset={dataset}
-						/>
-					</TabPanel>
-					<TabPanel
-						index={tabIndex}
-						value={3}
-					>
-						<RendererMergeSort
-							dataset={dataset}
-							heightPx={400}
-						/>
-					</TabPanel>
-					<TabPanel
-						index={tabIndex}
-						value={4}
-					>
-						<RendererHeapSort
-							dataset={dataset}
-							heightPx={400}
-						/>
-					</TabPanel>
-					<TabPanel
-						index={tabIndex}
-						value={5}
-					>
-						<RendererQuickSort
-							dataset={dataset}
-							heightPx={400}
-						/>
-					</TabPanel>
-					{/*<TabPanel
+					<Box>
+						<TabPanel
+							index={tabIndex}
+							value={0}
+						>
+							<RendererBubbleSort
+								heightPx={400}
+								dataset={dataset}
+							/>
+						</TabPanel>
+						<TabPanel
+							index={tabIndex}
+							value={1}
+						>
+							<RendererInsertionSort
+								heightPx={400}
+								dataset={dataset}
+							/>
+						</TabPanel>
+						<TabPanel
+							index={tabIndex}
+							value={2}
+						>
+							<RendererSelectionSort
+								heightPx={400}
+								dataset={dataset}
+							/>
+						</TabPanel>
+						<TabPanel
+							index={tabIndex}
+							value={3}
+						>
+							<RendererMergeSort
+								dataset={dataset}
+								heightPx={400}
+							/>
+						</TabPanel>
+						<TabPanel
+							index={tabIndex}
+							value={4}
+						>
+							<RendererHeapSort
+								dataset={dataset}
+								heightPx={400}
+							/>
+						</TabPanel>
+						<TabPanel
+							index={tabIndex}
+							value={5}
+						>
+							<RendererQuickSort
+								dataset={dataset}
+								heightPx={400}
+							/>
+						</TabPanel>
+						{/*<TabPanel
 						index={tabIndex}
 						value={6}
 					>
@@ -154,6 +224,7 @@ export const App = () => {
 							dataset={dataset}
 						/>
 					</TabPanel> */}
+					</Box>
 				</Stack>
 			</Container>
 		</Fragment>
