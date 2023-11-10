@@ -28,8 +28,8 @@ export const countingSort = (
 	let memWriteCount: number = 0;
 	let memReadCount: number = 0;
 
-	const auxiliaryMemory: number[] = [];
-	const sortedAuxiliaryMemory: number[] = [];
+	const auxMemory: number[] = Array(maxValue);
+	const sortedAuxMemory: number[] = [];
 
 	const generateFrameState = (
 		frameDescription: ReactNode,
@@ -38,8 +38,8 @@ export const countingSort = (
 		frameStates.push({
 			frameDescription,
 			elementStates: [...dataset],
-			auxStates: [...auxiliaryMemory],
-			sortedAuxStates: [...sortedAuxiliaryMemory],
+			auxStates: [...auxMemory],
+			sortedAuxStates: [...sortedAuxMemory],
 			memReadCount,
 			memWriteCount,
 			...indexDetails,
@@ -60,16 +60,18 @@ export const countingSort = (
 		},
 	);
 
-	const sortedXs: number[] = [];
-	for (let i = 0; i <= maxValue; i++) {
-		auxiliaryMemory[i] = 0;
+	for (let i = 1; i < maxValue; i++) {
+		auxMemory[i] = 0;
 	}
 
-	for (let i = 0; i <= maxValue; i++) {
-		auxiliaryMemory[dataset[i]]++;
+	for (let i = 1; i <= maxValue; i++) {
+		auxMemory[dataset[i]]++;
 		generateFrameState(
 			<Fragment>
-				Increment <code>input[{dataset[i]}]</code>{" "}
+				Increment{" "}
+				<code>
+					input[{auxMemory[dataset[i]]}]
+				</code>{" "}
 				by one.
 			</Fragment>,
 			{
@@ -99,7 +101,7 @@ export const countingSort = (
 	);
 
 	for (let i = 1; i <= maxValue; i++) {
-		auxiliaryMemory[i] += auxiliaryMemory[i - 1];
+		auxMemory[i] += auxMemory[i - 1];
 
 		memReadCount++;
 		memWriteCount++;
@@ -123,15 +125,16 @@ export const countingSort = (
 	}
 
 	for (let i = 0; i < size; i++) {
-		sortedXs[auxiliaryMemory[dataset[i]]] =
+		sortedAuxMemory[auxMemory[dataset[i]]] =
 			dataset[i];
+
 		memReadCount++;
 		memWriteCount++;
 		generateFrameState(
 			<Fragment>
 				Write <code>input[{i}]</code> to{" "}
 				<code>
-					sortedAux[{auxiliaryMemory[dataset[i]]}]
+					sortedAux[{auxMemory[dataset[i]]}]
 				</code>
 				.
 			</Fragment>,
@@ -141,16 +144,15 @@ export const countingSort = (
 				memAuxRead: -1,
 				memAuxWrite: -1,
 				memSortedAuxRead: 0,
-				memSortedAuxWrite:
-					auxiliaryMemory[dataset[i]],
+				memSortedAuxWrite: auxMemory[dataset[i]],
 			},
 		);
 
-		auxiliaryMemory[dataset[i]]--;
+		auxMemory[dataset[i]]--;
 	}
 
 	for (let i = 0; i < size; i++) {
-		dataset[i] = sortedXs[i];
+		dataset[i] = sortedAuxMemory[i];
 
 		memReadCount++;
 		memWriteCount++;
@@ -161,10 +163,10 @@ export const countingSort = (
 				<code>input[{i}]</code>.
 			</Fragment>,
 			{
-				memRead: 0,
+				memRead: -1,
 				memWrite: i,
-				memAuxRead: 0,
-				memAuxWrite: 0,
+				memAuxRead: -1,
+				memAuxWrite: -1,
 				memSortedAuxRead: i,
 				memSortedAuxWrite: -1,
 			},

@@ -2,7 +2,7 @@ import { FC, useState, useEffect } from "react";
 import {
 	Box,
 	Button,
-	Stack,
+	Grid,
 	Typography,
 } from "@mui/material";
 import {
@@ -18,7 +18,6 @@ import { bubbleSort, FrameState } from "./helper";
 type RendererElemenetProps = {
 	value: number;
 	maxValue: number;
-	size: number;
 
 	compared: boolean;
 	swapped: boolean;
@@ -30,7 +29,6 @@ const RendererElement: FC<
 > = (props) => {
 	const {
 		maxValue,
-		size,
 		value,
 		compared,
 		swapped,
@@ -40,49 +38,34 @@ const RendererElement: FC<
 
 	const height: number = (value / maxValue) * 100;
 
-	const width: number = (1 / size) * 100;
-
-	let bgcolor: string = `hsl(0, 0%, ${
+	let bgColor: string = `hsl(0, 0%, ${
 		(value / maxValue) * 90
 	}%)`;
 
 	if (rightMostUnsortedElement) {
-		bgcolor = pink["A100"];
+		bgColor = pink["A100"];
 	}
 
 	if (compared) {
-		bgcolor = blue["A100"];
+		bgColor = blue["A100"];
 	}
 
 	if (swapped) {
-		bgcolor = deepOrange["A100"];
+		bgColor = deepOrange["A100"];
 	}
 
 	return (
-		<Box
-			sx={{
-				width: `${width}%`,
-				height: `${height}%`,
-				display: "flex",
-				flexDirection: "column",
-				justifyContent: "center",
-				alignItems: "center",
-			}}
+		<Grid
+			item
+			xs={1}
+			height={`${height}%`}
+			alignItems="flex-start"
+			display="flex"
+			justifyContent="center"
+			bgcolor={bgColor}
 		>
-			<Box
-				sx={{
-					width: "100%",
-					minHeight: "100%",
-					justifyContent: "center",
-					alignItems: "center",
-					display: "flex",
-					bgcolor,
-				}}
-			>
-				{bubbling ? "🚀" : ""}
-			</Box>
-			<code>{value}</code>
-		</Box>
+			{bubbling ? "🚀" : ""}
+		</Grid>
 	);
 };
 
@@ -142,39 +125,18 @@ export const RendererBubbleSort: FC<
 
 	return (
 		<Box>
-			<Stack spacing={2}>
-				<Box>
-					<IconLabel
-						icon={
-							<SquareRounded
-								htmlColor={pink.A100}
-							/>
-						}
-						label="Right-most unsorted element"
-					/>
-					<IconLabel
-						icon={
-							<SquareRounded
-								htmlColor={blue.A100}
-							/>
-						}
-						label="Being compared"
-					/>
-
-					<IconLabel
-						icon={
-							<SquareRounded
-								htmlColor={deepOrange.A100}
-							/>
-						}
-						label="Swapped places"
-					/>
-					<IconLabel
-						icon="🚀"
-						label="Element is bubbling up"
-					/>
-				</Box>
-				<Box>
+			<Typography variant="h3">
+				Bubble sort
+			</Typography>
+			<Grid
+				container
+				spacing={2}
+			>
+				<Grid
+					item
+					xs={12}
+					sm={6}
+				>
 					<Typography variant="body1">
 						{`Frame ${frame + 1}/${
 							frameStates.length
@@ -189,68 +151,110 @@ export const RendererBubbleSort: FC<
 					<Typography variant="body1">
 						{currFrame.frameDescription}
 					</Typography>
-				</Box>
-				<Box
-					display="flex"
-					flexDirection="row"
-					alignItems="flex-end"
-					sx={{
-						width: "100%",
-						height: `${heightPx}px`,
-					}}
+				</Grid>
+				<Grid
+					item
+					xs={12}
+					sm={6}
 				>
-					{currFrame.elementStates.map(
-						(value, index) => {
-							return (
-								<RendererElement
-									key={`key-${index}`}
-									maxValue={maxValue}
-									size={size}
-									value={value}
-									compared={currFrame.compared.includes(
-										index,
-									)}
-									swapped={currFrame.swapped.includes(
-										index,
-									)}
-									rightMostUnsortedElement={
-										index ===
-										currFrame.rightMostUnsortedElement
-									}
-									bubbling={
-										index === currFrame.pivot
-									}
-								/>
-							);
-						},
-					)}
-				</Box>
-				<Box>
-					<Stack
-						direction="row"
-						spacing={2}
+					<IconLabel
+						label="Right-most unsorted element"
+						icon={
+							<SquareRounded
+								htmlColor={pink.A100}
+							/>
+						}
+					/>
+					<IconLabel
+						label="Being compared"
+						icon={
+							<SquareRounded
+								htmlColor={blue.A100}
+							/>
+						}
+					/>
+					<IconLabel
+						label="Swapped places"
+						icon={
+							<SquareRounded
+								htmlColor={deepOrange.A100}
+							/>
+						}
+					/>
+					<IconLabel
+						icon="🚀"
+						label="Element is bubbling up"
+					/>
+				</Grid>
+			</Grid>
+			<Grid
+				container
+				columns={size}
+				display="flex"
+				flexDirection="row"
+				alignItems="flex-end"
+				height={`${heightPx}px`}
+				paddingY={2}
+			>
+				{currFrame.elementStates.map(
+					(value, index) => {
+						return (
+							<RendererElement
+								key={`key-${index}`}
+								maxValue={maxValue}
+								value={value}
+								compared={currFrame.compared.includes(
+									index,
+								)}
+								swapped={currFrame.swapped.includes(
+									index,
+								)}
+								rightMostUnsortedElement={
+									index ===
+									currFrame.rightMostUnsortedElement
+								}
+								bubbling={
+									index === currFrame.pivot
+								}
+							/>
+						);
+					},
+				)}
+			</Grid>
+			<Grid
+				container
+				spacing={2}
+				paddingY={2}
+			>
+				<Grid
+					item
+					xs={6}
+				>
+					<Button
+						fullWidth
+						variant="contained"
+						onClick={onFrameRewind}
+						disabled={frame === 0}
 					>
-						<Button
-							fullWidth
-							variant="contained"
-							onClick={onFrameRewind}
-							disabled={frame === 0}
-						>
-							Previous Frame
-						</Button>
-						<Button
-							fullWidth
-							variant="contained"
-							onClick={onFrameAdvance}
-							disabled={
-								frame === frameStates.length - 1
-							}
-						>
-							Next Frame
-						</Button>
-					</Stack>
-				</Box>
-			</Stack>
+						Previous Frame
+					</Button>
+				</Grid>
+				<Grid
+					item
+					xs={6}
+				>
+					<Button
+						fullWidth
+						variant="contained"
+						onClick={onFrameAdvance}
+						disabled={
+							frame === frameStates.length - 1
+						}
+					>
+						Next Frame
+					</Button>
+				</Grid>
+			</Grid>
 		</Box>
 	);
 };

@@ -43,7 +43,6 @@ export const bubbleSort = (
 			pivot: -1,
 			rightMostUnsortedElement: -1,
 			compared: [],
-			// beingSwapped: [],
 			swapped: [],
 		},
 	);
@@ -72,23 +71,23 @@ export const bubbleSort = (
 			const a = dataset[i];
 			const b = dataset[i + 1];
 			if (b >= a) {
-				// generateFrameState(
-				// 	<Fragment>
-				// 		Bubbles <code>input[{i + 1}]</code> up
-				// 		instead (since{" "}
-				// 		<code>
-				// 			input[{i}] &le; input[{i + 1}]
-				// 		</code>
-				// 		).
-				// 	</Fragment>,
-				// 	{
-				// 		rightMostUnsortedElement:
-				// 			size - offset - 1,
-				// 		bubbling: i + 1,
-				// 		compared: [i, i + 1],
-				// 		swapped: [],
-				// 	},
-				// );
+				generateFrameState(
+					<Fragment>
+						Update <code>input[{i + 1}]</code> to
+						be the new pivot. (since{" "}
+						<code>
+							input[{i}] &le; input[{i + 1}]
+						</code>
+						)
+					</Fragment>,
+					{
+						compared: [i, i + 1],
+						swapped: [],
+						rightMostUnsortedElement:
+							size - offset - 1,
+						pivot: i + 1,
+					},
+				);
 				continue;
 			}
 

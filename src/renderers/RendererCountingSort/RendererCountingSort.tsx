@@ -1,15 +1,9 @@
-import {
-	FC,
-	useState,
-	SyntheticEvent,
-} from "react";
+import { FC, useState } from "react";
 import {
 	Button,
 	Box,
 	Stack,
 	Typography,
-	Tab,
-	Tabs,
 } from "@mui/material";
 import {
 	teal,
@@ -85,8 +79,6 @@ export const RendererCountingSort: FC<
 	const maxValue: number = Math.max(...dataset);
 
 	const [frame, setFrame] = useState<number>(0);
-	const [tabPanelIndex, setTabPabelIndex] =
-		useState<number>(0);
 	const [frameStates] = useState<FrameState[]>(
 		() => {
 			const frameStates: FrameState[] = [];
@@ -117,13 +109,6 @@ export const RendererCountingSort: FC<
 		setFrame((prevFrame) => {
 			return prevFrame - 1;
 		});
-	};
-
-	const onTabPanelIndexChange = (
-		_: SyntheticEvent,
-		nextIndex: string,
-	) => {
-		setTabPabelIndex(Number.parseInt(nextIndex));
 	};
 
 	const currFrame: FrameState =
@@ -166,23 +151,9 @@ export const RendererCountingSort: FC<
 						{currFrame.frameDescription}
 					</Typography>
 				</Box>
-				<Tabs
-					value={tabPanelIndex}
-					onChange={onTabPanelIndexChange}
-				>
-					<Tab
-						label="Primary memory"
-						value={0}
-					/>
-					<Tab
-						label="Auxiliary memory"
-						value={1}
-					/>
-					<Tab
-						label="Sorted auxiliary memory"
-						value={2}
-					/>
-				</Tabs>
+				<Typography variant="h3">
+					<code>input</code> memory
+				</Typography>
 				<Box
 					display="flex"
 					flexDirection="row"
@@ -192,75 +163,94 @@ export const RendererCountingSort: FC<
 						height: `${heightPx}px`,
 					}}
 				>
-					{tabPanelIndex === 0 &&
-						currFrame.elementStates.map(
-							(value, index) => {
-								return (
-									<RendererElement
-										key={`key-${index}`}
-										maxValue={maxValue}
-										size={size}
-										value={value}
-										stateRead={
-											index === currFrame.memRead
-										}
-										stateWrite={
-											index === currFrame.memWrite
-										}
-									/>
-								);
-							},
-						)}
-
-					{tabPanelIndex === 1 &&
-						currFrame.auxStates.length === 0 &&
+					{currFrame.elementStates.map(
+						(value, index) => {
+							return (
+								<RendererElement
+									key={`key-${index}`}
+									maxValue={maxValue}
+									size={size}
+									value={value}
+									stateRead={
+										index === currFrame.memRead
+									}
+									stateWrite={
+										index === currFrame.memWrite
+									}
+								/>
+							);
+						},
+					)}
+				</Box>
+				<Typography variant="h3">
+					<code>aux</code> memory
+				</Typography>
+				<Box
+					display="flex"
+					flexDirection="row"
+					alignItems="flex-end"
+					sx={{
+						width: "100%",
+						height: `${heightPx}px`,
+					}}
+				>
+					{currFrame.auxStates.length === 0 &&
 						"The auxiliary memory is not used in at this time."}
-					{tabPanelIndex === 1 &&
-						currFrame.auxStates.map(
-							(value, index) => {
-								return (
-									<RendererElement
-										key={`key-aux-${index}`}
-										maxValue={maxValue}
-										size={size}
-										value={value}
-										stateRead={
-											index ===
-											currFrame.memAuxRead
-										}
-										stateWrite={
-											index ===
-											currFrame.memAuxWrite
-										}
-									/>
-								);
-							},
-						)}
-					{tabPanelIndex === 2 &&
-						currFrame.sortedAuxStates.length ===
-							0 &&
+					{currFrame.auxStates.map(
+						(value, index) => {
+							return (
+								<RendererElement
+									key={`key-aux-${index}`}
+									maxValue={maxValue}
+									size={size}
+									value={value}
+									stateRead={
+										index === currFrame.memAuxRead
+									}
+									stateWrite={
+										index ===
+										currFrame.memAuxWrite
+									}
+								/>
+							);
+						},
+					)}
+				</Box>
+				<Typography variant="h3">
+					<code>sortedAux</code> memory
+				</Typography>
+				<Box
+					display="flex"
+					flexDirection="row"
+					alignItems="flex-end"
+					sx={{
+						width: "100%",
+						height: `${heightPx}px`,
+					}}
+				>
+					{currFrame.sortedAuxStates.length ===
+						0 &&
 						"The sorted auxiliary memory is not used in at this time."}
-					{tabPanelIndex === 2 &&
-						currFrame.sortedAuxStates.map(
-							(value, index) => {
-								return (
-									<RendererElement
-										key={`key-aux-${index}`}
-										maxValue={maxValue}
-										size={size}
-										value={value}
-										stateRead={
-											index ===
-											currFrame.memSortedAuxRead
-										}
-										stateWrite={
-											index ===
-											currFrame.memSortedAuxWrite
-										}
-									/>
-								);
-							},
-						)}
+					{currFrame.sortedAuxStates.map(
+						(value, index) => {
+							return (
+								<RendererElement
+									key={`key-sorted-aux-${index}`}
+									maxValue={maxValue}
+									size={size}
+									value={value}
+									stateRead={
+										index ===
+										currFrame.memSortedAuxRead
+									}
+									stateWrite={
+										index ===
+										currFrame.memSortedAuxWrite
+									}
+								/>
+							);
+						},
+					)}
 				</Box>
 				<Stack
 					direction="row"

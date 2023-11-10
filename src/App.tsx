@@ -1,9 +1,4 @@
-import {
-	FC,
-	Fragment,
-	useState,
-	ChangeEvent,
-} from "react";
+import { FC, Fragment, useState } from "react";
 
 import "./styles/App.css";
 
@@ -14,8 +9,6 @@ import {
 	Box,
 	Tabs,
 	Tab,
-	TextField,
-	Button,
 	Typography,
 } from "@mui/material";
 
@@ -60,31 +53,31 @@ export const App = () => {
 	const [tabIndex, setTabIndex] =
 		useState<number>(0);
 
-	const [dataset, setDataset] = useState<
-		number[]
-	>(generateDataset(10));
+	const [dataset] = useState<number[]>(
+		generateDataset(10),
+	);
 
-	const onDatasetSizeChange = (
-		event: ChangeEvent<
-			HTMLTextAreaElement | HTMLInputElement
-		>,
-	): void => {
-		const value: string = event.target.value;
-		let size: number = Number.parseInt(value);
+	// const onDatasetSizeChange = (
+	// 	event: ChangeEvent<
+	// 		HTMLTextAreaElement | HTMLInputElement
+	// 	>,
+	// ): void => {
+	// 	const value: string = event.target.value;
+	// 	let size: number = Number.parseInt(value);
 
-		if (Number.isNaN(size)) {
-			size = 3;
-		}
-		if (size > 10 || size < 3) {
-			return;
-		}
+	// 	if (Number.isNaN(size)) {
+	// 		size = 3;
+	// 	}
+	// 	if (size > 10 || size < 3) {
+	// 		return;
+	// 	}
 
-		setDataset(generateDataset(size));
-	};
+	// 	setDataset(generateDataset(size));
+	// };
 
-	const onDatasetShuffle = (): void => {
-		setDataset([...shuffle(dataset)]);
-	};
+	// const onDatasetShuffle = (): void => {
+	// 	setDataset([...shuffle(dataset)]);
+	// };
 
 	const onTabIndexChange = (
 		_: React.SyntheticEvent,
@@ -101,28 +94,6 @@ export const App = () => {
 					spacing={2}
 					marginY={2}
 				>
-					<Typography variant="h2">
-						Configuration
-					</Typography>
-					<Stack
-						alignContent="start"
-						direction="row"
-						spacing={2}
-					>
-						<TextField
-							fullWidth
-							label="Size"
-							defaultValue={25}
-							onChange={onDatasetSizeChange}
-						/>
-						<Button
-							fullWidth
-							variant="contained"
-							onClick={onDatasetShuffle}
-						>
-							Shuffle
-						</Button>
-					</Stack>
 					<Typography variant="h2">
 						Visualizers
 					</Typography>
@@ -226,6 +197,28 @@ export const App = () => {
 							/>
 						</TabPanel>
 					</Box>
+					{/* <Typography variant="h2">
+						Configuration
+					</Typography>
+					<Stack
+						alignContent="start"
+						direction="row"
+						spacing={2}
+					>
+						<TextField
+							fullWidth
+							label="Size"
+							defaultValue={25}
+							onChange={onDatasetSizeChange}
+						/>
+						<Button
+							fullWidth
+							variant="contained"
+							onClick={onDatasetShuffle}
+						>
+							Shuffle
+						</Button>
+					</Stack> */}
 				</Stack>
 			</Container>
 		</Fragment>
