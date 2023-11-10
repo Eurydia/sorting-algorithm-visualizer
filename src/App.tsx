@@ -26,7 +26,7 @@ import { RendererMergeSort } from "./renderers/RendererMergeSort";
 import { RendererHeapSort } from "./renderers/RendererHeapSort";
 import { RendererQuickSort } from "./renderers/RendererQuickSort";
 import { shuffle } from "renderers/helper/shuffle";
-// import { RendererCountingSort } from "./renderers/RendererCountingSort";
+import { RendererCountingSort } from "./renderers/RendererCountingSort";
 
 type TabPanelProps = {
 	index: number;
@@ -75,7 +75,7 @@ export const App = () => {
 		if (Number.isNaN(size)) {
 			size = 3;
 		}
-		if (size > 25 || size < 3) {
+		if (size > 10 || size < 3) {
 			return;
 		}
 
@@ -156,10 +156,10 @@ export const App = () => {
 							value={5}
 							label="Quicksort"
 						/>
-						{/*							<Tab
+						<Tab
 							value={6}
 							label="Counting sort"
-						/> */}
+						/>
 					</Tabs>
 					<Box>
 						<TabPanel
@@ -216,14 +216,15 @@ export const App = () => {
 								heightPx={400}
 							/>
 						</TabPanel>
-						{/*<TabPanel
-						index={tabIndex}
-						value={6}
-					>
-						<RendererCountingSort
-							dataset={dataset}
-						/>
-					</TabPanel> */}
+						<TabPanel
+							index={tabIndex}
+							value={6}
+						>
+							<RendererCountingSort
+								dataset={dataset}
+								heightPx={400}
+							/>
+						</TabPanel>
 					</Box>
 				</Stack>
 			</Container>

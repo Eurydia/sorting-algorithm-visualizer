@@ -218,7 +218,7 @@ export const RendererBubbleSort: FC<
 										currFrame.rightMostUnsortedElement
 									}
 									bubbling={
-										index === currFrame.bubbling
+										index === currFrame.pivot
 									}
 								/>
 							);

@@ -1,36 +1,95 @@
-import { FC, useState } from "react";
+import {
+	FC,
+	useState,
+	SyntheticEvent,
+} from "react";
 import {
 	Button,
-	Grid,
+	Box,
 	Stack,
+	Typography,
 	Tab,
 	Tabs,
-	Typography,
 } from "@mui/material";
+import {
+	teal,
+	orange,
+} from "@mui/material/colors";
+import { SquareRounded } from "@mui/icons-material";
+
+import { IconLabel } from "components/IconLabel";
 
 import {
 	countingSort,
 	FrameState,
 } from "./helper";
 
-type RendererCountingSortProps = {
-	dataset: number[];
+type RendererElemenetProps = {
 	size: number;
+	maxValue: number;
+	value: number;
+	stateRead: boolean;
+	stateWrite: boolean;
+};
+const RendererElement: FC<
+	RendererElemenetProps
+> = (props) => {
+	const {
+		size,
+		value,
+		maxValue,
+		stateRead,
+		stateWrite,
+	} = props;
+
+	const height: number = (value / maxValue) * 100;
+
+	const width: number = (1 / size) * 100;
+
+	let bgColor: string = `hsl(0, 0%, ${
+		(value / maxValue) * 90
+	}%)`;
+
+	if (stateRead) {
+		bgColor = teal.A100;
+	}
+
+	if (stateWrite) {
+		bgColor = orange.A100;
+	}
+
+	return (
+		<Box
+			display="flex"
+			alignItems="baseline"
+			justifyContent="center"
+			sx={{
+				width: `${width}%`,
+				height: `${height}%`,
+				backgroundColor: bgColor,
+			}}
+		></Box>
+	);
 };
 
+type RendererCountingSortProps = {
+	dataset: number[];
+	heightPx: number;
+};
 export const RendererCountingSort: FC<
 	RendererCountingSortProps
 > = (props) => {
-	const { dataset, size } = props;
+	const { dataset, heightPx } = props;
 
-	const [tabIndex, setTabIndex] =
-		useState<number>(0);
+	const size: number = dataset.length;
+	const maxValue: number = Math.max(...dataset);
+
 	const [frame, setFrame] = useState<number>(0);
-
+	const [tabPanelIndex, setTabPabelIndex] =
+		useState<number>(0);
 	const [frameStates] = useState<FrameState[]>(
 		() => {
 			const frameStates: FrameState[] = [];
-
 			countingSort(
 				[...dataset],
 				size,
@@ -40,8 +99,8 @@ export const RendererCountingSort: FC<
 		},
 	);
 
-	const getNextFrame = () => {
-		if (frame >= frameStates.length - 1) {
+	const onFrameAdvance = () => {
+		if (frame === frameStates.length - 1) {
 			return;
 		}
 
@@ -50,7 +109,7 @@ export const RendererCountingSort: FC<
 		});
 	};
 
-	const getPrevFrame = () => {
+	const onFrameRewind = () => {
 		if (frame < 1) {
 			return;
 		}
@@ -60,136 +119,173 @@ export const RendererCountingSort: FC<
 		});
 	};
 
-	const currFrameState: FrameState =
+	const onTabPanelIndexChange = (
+		_: SyntheticEvent,
+		nextIndex: string,
+	) => {
+		setTabPabelIndex(Number.parseInt(nextIndex));
+	};
+
+	const currFrame: FrameState =
 		frameStates[frame];
 
-	const maxValue: number = Math.max(...dataset);
-
 	return (
-		<Grid
-			width="100%"
-			container
-			columns={12}
-			spacing={1}
-		>
-			<Grid
-				item
-				xs={12}
-			>
-				<Stack>
+		<Box>
+			<Stack spacing={2}>
+				<Box>
+					<IconLabel
+						label="Being read from"
+						icon={
+							<SquareRounded
+								htmlColor={teal.A100}
+							/>
+						}
+					/>
+					<IconLabel
+						label="Being written to"
+						icon={
+							<SquareRounded
+								htmlColor={orange.A100}
+							/>
+						}
+					/>
+				</Box>
+				<Box>
 					<Typography variant="body1">
 						{`Frame ${frame + 1}/${
 							frameStates.length
 						}`}
 					</Typography>
-					{/* <Typography variant="body1">
-						{`Comparison: ${currFrameState.comparisonCount}`}
+					<Typography variant="body1">
+						{`Read: ${currFrame.memReadCount}`}
 					</Typography>
 					<Typography variant="body1">
-						{`Swap: ${currFrameState.swapCount}`}
-					</Typography> */}
-					<Typography
-						variant="body1"
-						minHeight="3rem"
-					>
-						{`Status: ${currFrameState.frameDescription}`}
+						{`Write: ${currFrame.memWriteCount}`}
 					</Typography>
-				</Stack>
-			</Grid>
-			<Grid
-				item
-				xs={12}
-			>
+					<Typography variant="body1">
+						{currFrame.frameDescription}
+					</Typography>
+				</Box>
 				<Tabs
-					value={tabIndex}
-					onChange={(_, nextIndex) =>
-						setTabIndex(nextIndex)
-					}
+					value={tabPanelIndex}
+					onChange={onTabPanelIndexChange}
 				>
-					<Tab label="Input" />
-					<Tab label="Auxiliary" />
+					<Tab
+						label="Primary memory"
+						value={0}
+					/>
+					<Tab
+						label="Auxiliary memory"
+						value={1}
+					/>
+					<Tab
+						label="Sorted auxiliary memory"
+						value={2}
+					/>
 				</Tabs>
-			</Grid>
-			<Grid
-				container
-				item
-				columns={size}
-				width="100%"
-				minHeight={`${maxValue}px`}
-			>
-				{currFrameState.elementStates.map(
-					({ value }, index) => {
-						const height: string = `${
-							(value / maxValue) * 500
-						}px`;
-
-						let bgColor: string = `hsl(0, 0%, ${
-							(value / maxValue) * 80
-						}%)`;
-
-						// if (
-						// 	index ===
-						// 	currFrameState.workingRegionFirstIndex
-						// ) {
-						// 	bgColor = red.A100;
-						// }
-						// if (
-						// 	index === currFrameState.pivotIndex
-						// ) {
-						// 	bgColor = green[400];
-						// }
-						// if (isBeingCompared) {
-						// 	bgColor = blue.A100;
-						// }
-						// if (isBeingSwapped) {
-						// 	bgColor = blue.A200;
-						// }
-						// if (isSwapped) {
-						// 	bgColor = blue.A700;
-						// }
-
-						return (
-							<Grid
-								key={`k-${index}`}
-								item
-								xs={1}
-								height={height}
-								sx={{
-									backgroundColor: bgColor,
-								}}
-							/>
-						);
-					},
-				)}
-			</Grid>
-			<Grid
-				item
-				xs={6}
-			>
-				<Button
-					fullWidth
-					variant="contained"
-					onClick={getPrevFrame}
-					disabled={frame === 0}
+				<Box
+					display="flex"
+					flexDirection="row"
+					alignItems="flex-end"
+					sx={{
+						width: "100%",
+						height: `${heightPx}px`,
+					}}
 				>
-					Previous Frame
-				</Button>
-			</Grid>
-			<Grid
-				item
-				xs={6}
-			>
-				<Button
-					fullWidth
-					variant="contained"
-					onClick={getNextFrame}
-					disabled={
-						frame >= frameStates.length - 1
-					}
+					{tabPanelIndex === 0 &&
+						currFrame.elementStates.map(
+							(value, index) => {
+								return (
+									<RendererElement
+										key={`key-${index}`}
+										maxValue={maxValue}
+										size={size}
+										value={value}
+										stateRead={
+											index === currFrame.memRead
+										}
+										stateWrite={
+											index === currFrame.memWrite
+										}
+									/>
+								);
+							},
+						)}
+
+					{tabPanelIndex === 1 &&
+						currFrame.auxStates.length === 0 &&
+						"The auxiliary memory is not used in at this time."}
+					{tabPanelIndex === 1 &&
+						currFrame.auxStates.map(
+							(value, index) => {
+								return (
+									<RendererElement
+										key={`key-aux-${index}`}
+										maxValue={maxValue}
+										size={size}
+										value={value}
+										stateRead={
+											index ===
+											currFrame.memAuxRead
+										}
+										stateWrite={
+											index ===
+											currFrame.memAuxWrite
+										}
+									/>
+								);
+							},
+						)}
+					{tabPanelIndex === 2 &&
+						currFrame.sortedAuxStates.length ===
+							0 &&
+						"The sorted auxiliary memory is not used in at this time."}
+					{tabPanelIndex === 2 &&
+						currFrame.sortedAuxStates.map(
+							(value, index) => {
+								return (
+									<RendererElement
+										key={`key-aux-${index}`}
+										maxValue={maxValue}
+										size={size}
+										value={value}
+										stateRead={
+											index ===
+											currFrame.memSortedAuxRead
+										}
+										stateWrite={
+											index ===
+											currFrame.memSortedAuxWrite
+										}
+									/>
+								);
+							},
+						)}
+				</Box>
+				<Stack
+					direction="row"
+					spacing={2}
 				>
-					Next Frame
-				</Button>
-			</Grid>
-		</Grid>
+					<Button
+						fullWidth
+						variant="contained"
+						onClick={onFrameRewind}
+						disabled={frame === 0}
+					>
+						Previous Frame
+					</Button>
+					<Button
+						fullWidth
+						variant="contained"
+						onClick={onFrameAdvance}
+						disabled={
+							frame === frameStates.length - 1
+						}
+					>
+						Next Frame
+					</Button>
+				</Stack>
+			</Stack>
+		</Box>
 	);
 };

@@ -4,7 +4,7 @@ export type IndexDetails = {
 	compared: number[];
 	swapped: number[];
 	rightMostUnsortedElement: number;
-	bubbling: number;
+	pivot: number;
 };
 
 export type FrameState = IndexDetails & {
@@ -40,7 +40,7 @@ export const bubbleSort = (
 			Unsorted <code>input[0:{size - 1}]</code>.
 		</Fragment>,
 		{
-			bubbling: -1,
+			pivot: -1,
 			rightMostUnsortedElement: -1,
 			compared: [],
 			// beingSwapped: [],
@@ -63,7 +63,7 @@ export const bubbleSort = (
 				{
 					rightMostUnsortedElement:
 						size - offset - 1,
-					bubbling: i,
+					pivot: i,
 					compared: [i, i + 1],
 					swapped: [],
 				},
@@ -112,7 +112,7 @@ export const bubbleSort = (
 				{
 					rightMostUnsortedElement:
 						size - offset - 1,
-					bubbling: i + 1,
+					pivot: i + 1,
 					compared: [],
 					swapped: [i, i + 1],
 				},
@@ -141,7 +141,7 @@ export const bubbleSort = (
 		</Fragment>,
 		{
 			rightMostUnsortedElement: -1,
-			bubbling: -1,
+			pivot: -1,
 			compared: [],
 			swapped: [],
 		},
