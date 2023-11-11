@@ -1,0 +1,7 @@
+.renderer-element {
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+	border-radius: 0.25rem 0.25rem 0 0;
+	background: red;
+}

@@ -3,7 +3,6 @@ import {
 	Box,
 	Button,
 	Grid,
-	Stack,
 	Typography,
 } from "@mui/material";
 import {
@@ -14,7 +13,10 @@ import {
 import { SquareRounded } from "@mui/icons-material";
 
 import { IconLabel } from "components/IconLabel";
-import { bubbleSort, FrameState } from "./helper";
+import {
+	bubbleSort,
+	FrameState,
+} from "./bubbleSort";
 
 type RendererElemenetProps = {
 	value: number;
@@ -38,9 +40,8 @@ const RendererElement: FC<
 	} = props;
 
 	const height: number = (value / maxValue) * 100;
-
 	let bgColor: string = `hsl(0, 0%, ${
-		(value / maxValue) * 90
+		(value / maxValue) * 70 + 15
 	}%)`;
 
 	if (rightMostUnsortedElement) {
@@ -59,10 +60,8 @@ const RendererElement: FC<
 		<Grid
 			item
 			xs={1}
+			className="renderer-element"
 			height={`${height}%`}
-			alignItems="flex-start"
-			display="flex"
-			justifyContent="center"
 			bgcolor={bgColor}
 		>
 			{bubbling ? "🚀" : ""}
@@ -138,15 +137,19 @@ export const RendererBubbleSort: FC<
 
 	return (
 		<Box>
-			<div id="bubble-sort">
-				<Typography variant="h3">
-					Bubble sort
-				</Typography>
-			</div>
 			<Grid
 				container
 				spacing={2}
 			>
+				<Grid
+					item
+					xs={12}
+					id="bubble-sort"
+				>
+					<Typography variant="h3">
+						Bubble sort
+					</Typography>
+				</Grid>
 				<Grid
 					item
 					xs={12}
@@ -201,49 +204,47 @@ export const RendererBubbleSort: FC<
 					/>
 					<IconLabel
 						icon="🚀"
-						label="Element is bubbling up"
+						label="Pivot element"
 					/>
 				</Grid>
-			</Grid>
-			<Grid
-				container
-				columns={size}
-				display="flex"
-				flexDirection="row"
-				alignItems="flex-end"
-				height={`${heightPx}px`}
-				paddingY={2}
-			>
-				{currFrame.elementStates.map(
-					(value, index) => {
-						return (
-							<RendererElement
-								key={`key-${index}`}
-								maxValue={maxValue}
-								value={value}
-								compared={currFrame.compared.includes(
-									index,
-								)}
-								swapped={currFrame.swapped.includes(
-									index,
-								)}
-								rightMostUnsortedElement={
-									index ===
-									currFrame.rightMostUnsortedElement
-								}
-								bubbling={
-									index === currFrame.pivot
-								}
-							/>
-						);
-					},
-				)}
-			</Grid>
-			<Grid
-				container
-				spacing={2}
-				paddingY={2}
-			>
+				<Grid
+					item
+					xs={12}
+				>
+					<Grid
+						container
+						columns={size}
+						display="flex"
+						flexDirection="row"
+						alignItems="flex-end"
+						height={`${heightPx}px`}
+					>
+						{currFrame.elementStates.map(
+							(value, index) => {
+								return (
+									<RendererElement
+										key={`key-${index}`}
+										maxValue={maxValue}
+										value={value}
+										compared={currFrame.compared.includes(
+											index,
+										)}
+										swapped={currFrame.swapped.includes(
+											index,
+										)}
+										rightMostUnsortedElement={
+											index ===
+											currFrame.rightMostUnsortedElement
+										}
+										bubbling={
+											index === currFrame.pivot
+										}
+									/>
+								);
+							},
+						)}
+					</Grid>
+				</Grid>
 				<Grid
 					item
 					xs={6}
@@ -272,42 +273,57 @@ export const RendererBubbleSort: FC<
 						Next Frame
 					</Button>
 				</Grid>
-			</Grid>
-			<Stack spacing={2}>
-				<Typography variant="h3">
-					Reasons
-				</Typography>
-				<div id="bubble-sort-move-pivot-to-next-element">
+				<Grid
+					item
+					xs={12}
+				>
+					<Typography variant="h3">
+						Reasons
+					</Typography>
+				</Grid>
+				<Grid
+					item
+					xs={12}
+					id="bubble-sort-move-pivot-to-left-most-element"
+				>
+					<Typography fontWeight="bold">
+						Moving pivot to <code>input[0]</code>
+					</Typography>
+					<Typography>
+						The pivot moves to{" "}
+						<code>input[0]</code> if it is the
+						right-most unsorted element.
+					</Typography>
+				</Grid>
+				<Grid
+					item
+					xs={12}
+					id="bubble-sort-move-pivot-to-next-element"
+				>
 					<Typography fontWeight="bold">
 						Moving pivot to{" "}
 						<code>input[i + 1]</code>
 					</Typography>
 					<Typography>
-						The pivot is moved to{" "}
+						After comparison, the pivot moves to{" "}
 						<code>input[i + 1]</code> if{" "}
 						<code>
 							input[i] &le; input[i + 1]
 						</code>
 						.
 					</Typography>
-				</div>
-				<div id="bubble-sort-move-pivot-to-left-most-element">
-					<Typography fontWeight="bold">
-						Moving pivot to <code>input[0]</code>
-					</Typography>
-					<Typography>
-						The pivot is moved to{" "}
-						<code>input[0]</code> if the pivot has
-						reached the right-most unsorted
-						element.
-					</Typography>
-				</div>
-				<div id="bubble-sort-swap-elements">
+				</Grid>
+				<Grid
+					item
+					xs={12}
+					id="bubble-sort-swap-elements"
+				>
 					<Typography fontWeight="bold">
 						Swapping <code>input[i]</code> and{" "}
 						<code>input[i + 1]</code>
 					</Typography>
 					<Typography>
+						After comparison,{" "}
 						<code>input[i]</code> and{" "}
 						<code>input[i + 1]</code> are swapped
 						if{" "}
@@ -317,8 +333,8 @@ export const RendererBubbleSort: FC<
 						. The pivot also moves to{" "}
 						<code>input[i + 1]</code>.
 					</Typography>
-				</div>
-			</Stack>
+				</Grid>
+			</Grid>
 		</Box>
 	);
 };

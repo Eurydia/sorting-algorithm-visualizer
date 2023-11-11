@@ -1,5 +1,5 @@
+import { Fragment, ReactNode } from "react";
 import { Link } from "@mui/material";
-import { ReactNode, Fragment } from "react";
 
 type IndexDetails = {
 	compared: number[];
