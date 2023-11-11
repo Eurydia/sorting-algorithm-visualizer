@@ -3,6 +3,7 @@ import {
 	Box,
 	Button,
 	Grid,
+	Stack,
 	Typography,
 } from "@mui/material";
 import {
@@ -101,6 +102,12 @@ export const RendererBubbleSort: FC<
 	}, [dataset]);
 
 	const onFrameAdvance = () => {
+		(
+			document.querySelector(
+				"#bubble-sort",
+			) as HTMLElement
+		).scrollIntoView();
+
 		if (frame === frameStates.length - 1) {
 			return;
 		}
@@ -111,6 +118,12 @@ export const RendererBubbleSort: FC<
 	};
 
 	const onFrameRewind = () => {
+		(
+			document.querySelector(
+				"#bubble-sort",
+			) as HTMLElement
+		).scrollIntoView();
+
 		if (frame === 0) {
 			return;
 		}
@@ -125,9 +138,11 @@ export const RendererBubbleSort: FC<
 
 	return (
 		<Box>
-			<Typography variant="h3">
-				Bubble sort
-			</Typography>
+			<div id="bubble-sort">
+				<Typography variant="h3">
+					Bubble sort
+				</Typography>
+			</div>
 			<Grid
 				container
 				spacing={2}
@@ -148,7 +163,10 @@ export const RendererBubbleSort: FC<
 					<Typography variant="body1">
 						{`Swap: ${currFrame.swapCount}`}
 					</Typography>
-					<Typography variant="body1">
+					<Typography
+						variant="body1"
+						height="3rem"
+					>
 						{currFrame.frameDescription}
 					</Typography>
 				</Grid>
@@ -255,6 +273,52 @@ export const RendererBubbleSort: FC<
 					</Button>
 				</Grid>
 			</Grid>
+			<Stack spacing={2}>
+				<Typography variant="h3">
+					Reasons
+				</Typography>
+				<div id="bubble-sort-move-pivot-to-next-element">
+					<Typography fontWeight="bold">
+						Moving pivot to{" "}
+						<code>input[i + 1]</code>
+					</Typography>
+					<Typography>
+						The pivot is moved to{" "}
+						<code>input[i + 1]</code> if{" "}
+						<code>
+							input[i] &le; input[i + 1]
+						</code>
+						.
+					</Typography>
+				</div>
+				<div id="bubble-sort-move-pivot-to-left-most-element">
+					<Typography fontWeight="bold">
+						Moving pivot to <code>input[0]</code>
+					</Typography>
+					<Typography>
+						The pivot is moved to{" "}
+						<code>input[0]</code> if the pivot has
+						reached the right-most unsorted
+						element.
+					</Typography>
+				</div>
+				<div id="bubble-sort-swap-elements">
+					<Typography fontWeight="bold">
+						Swapping <code>input[i]</code> and{" "}
+						<code>input[i + 1]</code>
+					</Typography>
+					<Typography>
+						<code>input[i]</code> and{" "}
+						<code>input[i + 1]</code> are swapped
+						if{" "}
+						<code>
+							input[i] &gt; input[i + 1]
+						</code>
+						. The pivot also moves to{" "}
+						<code>input[i + 1]</code>.
+					</Typography>
+				</div>
+			</Stack>
 		</Box>
 	);
 };

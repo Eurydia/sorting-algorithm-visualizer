@@ -1,6 +1,7 @@
+import { Link } from "@mui/material";
 import { ReactNode, Fragment } from "react";
 
-export type IndexDetails = {
+type IndexDetails = {
 	compared: number[];
 	swapped: number[];
 	rightMostUnsortedElement: number;
@@ -73,11 +74,11 @@ export const bubbleSort = (
 			if (b >= a) {
 				generateFrameState(
 					<Fragment>
-						Update <code>input[{i + 1}]</code> to
-						be the new pivot. (since{" "}
-						<code>
-							input[{i}] &le; input[{i + 1}]
-						</code>
+						Move pivot to{" "}
+						<code>input[{i + 1}]</code>. (
+						<Link href="#bubble-sort-move-pivot-to-next-element">
+							Reason
+						</Link>
 						)
 					</Fragment>,
 					{
@@ -98,16 +99,12 @@ export const bubbleSort = (
 			generateFrameState(
 				<Fragment>
 					Swapped <code>input[{i}]</code> and{" "}
-					<code>input[{i + 1}]</code>.
+					<code>input[{i + 1}]</code>. (
+					<Link href="#bubble-sort-swap-elements">
+						Reason
+					</Link>
+					)
 				</Fragment>,
-				// <Fragment>
-				// 	Swapped <code>input[{i}]</code> and{" "}
-				// 	<code>input[{i + 1}]</code> (since{" "}
-				// 	<code>
-				// 		input[{i}] &gt; input[{i + 1}]
-				// 	</code>
-				// 	).
-				// </Fragment>,
 				{
 					rightMostUnsortedElement:
 						size - offset - 1,
@@ -117,21 +114,22 @@ export const bubbleSort = (
 				},
 			);
 		}
-		// generateFrameState(
-		// 	<Fragment>
-		// 		Decrease unsorted region to{" "}
-		// 		<code>input[0:{size - offset - 2}]</code>{" "}
-		// 		and start again (the largest element is
-		// 		the right-most unsorted element).
-		// 	</Fragment>,
-		// 	{
-		// 		rightMostUnsortedElement:
-		// 			size - offset - 1,
-		// 		bubbling: size - offset - 1,
-		// 		compared: [],
-		// 		swapped: [],
-		// 	},
-		// );
+		generateFrameState(
+			<Fragment>
+				Move pivot to <code>input[0]</code>. (
+				<Link href="#bubble-sort-move-pivot-to-left-most-element">
+					Reason
+				</Link>
+				)
+			</Fragment>,
+			{
+				rightMostUnsortedElement:
+					size - offset - 2,
+				pivot: 0,
+				compared: [],
+				swapped: [],
+			},
+		);
 	}
 
 	generateFrameState(
