@@ -1,7 +1,7 @@
 import { FC, Fragment, useState } from "react";
 
 import "./styles/App.css";
-import "./styles/renderer-element.css";
+import "./styles/renderer.css";
 
 import {
 	Container,
@@ -19,8 +19,8 @@ import { RendererSelectionSort } from "./renderers/RendererSelectionSort";
 import { RendererMergeSort } from "./renderers/RendererMergeSort";
 import { RendererHeapSort } from "./renderers/RendererHeapSort";
 import { RendererQuickSort } from "./renderers/RendererQuickSort";
-import { shuffle } from "renderers/helper/shuffle";
 import { RendererCountingSort } from "./renderers/RendererCountingSort";
+import { shuffle } from "renderers/helper/shuffle";
 
 type TabPanelProps = {
 	index: number;
@@ -52,7 +52,7 @@ const generateDataset = (
 
 export const App = () => {
 	const [tabIndex, setTabIndex] =
-		useState<number>(0);
+		useState<number>(1);
 
 	const [dataset] = useState<number[]>(
 		generateDataset(10),

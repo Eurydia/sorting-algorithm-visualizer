@@ -2,8 +2,8 @@ import { FC, useState } from "react";
 import {
 	Button,
 	Box,
-	Stack,
 	Typography,
+	Grid,
 } from "@mui/material";
 import {
 	blue,
@@ -20,7 +20,6 @@ import {
 } from "./helper";
 
 type RendererElemenetProps = {
-	size: number;
 	maxValue: number;
 	value: number;
 
@@ -35,7 +34,6 @@ const RendererElement: FC<
 	const {
 		value,
 		maxValue,
-		size,
 
 		compared,
 		swapped,
@@ -45,18 +43,16 @@ const RendererElement: FC<
 
 	const height: number = (value / maxValue) * 100;
 
-	const width: number = (1 / size) * 100;
-
 	let bgColor: string = `hsl(0, 0%, ${
-		(value / maxValue) * 90
+		(value / maxValue) * 70 + 15
 	}%)`;
 
 	if (leftMostUnsortedElement) {
-		bgColor = pink.A100;
+		bgColor = pink["A100"];
 	}
 
 	if (compared) {
-		bgColor = blue.A100;
+		bgColor = blue["A100"];
 	}
 
 	if (swapped) {
@@ -64,18 +60,15 @@ const RendererElement: FC<
 	}
 
 	return (
-		<Box
-			display="flex"
-			alignItems="baseline"
-			justifyContent="center"
-			sx={{
-				width: `${width}%`,
-				height: `${height}%`,
-				backgroundColor: bgColor,
-			}}
+		<Grid
+			item
+			xs={1}
+			className="renderer-element"
+			bgcolor={bgColor}
+			height={`${height}%`}
 		>
 			{pivot ? "🗿" : ""}
-		</Box>
+		</Grid>
 	);
 };
 
@@ -129,8 +122,47 @@ export const RendererInsertionSort: FC<
 
 	return (
 		<Box>
-			<Stack spacing={2}>
-				<Box>
+			<Grid
+				container
+				spacing={2}
+			>
+				<Grid
+					item
+					xs={12}
+					id="insertion-sort"
+				>
+					<Typography variant="h3">
+						Insertion Sort
+					</Typography>
+				</Grid>
+				<Grid
+					item
+					xs={12}
+					sm={6}
+				>
+					<Typography variant="body1">
+						{`Frame ${frame + 1}/${
+							frameStates.length
+						}`}
+					</Typography>
+					<Typography variant="body1">
+						{`Comparison: ${currFrame.comparisonCount}`}
+					</Typography>
+					<Typography variant="body1">
+						{`Swap: ${currFrame.swapCount}`}
+					</Typography>
+					<Typography
+						variant="body1"
+						height="3rem"
+					>
+						{currFrame.frameDescription}
+					</Typography>
+				</Grid>
+				<Grid
+					item
+					xs={12}
+					sm={6}
+				>
 					<IconLabel
 						label="Left-most unsorted element"
 						icon={
@@ -160,62 +192,47 @@ export const RendererInsertionSort: FC<
 						icon="🗿"
 						label="Pivot"
 					/>
-				</Box>
-				<Box>
-					<Typography variant="body1">
-						{`Frame ${frame + 1}/${
-							frameStates.length
-						}`}
-					</Typography>
-					<Typography variant="body1">
-						{`Comparison: ${currFrame.comparisonCount}`}
-					</Typography>
-					<Typography variant="body1">
-						{`Swap: ${currFrame.swapCount}`}
-					</Typography>
-					<Typography variant="body1">
-						{currFrame.frameDescription}
-					</Typography>
-				</Box>
-
-				<Box
-					display="flex"
-					flexDirection="row"
-					alignItems="flex-end"
-					sx={{
-						width: "100%",
-						height: `${heightPx}px`,
-					}}
+				</Grid>
+				<Grid
+					item
+					xs={12}
 				>
-					{currFrame.elementStates.map(
-						(value, index) => {
-							return (
-								<RendererElement
-									key={`key-${index}`}
-									maxValue={maxValue}
-									size={size}
-									value={value}
-									compared={currFrame.compared.includes(
-										index,
-									)}
-									swapped={currFrame.swapped.includes(
-										index,
-									)}
-									leftMostUnsortedElement={
-										index ===
-										currFrame.leftMostUnsortedElement
-									}
-									pivot={
-										index === currFrame.pivot
-									}
-								/>
-							);
-						},
-					)}
-				</Box>
-				<Stack
-					direction="row"
-					spacing={2}
+					<Grid
+						container
+						columns={size}
+						className="renderer-container"
+						height={`${heightPx}px`}
+					>
+						{currFrame.elementStates.map(
+							(value, index) => {
+								return (
+									<RendererElement
+										key={`key-${index}`}
+										maxValue={maxValue}
+										value={value}
+										compared={currFrame.compared.includes(
+											index,
+										)}
+										swapped={currFrame.swapped.includes(
+											index,
+										)}
+										leftMostUnsortedElement={
+											index ===
+											currFrame.leftMostUnsortedElement
+										}
+										pivot={
+											index === currFrame.pivot
+										}
+									/>
+								);
+							},
+						)}
+					</Grid>
+				</Grid>
+				<Grid
+					item
+					xs={12}
+					sm={6}
 				>
 					<Button
 						fullWidth
@@ -225,6 +242,12 @@ export const RendererInsertionSort: FC<
 					>
 						Previous Frame
 					</Button>
+				</Grid>
+				<Grid
+					item
+					xs={12}
+					sm={6}
+				>
 					<Button
 						fullWidth
 						variant="contained"
@@ -235,8 +258,52 @@ export const RendererInsertionSort: FC<
 					>
 						Next Frame
 					</Button>
-				</Stack>
-			</Stack>
+				</Grid>
+				<Grid
+					item
+					xs={12}
+				>
+					<Typography variant="h4">
+						Explanations
+					</Typography>
+				</Grid>
+				<Grid
+					item
+					xs={12}
+					id="insertion-sort-additional-explanation-one"
+				>
+					<Typography fontWeight="bold">
+						Moving pivot to left-most unsorted
+						element
+					</Typography>
+					<Typography>
+						The pivot moves to the left-most
+						unsorted element if its value was
+						greater than its left neighbour in the
+						previous comparison.
+					</Typography>
+				</Grid>
+				<Grid
+					item
+					xs={12}
+					id="insertion-sort-additional-explanation-two"
+				>
+					<Typography fontWeight="bold">
+						Swapping <code>input[i]</code> and{" "}
+						<code>input[i - 1]</code>
+					</Typography>
+					<Typography>
+						After comparison,{" "}
+						<code>input[i]</code> and{" "}
+						<code>input[i - 1]</code> swap places
+						if{" "}
+						<code>
+							input[i - 1] &gt; input[i]
+						</code>
+						.
+					</Typography>
+				</Grid>
+			</Grid>
 		</Box>
 	);
 };

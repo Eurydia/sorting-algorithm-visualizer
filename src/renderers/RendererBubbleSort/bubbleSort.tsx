@@ -71,13 +71,14 @@ export const bubbleSort = (
 
 			const a = dataset[i];
 			const b = dataset[i + 1];
+
 			if (b >= a) {
 				generateFrameState(
 					<Fragment>
 						Move pivot to{" "}
 						<code>input[{i + 1}]</code>. (
-						<Link href="#bubble-sort-move-pivot-to-next-element">
-							Reason
+						<Link href="#bubble-sort-additional-explanation-one">
+							Explanation
 						</Link>
 						)
 					</Fragment>,
@@ -100,8 +101,8 @@ export const bubbleSort = (
 				<Fragment>
 					Swapped <code>input[{i}]</code> and{" "}
 					<code>input[{i + 1}]</code>. (
-					<Link href="#bubble-sort-swap-elements">
-						Reason
+					<Link href="#bubble-sort-additional-explanation-two">
+						Explanation
 					</Link>
 					)
 				</Fragment>,
@@ -117,8 +118,24 @@ export const bubbleSort = (
 		generateFrameState(
 			<Fragment>
 				Move pivot to <code>input[0]</code>. (
-				<Link href="#bubble-sort-move-pivot-to-left-most-element">
-					Reason
+				<Link href="#bubble-sort-additional-explanation-three">
+					Explanation
+				</Link>
+				)
+			</Fragment>,
+			{
+				rightMostUnsortedElement:
+					size - offset - 2,
+				pivot: 0,
+				compared: [],
+				swapped: [],
+			},
+		);
+		generateFrameState(
+			<Fragment>
+				Move pivot to <code>input[0]</code>. (
+				<Link href="#bubble-sort-additional-explanation-three">
+					Explanation
 				</Link>
 				)
 			</Fragment>,

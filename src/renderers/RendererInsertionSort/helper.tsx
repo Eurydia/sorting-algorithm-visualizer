@@ -1,3 +1,4 @@
+import { Link } from "@mui/material";
 import { Fragment, ReactNode } from "react";
 
 type IndexDetails = {
@@ -53,24 +54,8 @@ export const insertionSort = (
 		pivotIndex < size;
 		pivotIndex++
 	) {
-		generateFrameState(
-			<Fragment>
-				Consider <code>input[{pivotIndex}]</code>{" "}
-				as pivot.
-			</Fragment>,
-			{
-				compared: [],
-				swapped: [],
-				leftMostUnsortedElement: pivotIndex,
-				pivot: pivotIndex,
-			},
-		);
-
 		let mover: number = pivotIndex;
-		while (
-			mover > 0 &&
-			dataset[mover - 1] > dataset[mover]
-		) {
+		while (mover > 0) {
 			comparisonCount++;
 			generateFrameState(
 				<Fragment>
@@ -84,6 +69,9 @@ export const insertionSort = (
 					pivot: mover,
 				},
 			);
+			if (dataset[mover] >= dataset[mover - 1]) {
+				break;
+			}
 
 			const a: number = dataset[mover];
 			const b: number = dataset[mover - 1];
@@ -94,7 +82,11 @@ export const insertionSort = (
 			generateFrameState(
 				<Fragment>
 					Swapped <code>input[{mover}]</code> and{" "}
-					<code>input[{mover - 1}]</code>.
+					<code>input[{mover - 1}]</code>. (
+					<Link href="#insertion-sort-additional-explanation-two">
+						Explanation
+					</Link>
+					)
 				</Fragment>,
 				{
 					compared: [],
@@ -103,12 +95,26 @@ export const insertionSort = (
 					pivot: mover - 1,
 				},
 			);
+
 			mover--;
 		}
 
-		if (mover === 0) {
-			continue;
-		}
+		generateFrameState(
+			<Fragment>
+				Moves pivot to the left-most unsorted
+				element. (
+				<Link href="#insertion-sort-additional-explanation-one">
+					Explanation
+				</Link>
+				)
+			</Fragment>,
+			{
+				compared: [],
+				swapped: [],
+				leftMostUnsortedElement: pivotIndex + 1,
+				pivot: pivotIndex + 1,
+			},
+		);
 	}
 
 	generateFrameState(
