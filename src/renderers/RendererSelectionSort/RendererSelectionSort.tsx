@@ -2,8 +2,8 @@ import { FC, useState } from "react";
 import {
 	Button,
 	Box,
-	Stack,
 	Typography,
+	Grid,
 } from "@mui/material";
 import { SquareRounded } from "@mui/icons-material";
 import {
@@ -22,7 +22,6 @@ import {
 type RendererElemenetProps = {
 	value: number;
 	maxValue: number;
-	size: number;
 
 	compared: boolean;
 	swapped: boolean;
@@ -33,7 +32,6 @@ const RendererElement: FC<
 	RendererElemenetProps
 > = (props) => {
 	const {
-		size,
 		maxValue,
 		value,
 		compared,
@@ -43,8 +41,6 @@ const RendererElement: FC<
 	} = props;
 
 	const height: number = (value / maxValue) * 100;
-
-	const width: number = (1 / size) * 100;
 
 	let bgColor: string = `hsl(0, 0%, ${
 		(value / maxValue) * 90
@@ -63,18 +59,15 @@ const RendererElement: FC<
 	}
 
 	return (
-		<Box
-			display="flex"
-			alignItems="baseline"
-			justifyContent="center"
-			sx={{
-				width: `${width}%`,
-				height: `${height}%`,
-				backgroundColor: bgColor,
-			}}
+		<Grid
+			item
+			xs={1}
+			bgcolor={bgColor}
+			height={`${height}%`}
+			className="renderer-element"
 		>
 			{pivot ? "👻" : ""}
-		</Box>
+		</Grid>
 	);
 };
 
@@ -129,8 +122,47 @@ export const RendererSelectionSort: FC<
 
 	return (
 		<Box>
-			<Stack spacing={2}>
-				<Box>
+			<Grid
+				container
+				spacing={2}
+			>
+				<Grid
+					item
+					xs={12}
+					id="selection-sort"
+				>
+					<Typography variant="h3">
+						Selection sort
+					</Typography>
+				</Grid>
+				<Grid
+					item
+					xs={12}
+					sm={6}
+				>
+					<Typography variant="body1">
+						{`Frame ${frame + 1}/${
+							frameStates.length
+						}`}
+					</Typography>
+					<Typography variant="body1">
+						{`Comparison: ${currFrame.comparisonCount}`}
+					</Typography>
+					<Typography variant="body1">
+						{`Swap: ${currFrame.swapCount}`}
+					</Typography>
+					<Typography
+						variant="body1"
+						height="3rem"
+					>
+						{currFrame.frameDescription}
+					</Typography>
+				</Grid>
+				<Grid
+					item
+					xs={12}
+					sm={6}
+				>
 					<IconLabel
 						icon={
 							<SquareRounded
@@ -159,62 +191,48 @@ export const RendererSelectionSort: FC<
 						icon="👻"
 						label="Pivot"
 					/>
-				</Box>
-				<Box>
-					<Typography variant="body1">
-						{`Frame ${frame + 1}/${
-							frameStates.length
-						}`}
-					</Typography>
-					<Typography variant="body1">
-						{`Comparison: ${currFrame.comparisonCount}`}
-					</Typography>
-					<Typography variant="body1">
-						{`Swap: ${currFrame.swapCount}`}
-					</Typography>
-					<Typography variant="body1">
-						{currFrame.frameDescription}
-					</Typography>
-				</Box>
+				</Grid>
 
-				<Box
-					display="flex"
-					flexDirection="row"
-					alignItems="flex-end"
-					sx={{
-						width: "100%",
-						height: `${heightPx}px`,
-					}}
+				<Grid
+					item
+					xs={12}
 				>
-					{currFrame.elementStates.map(
-						(value, index) => {
-							return (
-								<RendererElement
-									key={`key-${index}`}
-									maxValue={maxValue}
-									size={size}
-									value={value}
-									compared={currFrame.compared.includes(
-										index,
-									)}
-									swapped={currFrame.swapped.includes(
-										index,
-									)}
-									firstOfUnsortedRegion={
-										index ===
-										currFrame.leftMostUnsortedElement
-									}
-									pivot={
-										index === currFrame.pivot
-									}
-								/>
-							);
-						},
-					)}
-				</Box>
-				<Stack
-					direction="row"
-					spacing={2}
+					<Grid
+						container
+						columns={size}
+						className="renderer-container"
+						height={`${heightPx}px`}
+					>
+						{currFrame.elementStates.map(
+							(value, index) => {
+								return (
+									<RendererElement
+										key={`key-${index}`}
+										maxValue={maxValue}
+										value={value}
+										compared={currFrame.compared.includes(
+											index,
+										)}
+										swapped={currFrame.swapped.includes(
+											index,
+										)}
+										firstOfUnsortedRegion={
+											index ===
+											currFrame.leftMostUnsortedElement
+										}
+										pivot={
+											index === currFrame.pivot
+										}
+									/>
+								);
+							},
+						)}
+					</Grid>
+				</Grid>
+				<Grid
+					item
+					xs={12}
+					sm={6}
 				>
 					<Button
 						fullWidth
@@ -224,6 +242,12 @@ export const RendererSelectionSort: FC<
 					>
 						Previous Frame
 					</Button>
+				</Grid>
+				<Grid
+					item
+					xs={12}
+					sm={6}
+				>
 					<Button
 						fullWidth
 						variant="contained"
@@ -234,8 +258,8 @@ export const RendererSelectionSort: FC<
 					>
 						Next Frame
 					</Button>
-				</Stack>
-			</Stack>
+				</Grid>
+			</Grid>
 		</Box>
 	);
 };
