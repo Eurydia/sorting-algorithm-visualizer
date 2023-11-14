@@ -19,3 +19,14 @@ export const shuffle = (array: number[]) => {
 
 	return array;
 };
+
+export const generateDataset = (
+	size: number,
+): number[] => {
+	const dataset: number[] = [];
+	for (let i = 1; i <= size; i++) {
+		dataset.push(i);
+	}
+	shuffle(dataset);
+	return dataset;
+};

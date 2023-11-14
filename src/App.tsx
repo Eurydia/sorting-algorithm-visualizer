@@ -20,7 +20,7 @@ import { RendererMergeSort } from "./renderers/RendererMergeSort";
 import { RendererHeapSort } from "./renderers/RendererHeapSort";
 import { RendererQuickSort } from "./renderers/RendererQuickSort";
 import { RendererCountingSort } from "./renderers/RendererCountingSort";
-import { shuffle } from "renderers/helper/shuffle";
+import { generateDataset } from "renderers/helper/shuffle";
 
 type TabPanelProps = {
 	index: number;
@@ -39,20 +39,9 @@ const TabPanel: FC<TabPanelProps> = (props) => {
 	return <Box>{children}</Box>;
 };
 
-const generateDataset = (
-	size: number,
-): number[] => {
-	const dataset: number[] = [];
-	for (let i = 1; i <= size; i++) {
-		dataset.push(i);
-	}
-	shuffle(dataset);
-	return dataset;
-};
-
 export const App = () => {
 	const [tabIndex, setTabIndex] =
-		useState<number>(1);
+		useState<number>(0);
 
 	const [dataset] = useState<number[]>(
 		generateDataset(10),

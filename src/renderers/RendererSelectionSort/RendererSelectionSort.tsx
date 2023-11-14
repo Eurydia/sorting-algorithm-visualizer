@@ -259,6 +259,34 @@ export const RendererSelectionSort: FC<
 						Next Frame
 					</Button>
 				</Grid>
+				<Grid
+					item
+					xs={12}
+				>
+					<Typography variant="h4">
+						Explanations
+					</Typography>
+				</Grid>
+				<Grid
+					item
+					xs={12}
+					id="selection-sort-explanation-one"
+				>
+					<Typography
+						variant="body1"
+						fontWeight="bold"
+					>
+						Moving pivot to the left-most unsorted
+						element
+					</Typography>
+					<Typography
+						variant="body1"
+						paragraph
+					>
+						The primary pivot moves to the left
+						most element
+					</Typography>
+				</Grid>
 			</Grid>
 		</Box>
 	);

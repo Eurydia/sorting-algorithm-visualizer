@@ -1,3 +1,4 @@
+import { Link } from "@mui/material";
 import { Fragment, ReactNode } from "react";
 
 type IndexDetails = {
@@ -51,8 +52,12 @@ export const selectionSort = (
 		let pivotIndex: number = offset;
 		generateFrameState(
 			<Fragment>
-				Consider <code>input[{pivotIndex}]</code>{" "}
-				as pivot.
+				Move pivot to left-most unsorted element.{" "}
+				(
+				<Link href="selection-sort-explanation-one">
+					Explanation
+				</Link>
+				)
 			</Fragment>,
 			{
 				compared: [],
@@ -85,8 +90,11 @@ export const selectionSort = (
 
 			generateFrameState(
 				<Fragment>
-					Consider <code>input[{i}]</code> as the
-					new pivot.
+					Move pivot to <code>input[{i}]</code>. (
+					<Link href="selection-sort-explanation-two">
+						Explanation
+					</Link>
+					)
 				</Fragment>,
 				{
 					compared: [],
@@ -106,7 +114,11 @@ export const selectionSort = (
 		generateFrameState(
 			<Fragment>
 				Swapped <code>input[{pivotIndex}]</code>{" "}
-				and <code>input[{offset}]</code>.
+				and <code>input[{offset}]</code>. (
+				<Link href="selection-sort-explanation-three">
+					Explanation
+				</Link>
+				)
 			</Fragment>,
 			{
 				compared: [],

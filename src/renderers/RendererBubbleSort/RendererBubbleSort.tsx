@@ -64,7 +64,7 @@ const RendererElement: FC<
 			height={`${height}%`}
 			bgcolor={bgColor}
 		>
-			{bubbling ? "🚀" : ""}
+			{bubbling ? "🧼" : ""}
 		</Grid>
 	);
 };
@@ -191,8 +191,8 @@ export const RendererBubbleSort: FC<
 						}
 					/>
 					<IconLabel
-						icon="🚀"
-						label="Pivot"
+						icon="🧼"
+						label="Bubble"
 					/>
 				</Grid>
 				<Grid
@@ -223,7 +223,7 @@ export const RendererBubbleSort: FC<
 											currFrame.rightMostUnsortedElement
 										}
 										bubbling={
-											index === currFrame.pivot
+											index === currFrame.bubble
 										}
 									/>
 								);
@@ -279,12 +279,15 @@ export const RendererBubbleSort: FC<
 						<code>input[i + 1]</code>
 					</Typography>
 					<Typography>
-						The pivot moves to{" "}
-						<code>input[i + 1]</code> if{" "}
+						From the previous comparison, bubble
+						sort knows that{" "}
 						<code>
 							input[i] &le; input[i + 1]
 						</code>
-						.
+						, which is a correct order. It moves
+						the bubble to{" "}
+						<code>input[i + 1]</code> without
+						swapping.
 					</Typography>
 				</Grid>
 				<Grid
@@ -297,14 +300,14 @@ export const RendererBubbleSort: FC<
 						<code>input[i + 1]</code>
 					</Typography>
 					<Typography>
-						After comparison,{" "}
-						<code>input[i]</code> and{" "}
-						<code>input[i + 1]</code> swap places
-						if{" "}
+						From the previous comparison, bubble
+						sort knows that{" "}
 						<code>
 							input[i] &gt; input[i + 1]
 						</code>
-						. The pivot also moves to{" "}
+						, which is an incorrect order. To
+						correct the order, it swaps positions
+						of <code>input[i]</code> and{" "}
 						<code>input[i + 1]</code>.
 					</Typography>
 				</Grid>
@@ -317,9 +320,11 @@ export const RendererBubbleSort: FC<
 						Moving pivot to <code>input[0]</code>
 					</Typography>
 					<Typography>
-						The pivot moves to{" "}
-						<code>input[0]</code> if it was the
-						right-most unsorted element.
+						Once the bubble reaches the right-most
+						unsorted element, the current pass is
+						complete. The bubble resets to{" "}
+						<code>input[0]</code> and prepare for
+						a new pass.
 					</Typography>
 				</Grid>
 			</Grid>
