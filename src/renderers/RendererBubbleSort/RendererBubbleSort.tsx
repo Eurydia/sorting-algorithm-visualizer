@@ -284,8 +284,8 @@ export const RendererBubbleSort: FC<
 						<code>
 							input[i] &le; input[i + 1]
 						</code>
-						, which is a correct order. It moves
-						the bubble to{" "}
+						, which is a correct order, so it
+						moves the bubble to{" "}
 						<code>input[i + 1]</code> without
 						swapping.
 					</Typography>
@@ -305,9 +305,9 @@ export const RendererBubbleSort: FC<
 						<code>
 							input[i] &gt; input[i + 1]
 						</code>
-						, which is an incorrect order. To
-						correct the order, it swaps positions
-						of <code>input[i]</code> and{" "}
+						, which is an incorrect order, so it
+						swaps positions of{" "}
+						<code>input[i]</code> and{" "}
 						<code>input[i + 1]</code>.
 					</Typography>
 				</Grid>
@@ -320,9 +320,9 @@ export const RendererBubbleSort: FC<
 						Moving pivot to <code>input[0]</code>
 					</Typography>
 					<Typography>
-						Once the bubble reaches the right-most
-						unsorted element, the current pass is
-						complete. The bubble resets to{" "}
+						The bubble has reached the right-most
+						unsorted element so the current pass
+						is complete. The bubble resets to{" "}
 						<code>input[0]</code> and prepare for
 						a new pass.
 					</Typography>
