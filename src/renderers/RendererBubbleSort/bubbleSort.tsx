@@ -1,11 +1,10 @@
 import { Fragment, ReactNode } from "react";
-import { Link } from "@mui/material";
 
 type IndexDetails = {
-	compared: number[];
-	swapped: number[];
+	comparing: number[];
+	swapping: number[];
 	rightMostUnsortedElement: number;
-	bubble: number;
+	keyElement: number;
 };
 
 export type FrameState = IndexDetails & {
@@ -41,10 +40,10 @@ export const bubbleSort = (
 			Unsorted <code>input[0:{size - 1}]</code>.
 		</Fragment>,
 		{
-			bubble: -1,
+			keyElement: -1,
 			rightMostUnsortedElement: -1,
-			compared: [],
-			swapped: [],
+			comparing: [],
+			swapping: [],
 		},
 	);
 
@@ -57,15 +56,15 @@ export const bubbleSort = (
 			comparisonCount++;
 			generateFrameState(
 				<Fragment>
-					Compare <code>input[{i}]</code> against{" "}
-					<code>input[{i + 1}]</code>.
+					Compared <code>input[{i}]</code>
+					against <code>input[{i + 1}]</code>.
 				</Fragment>,
 				{
 					rightMostUnsortedElement:
 						size - offset - 1,
-					bubble: i,
-					compared: [i, i + 1],
-					swapped: [],
+					keyElement: i,
+					comparing: [i, i + 1],
+					swapping: [],
 				},
 			);
 
@@ -75,19 +74,15 @@ export const bubbleSort = (
 			if (b >= a) {
 				generateFrameState(
 					<Fragment>
-						Move pivot to{" "}
-						<code>input[{i + 1}]</code>. (
-						<Link href="#bubble-sort-additional-explanation-one">
-							Explanation
-						</Link>
-						)
+						Moved <code>keyElement</code> to{" "}
+						<code>input[{i + 1}]</code>.
 					</Fragment>,
 					{
-						compared: [i, i + 1],
-						swapped: [],
+						comparing: [i, i + 1],
+						swapping: [],
 						rightMostUnsortedElement:
 							size - offset - 1,
-						bubble: i + 1,
+						keyElement: i + 1,
 					},
 				);
 				continue;
@@ -100,51 +95,29 @@ export const bubbleSort = (
 			generateFrameState(
 				<Fragment>
 					Swapped <code>input[{i}]</code> and{" "}
-					<code>input[{i + 1}]</code>. (
-					<Link href="#bubble-sort-additional-explanation-two">
-						Explanation
-					</Link>
-					)
+					<code>input[{i + 1}]</code>.
 				</Fragment>,
 				{
 					rightMostUnsortedElement:
 						size - offset - 1,
-					bubble: i + 1,
-					compared: [],
-					swapped: [i, i + 1],
+					keyElement: i + 1,
+					comparing: [],
+					swapping: [i, i + 1],
 				},
 			);
 		}
+
 		generateFrameState(
 			<Fragment>
-				Move pivot to <code>input[0]</code>. (
-				<Link href="#bubble-sort-additional-explanation-three">
-					Explanation
-				</Link>
-				)
+				Moved <code>keyElement</code> to{" "}
+				<code>input[0]</code>.
 			</Fragment>,
 			{
 				rightMostUnsortedElement:
 					size - offset - 2,
-				bubble: 0,
-				compared: [],
-				swapped: [],
-			},
-		);
-		generateFrameState(
-			<Fragment>
-				Move pivot to <code>input[0]</code>. (
-				<Link href="#bubble-sort-additional-explanation-three">
-					Explanation
-				</Link>
-				)
-			</Fragment>,
-			{
-				rightMostUnsortedElement:
-					size - offset - 2,
-				bubble: 0,
-				compared: [],
-				swapped: [],
+				keyElement: 0,
+				comparing: [],
+				swapping: [],
 			},
 		);
 	}
@@ -155,9 +128,9 @@ export const bubbleSort = (
 		</Fragment>,
 		{
 			rightMostUnsortedElement: -1,
-			bubble: -1,
-			compared: [],
-			swapped: [],
+			keyElement: -1,
+			comparing: [],
+			swapping: [],
 		},
 	);
 };

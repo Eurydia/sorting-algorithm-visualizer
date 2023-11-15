@@ -3,7 +3,7 @@ import { Typography } from "@mui/material";
 
 type ColorLabelProps = {
 	icon: ReactNode;
-	label: string;
+	label: ReactNode;
 };
 export const IconLabel: FC<ColorLabelProps> = (
 	props,

@@ -5,7 +5,7 @@ type IndexDetails = {
 	compared: number[];
 	swapped: number[];
 	leftMostUnsortedElement: number;
-	pivot: number;
+	smallestElement: number;
 };
 
 export type FrameState = IndexDetails & {
@@ -45,12 +45,12 @@ export const insertionSort = (
 			compared: [],
 			swapped: [],
 			leftMostUnsortedElement: -1,
-			pivot: -1,
+			smallestElement: -1,
 		},
 	);
 
 	for (
-		let pivotIndex = 0;
+		let pivotIndex = 1;
 		pivotIndex < size;
 		pivotIndex++
 	) {
@@ -66,7 +66,7 @@ export const insertionSort = (
 					compared: [mover, mover - 1],
 					swapped: [],
 					leftMostUnsortedElement: pivotIndex + 1,
-					pivot: mover,
+					smallestElement: mover,
 				},
 			);
 			if (dataset[mover] >= dataset[mover - 1]) {
@@ -92,7 +92,7 @@ export const insertionSort = (
 					compared: [],
 					swapped: [mover, mover - 1],
 					leftMostUnsortedElement: pivotIndex + 1,
-					pivot: mover - 1,
+					smallestElement: mover - 1,
 				},
 			);
 
@@ -112,7 +112,7 @@ export const insertionSort = (
 				compared: [],
 				swapped: [],
 				leftMostUnsortedElement: pivotIndex + 1,
-				pivot: pivotIndex + 1,
+				smallestElement: pivotIndex + 1,
 			},
 		);
 	}
@@ -125,7 +125,7 @@ export const insertionSort = (
 			compared: [],
 			swapped: [],
 			leftMostUnsortedElement: -1,
-			pivot: -1,
+			smallestElement: -1,
 		},
 	);
 };

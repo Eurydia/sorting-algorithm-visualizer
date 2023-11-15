@@ -26,7 +26,7 @@ type RendererElemenetProps = {
 	compared: boolean;
 	swapped: boolean;
 	leftMostUnsortedElement: boolean;
-	pivot: boolean;
+	smallestElement: boolean;
 };
 const RendererElement: FC<
 	RendererElemenetProps
@@ -38,7 +38,7 @@ const RendererElement: FC<
 		compared,
 		swapped,
 		leftMostUnsortedElement,
-		pivot,
+		smallestElement,
 	} = props;
 
 	const height: number = (value / maxValue) * 100;
@@ -67,7 +67,7 @@ const RendererElement: FC<
 			bgcolor={bgColor}
 			height={`${height}%`}
 		>
-			{pivot ? "🗿" : ""}
+			{smallestElement ? "🦐" : ""}
 		</Grid>
 	);
 };
@@ -189,8 +189,8 @@ export const RendererInsertionSort: FC<
 						}
 					/>
 					<IconLabel
-						icon="🗿"
-						label="Pivot"
+						icon="🦐"
+						label="Key"
 					/>
 				</Grid>
 				<Grid
@@ -220,8 +220,9 @@ export const RendererInsertionSort: FC<
 											index ===
 											currFrame.leftMostUnsortedElement
 										}
-										pivot={
-											index === currFrame.pivot
+										smallestElement={
+											index ===
+											currFrame.smallestElement
 										}
 									/>
 								);
@@ -277,10 +278,20 @@ export const RendererInsertionSort: FC<
 						element
 					</Typography>
 					<Typography>
-						The pivot moves to the left-most
-						unsorted element if its value was
-						greater than its left neighbour in the
-						previous comparison.
+						From the previous comparison, the
+						algorithm knows that{" "}
+						<code>
+							input[i] &ge; input[i - 1]
+						</code>
+						, which only happens when the key has
+						been inserted into the correct
+						position. The key moves to the
+						left-most unsorted element to prepare
+						for a new pass.
+					</Typography>
+					<Typography>
+						Alternatively, the same happens if the
+						key is <code>input[0]</code>.
 					</Typography>
 				</Grid>
 				<Grid
@@ -293,14 +304,16 @@ export const RendererInsertionSort: FC<
 						<code>input[i - 1]</code>
 					</Typography>
 					<Typography>
-						After comparison,{" "}
-						<code>input[i]</code> and{" "}
-						<code>input[i - 1]</code> swap places
-						if{" "}
+						From the previous comparison, the
+						algorithm knows that{" "}
 						<code>
-							input[i - 1] &gt; input[i]
+							input[i] &lt; input[i - 1]
 						</code>
-						.
+						. The key is not in the correct place,
+						so it swaps the positions of{" "}
+						<code>input[i]</code> and{" "}
+						<code>input[i - 1]</code> to ensure
+						that the key is on the left.
 					</Typography>
 				</Grid>
 			</Grid>

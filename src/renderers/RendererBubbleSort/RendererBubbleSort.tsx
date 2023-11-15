@@ -22,8 +22,8 @@ type RendererElemenetProps = {
 	value: number;
 	maxValue: number;
 
-	compared: boolean;
-	swapped: boolean;
+	comparing: boolean;
+	swapping: boolean;
 	rightMostUnsortedElement: boolean;
 	bubbling: boolean;
 };
@@ -33,8 +33,8 @@ const RendererElement: FC<
 	const {
 		maxValue,
 		value,
-		compared,
-		swapped,
+		comparing,
+		swapping,
 		rightMostUnsortedElement,
 		bubbling,
 	} = props;
@@ -48,11 +48,11 @@ const RendererElement: FC<
 		bgColor = pink["A100"];
 	}
 
-	if (compared) {
+	if (comparing) {
 		bgColor = blue["A100"];
 	}
 
-	if (swapped) {
+	if (swapping) {
 		bgColor = deepOrange["A100"];
 	}
 
@@ -175,7 +175,7 @@ export const RendererBubbleSort: FC<
 						}
 					/>
 					<IconLabel
-						label="Being compared"
+						label="Compared"
 						icon={
 							<SquareRounded
 								htmlColor={blue.A100}
@@ -183,7 +183,7 @@ export const RendererBubbleSort: FC<
 						}
 					/>
 					<IconLabel
-						label="Swapped places"
+						label="Swapped position"
 						icon={
 							<SquareRounded
 								htmlColor={deepOrange.A100}
@@ -192,7 +192,7 @@ export const RendererBubbleSort: FC<
 					/>
 					<IconLabel
 						icon="🧼"
-						label="Bubble"
+						label={<code>keyElement</code>}
 					/>
 				</Grid>
 				<Grid
@@ -212,10 +212,10 @@ export const RendererBubbleSort: FC<
 										key={`key-${index}`}
 										maxValue={maxValue}
 										value={value}
-										compared={currFrame.compared.includes(
+										comparing={currFrame.comparing.includes(
 											index,
 										)}
-										swapped={currFrame.swapped.includes(
+										swapping={currFrame.swapping.includes(
 											index,
 										)}
 										rightMostUnsortedElement={
@@ -223,7 +223,8 @@ export const RendererBubbleSort: FC<
 											currFrame.rightMostUnsortedElement
 										}
 										bubbling={
-											index === currFrame.bubble
+											index ===
+											currFrame.keyElement
 										}
 									/>
 								);
@@ -272,23 +273,25 @@ export const RendererBubbleSort: FC<
 				<Grid
 					item
 					xs={12}
+				></Grid>
+				<Grid
+					item
+					xs={12}
 					id="bubble-sort-additional-explanation-one"
 				>
 					<Typography fontWeight="bold">
-						Moving pivot to{" "}
-						<code>input[i + 1]</code>
+						Moving <code>keyElement</code> to{" "}
+						<code>input[i]</code>
 					</Typography>
 					<Typography>
-						From the previous comparison, bubble
-						sort knows that{" "}
-						<code>
-							input[i] &le; input[i + 1]
-						</code>
-						, which is a correct order, so it
-						moves the bubble to{" "}
-						<code>input[i + 1]</code> without
-						swapping.
+						From the previous comparison, the
+						algorithm knows that{" "}
+						<code>keyElement &le; input[i]</code>.{" "}
+						The larger element bubbles up, so{" "}
+						<code>input[i]</code> is the new{" "}
+						<code>keyElement</code>.
 					</Typography>
+					G
 				</Grid>
 				<Grid
 					item
@@ -296,19 +299,17 @@ export const RendererBubbleSort: FC<
 					id="bubble-sort-additional-explanation-two"
 				>
 					<Typography fontWeight="bold">
-						Swapping <code>input[i]</code> and{" "}
-						<code>input[i + 1]</code>
+						Swapping <code>keyElement</code> and{" "}
+						<code>input[i]</code>
 					</Typography>
 					<Typography>
-						From the previous comparison, bubble
-						sort knows that{" "}
-						<code>
-							input[i] &gt; input[i + 1]
-						</code>
-						, which is an incorrect order, so it
-						swaps positions of{" "}
-						<code>input[i]</code> and{" "}
-						<code>input[i + 1]</code>.
+						From the previous comparison, the
+						algorithm knows that{" "}
+						<code>keyElement &gt; input[i]</code>.{" "}
+						<code>keyElement</code> and{" "}
+						<code>input[i]</code> swap positions
+						so <code>keyElement</code> is on the
+						right.
 					</Typography>
 				</Grid>
 				<Grid
@@ -317,14 +318,14 @@ export const RendererBubbleSort: FC<
 					id="bubble-sort-additional-explanation-three"
 				>
 					<Typography fontWeight="bold">
-						Moving pivot to <code>input[0]</code>
+						Moving <code>keyElement</code> to{" "}
+						<code>input[0]</code>
 					</Typography>
 					<Typography>
-						The bubble has reached the right-most
-						unsorted element so the current pass
-						is complete. The bubble resets to{" "}
-						<code>input[0]</code> and prepare for
-						a new pass.
+						<code>keyElement</code> is the
+						right-most unsorted element. To reset,{" "}
+						<code>input[0]</code> is the new{" "}
+						<code>keyElement</code>.
 					</Typography>
 				</Grid>
 			</Grid>
