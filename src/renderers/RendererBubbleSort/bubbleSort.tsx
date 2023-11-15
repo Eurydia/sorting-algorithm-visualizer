@@ -74,7 +74,7 @@ export const bubbleSort = (
 			if (b >= a) {
 				generateFrameState(
 					<Fragment>
-						Moved <code>keyElement</code> to{" "}
+						Moved key to{" "}
 						<code>input[{i + 1}]</code>.
 					</Fragment>,
 					{
@@ -109,8 +109,7 @@ export const bubbleSort = (
 
 		generateFrameState(
 			<Fragment>
-				Moved <code>keyElement</code> to{" "}
-				<code>input[0]</code>.
+				Moved key to <code>input[0]</code>.
 			</Fragment>,
 			{
 				rightMostUnsortedElement:

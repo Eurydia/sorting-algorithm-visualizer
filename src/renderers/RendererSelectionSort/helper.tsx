@@ -1,10 +1,9 @@
-import { Link } from "@mui/material";
 import { Fragment, ReactNode } from "react";
 
 type IndexDetails = {
 	compared: number[];
 	swapped: number[];
-	pivot: number;
+	keyElement: number;
 	leftMostUnsortedElement: number;
 };
 
@@ -43,7 +42,7 @@ export const selectionSort = (
 		{
 			compared: [],
 			swapped: [],
-			pivot: -1,
+			keyElement: -1,
 			leftMostUnsortedElement: -1,
 		},
 	);
@@ -52,17 +51,12 @@ export const selectionSort = (
 		let pivotIndex: number = offset;
 		generateFrameState(
 			<Fragment>
-				Move pivot to left-most unsorted element.{" "}
-				(
-				<Link href="selection-sort-explanation-one">
-					Explanation
-				</Link>
-				)
+				Moved key to <code>input[{offset}]</code>.
 			</Fragment>,
 			{
 				compared: [],
 				swapped: [],
-				pivot: offset,
+				keyElement: offset,
 				leftMostUnsortedElement: offset,
 			},
 		);
@@ -71,13 +65,14 @@ export const selectionSort = (
 			comparisonCount++;
 			generateFrameState(
 				<Fragment>
-					Compare <code>input[{pivotIndex}]</code>{" "}
-					against <code>input[{i}]</code>.
+					Compared{" "}
+					<code>input[{pivotIndex}]</code> against{" "}
+					<code>input[{i}]</code>.
 				</Fragment>,
 				{
 					compared: [i, pivotIndex],
 					swapped: [],
-					pivot: pivotIndex,
+					keyElement: pivotIndex,
 					leftMostUnsortedElement: offset,
 				},
 			);
@@ -90,16 +85,12 @@ export const selectionSort = (
 
 			generateFrameState(
 				<Fragment>
-					Move pivot to <code>input[{i}]</code>. (
-					<Link href="selection-sort-explanation-two">
-						Explanation
-					</Link>
-					)
+					Moved key to <code>input[{i}]</code>.
 				</Fragment>,
 				{
 					compared: [],
 					swapped: [],
-					pivot: pivotIndex,
+					keyElement: pivotIndex,
 					leftMostUnsortedElement: offset,
 				},
 			);
@@ -113,17 +104,13 @@ export const selectionSort = (
 		swapCount++;
 		generateFrameState(
 			<Fragment>
-				Swapped <code>input[{pivotIndex}]</code>{" "}
-				and <code>input[{offset}]</code>. (
-				<Link href="selection-sort-explanation-three">
-					Explanation
-				</Link>
-				)
+				Swapped key and{" "}
+				<code>input[{offset}]</code>.
 			</Fragment>,
 			{
 				compared: [],
 				swapped: [offset, pivotIndex],
-				pivot: offset,
+				keyElement: offset,
 				leftMostUnsortedElement: offset,
 			},
 		);
@@ -137,7 +124,7 @@ export const selectionSort = (
 			compared: [],
 			swapped: [],
 			leftMostUnsortedElement: -1,
-			pivot: -1,
+			keyElement: -1,
 		},
 	);
 };

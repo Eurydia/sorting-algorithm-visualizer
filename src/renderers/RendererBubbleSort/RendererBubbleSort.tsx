@@ -192,7 +192,7 @@ export const RendererBubbleSort: FC<
 					/>
 					<IconLabel
 						icon="🧼"
-						label={<code>keyElement</code>}
+						label="Key"
 					/>
 				</Grid>
 				<Grid
@@ -261,72 +261,6 @@ export const RendererBubbleSort: FC<
 					>
 						Next Frame
 					</Button>
-				</Grid>
-				<Grid
-					item
-					xs={12}
-				>
-					<Typography variant="h3">
-						Explanations
-					</Typography>
-				</Grid>
-				<Grid
-					item
-					xs={12}
-				></Grid>
-				<Grid
-					item
-					xs={12}
-					id="bubble-sort-additional-explanation-one"
-				>
-					<Typography fontWeight="bold">
-						Moving <code>keyElement</code> to{" "}
-						<code>input[i]</code>
-					</Typography>
-					<Typography>
-						From the previous comparison, the
-						algorithm knows that{" "}
-						<code>keyElement &le; input[i]</code>.{" "}
-						The larger element bubbles up, so{" "}
-						<code>input[i]</code> is the new{" "}
-						<code>keyElement</code>.
-					</Typography>
-					G
-				</Grid>
-				<Grid
-					item
-					xs={12}
-					id="bubble-sort-additional-explanation-two"
-				>
-					<Typography fontWeight="bold">
-						Swapping <code>keyElement</code> and{" "}
-						<code>input[i]</code>
-					</Typography>
-					<Typography>
-						From the previous comparison, the
-						algorithm knows that{" "}
-						<code>keyElement &gt; input[i]</code>.{" "}
-						<code>keyElement</code> and{" "}
-						<code>input[i]</code> swap positions
-						so <code>keyElement</code> is on the
-						right.
-					</Typography>
-				</Grid>
-				<Grid
-					item
-					xs={12}
-					id="bubble-sort-additional-explanation-three"
-				>
-					<Typography fontWeight="bold">
-						Moving <code>keyElement</code> to{" "}
-						<code>input[0]</code>
-					</Typography>
-					<Typography>
-						<code>keyElement</code> is the
-						right-most unsorted element. To reset,{" "}
-						<code>input[0]</code> is the new{" "}
-						<code>keyElement</code>.
-					</Typography>
 				</Grid>
 			</Grid>
 		</Box>

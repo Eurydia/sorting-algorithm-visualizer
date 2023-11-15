@@ -26,7 +26,7 @@ type RendererElemenetProps = {
 	compared: boolean;
 	swapped: boolean;
 	firstOfUnsortedRegion: boolean;
-	pivot: boolean;
+	keyElement: boolean;
 };
 const RendererElement: FC<
 	RendererElemenetProps
@@ -37,7 +37,7 @@ const RendererElement: FC<
 		compared,
 		swapped,
 		firstOfUnsortedRegion,
-		pivot,
+		keyElement,
 	} = props;
 
 	const height: number = (value / maxValue) * 100;
@@ -66,7 +66,7 @@ const RendererElement: FC<
 			height={`${height}%`}
 			className="renderer-element"
 		>
-			{pivot ? "👻" : ""}
+			{keyElement ? "👻" : ""}
 		</Grid>
 	);
 };
@@ -189,7 +189,7 @@ export const RendererSelectionSort: FC<
 					/>
 					<IconLabel
 						icon="👻"
-						label="Pivot"
+						label="Key"
 					/>
 				</Grid>
 
@@ -220,8 +220,9 @@ export const RendererSelectionSort: FC<
 											index ===
 											currFrame.leftMostUnsortedElement
 										}
-										pivot={
-											index === currFrame.pivot
+										keyElement={
+											index ===
+											currFrame.keyElement
 										}
 									/>
 								);
@@ -258,34 +259,6 @@ export const RendererSelectionSort: FC<
 					>
 						Next Frame
 					</Button>
-				</Grid>
-				<Grid
-					item
-					xs={12}
-				>
-					<Typography variant="h4">
-						Explanations
-					</Typography>
-				</Grid>
-				<Grid
-					item
-					xs={12}
-					id="selection-sort-explanation-one"
-				>
-					<Typography
-						variant="body1"
-						fontWeight="bold"
-					>
-						Moving pivot to the left-most unsorted
-						element
-					</Typography>
-					<Typography
-						variant="body1"
-						paragraph
-					>
-						The primary pivot moves to the left
-						most element
-					</Typography>
 				</Grid>
 			</Grid>
 		</Box>

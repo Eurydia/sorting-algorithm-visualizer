@@ -1,11 +1,10 @@
-import { Link } from "@mui/material";
 import { Fragment, ReactNode } from "react";
 
 type IndexDetails = {
 	compared: number[];
 	swapped: number[];
 	leftMostUnsortedElement: number;
-	smallestElement: number;
+	keyElement: number;
 };
 
 export type FrameState = IndexDetails & {
@@ -45,12 +44,12 @@ export const insertionSort = (
 			compared: [],
 			swapped: [],
 			leftMostUnsortedElement: -1,
-			smallestElement: -1,
+			keyElement: -1,
 		},
 	);
 
 	for (
-		let pivotIndex = 1;
+		let pivotIndex = 0;
 		pivotIndex < size;
 		pivotIndex++
 	) {
@@ -59,14 +58,14 @@ export const insertionSort = (
 			comparisonCount++;
 			generateFrameState(
 				<Fragment>
-					Compare <code>input[{mover}]</code>{" "}
+					Compared <code>input[{mover}]</code>{" "}
 					against <code>input[{mover - 1}]</code>.
 				</Fragment>,
 				{
 					compared: [mover, mover - 1],
 					swapped: [],
 					leftMostUnsortedElement: pivotIndex + 1,
-					smallestElement: mover,
+					keyElement: mover,
 				},
 			);
 			if (dataset[mover] >= dataset[mover - 1]) {
@@ -82,17 +81,13 @@ export const insertionSort = (
 			generateFrameState(
 				<Fragment>
 					Swapped <code>input[{mover}]</code> and{" "}
-					<code>input[{mover - 1}]</code>. (
-					<Link href="#insertion-sort-additional-explanation-two">
-						Explanation
-					</Link>
-					)
+					<code>input[{mover - 1}]</code>.
 				</Fragment>,
 				{
 					compared: [],
 					swapped: [mover, mover - 1],
 					leftMostUnsortedElement: pivotIndex + 1,
-					smallestElement: mover - 1,
+					keyElement: mover - 1,
 				},
 			);
 
@@ -101,18 +96,14 @@ export const insertionSort = (
 
 		generateFrameState(
 			<Fragment>
-				Moves pivot to the left-most unsorted
-				element. (
-				<Link href="#insertion-sort-additional-explanation-one">
-					Explanation
-				</Link>
-				)
+				Moved key to{" "}
+				<code>input[{pivotIndex + 1}]</code>.
 			</Fragment>,
 			{
 				compared: [],
 				swapped: [],
 				leftMostUnsortedElement: pivotIndex + 1,
-				smallestElement: pivotIndex + 1,
+				keyElement: pivotIndex + 1,
 			},
 		);
 	}
@@ -125,7 +116,7 @@ export const insertionSort = (
 			compared: [],
 			swapped: [],
 			leftMostUnsortedElement: -1,
-			smallestElement: -1,
+			keyElement: -1,
 		},
 	);
 };
