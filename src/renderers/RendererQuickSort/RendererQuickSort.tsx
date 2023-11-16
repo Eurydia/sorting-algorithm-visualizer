@@ -2,8 +2,8 @@ import { FC, useState } from "react";
 import {
 	Button,
 	Box,
-	Stack,
 	Typography,
+	Grid,
 } from "@mui/material";
 import {
 	blue,
@@ -19,42 +19,39 @@ import { quickSort, FrameState } from "./helper";
 type RendererElemenetProps = {
 	value: number;
 	maxValue: number;
-	size: number;
 
-	compare: boolean;
+	compared: boolean;
 	swapped: boolean;
-	stateFirstOrLastElement: boolean;
-	pivot: boolean;
-	pivotPosition: boolean;
+	terminalElement: boolean;
+
+	keyElement: boolean;
+	partitionKeyElement: boolean;
 };
 const RendererElement: FC<
 	RendererElemenetProps
 > = (props) => {
 	const {
-		size,
 		value,
 		maxValue,
 
-		stateFirstOrLastElement,
-		compare,
+		compared,
 		swapped,
-		pivot,
-		pivotPosition,
+		keyElement,
+		terminalElement,
+		partitionKeyElement,
 	} = props;
 
 	const height: number = (value / maxValue) * 100;
-
-	const width: number = (1 / size) * 100;
 
 	let bgColor: string = `hsl(0, 0%, ${
 		(value / maxValue) * 90
 	}%)`;
 
-	if (stateFirstOrLastElement) {
+	if (terminalElement) {
 		bgColor = pink["A100"];
 	}
 
-	if (compare) {
+	if (compared) {
 		bgColor = blue["A100"];
 	}
 
@@ -63,26 +60,23 @@ const RendererElement: FC<
 	}
 
 	let label: string = "";
-	if (pivot) {
-		label = "🌈";
+	if (keyElement) {
+		label = "😁";
 	}
-	if (pivotPosition) {
-		label = "🌂";
+	if (partitionKeyElement) {
+		label = "👍";
 	}
 
 	return (
-		<Box
-			display="flex"
-			alignItems="baseline"
-			justifyContent="center"
-			sx={{
-				width: `${width}%`,
-				height: `${height}%`,
-				backgroundColor: bgColor,
-			}}
+		<Grid
+			item
+			xs={1}
+			bgcolor={bgColor}
+			height={`${height}%`}
+			className="renderer-element"
 		>
 			{label}
-		</Box>
+		</Grid>
 	);
 };
 
@@ -132,10 +126,46 @@ export const RendererQuickSort: FC<
 
 	return (
 		<Box>
-			<Stack spacing={2}>
-				<Box>
+			<Grid
+				container
+				spacing={2}
+			>
+				<Grid
+					item
+					xs={12}
+					id="insertion-sort"
+				>
+					<Typography variant="h3">
+						Insertion sort
+					</Typography>
+				</Grid>
+				<Grid
+					item
+					xs={12}
+					sm={6}
+				>
+					<Typography variant="body1">
+						{`Frame ${frame + 1}/${
+							frameStates.length
+						}`}
+					</Typography>
+					<Typography variant="body1">
+						{`Comparison: ${currFrame.comparisonCount}`}
+					</Typography>
+					<Typography variant="body1">
+						{`Swap: ${currFrame.swapCount}`}
+					</Typography>
+					<Typography variant="body1">
+						{currFrame.frameDescription}
+					</Typography>
+				</Grid>
+				<Grid
+					item
+					xs={12}
+					sm={6}
+				>
 					<IconLabel
-						label="Left-most and right-most element of working region"
+						label="Terminal element of working region"
 						icon={
 							<SquareRounded
 								htmlColor={pink["A100"]}
@@ -143,7 +173,7 @@ export const RendererQuickSort: FC<
 						}
 					/>
 					<IconLabel
-						label="Being compared"
+						label="Compared"
 						icon={
 							<SquareRounded
 								htmlColor={blue["A100"]}
@@ -159,71 +189,58 @@ export const RendererQuickSort: FC<
 						}
 					/>
 					<IconLabel
-						label="Pivot element"
-						icon="🌈"
+						label="Key element"
+						icon="😁"
 					/>
 					<IconLabel
-						label="Partition marker position"
-						icon="🌂"
+						label="Partition key element"
+						icon="👍"
 					/>
-				</Box>
-				<Box>
-					<Typography variant="body1">
-						{`Frame ${frame + 1}/${
-							frameStates.length
-						}`}
-					</Typography>
-					<Typography variant="body1">
-						{`Comparison: ${currFrame.comparisonCount}`}
-					</Typography>
-					<Typography variant="body1">
-						{`Swap: ${currFrame.swapCount}`}
-					</Typography>
-					<Typography variant="body1">
-						{currFrame.frameDescription}
-					</Typography>
-				</Box>
-				<Box
-					display="flex"
-					flexDirection="row"
-					alignItems="flex-end"
-					sx={{
-						width: "100%",
-						height: `${heightPx}px`,
-					}}
+				</Grid>
+				<Grid
+					item
+					xs={12}
 				>
-					{currFrame.elementStates.map(
-						(value, index) => {
-							return (
-								<RendererElement
-									key={`key-${index}`}
-									maxValue={maxValue}
-									size={size}
-									value={value}
-									compare={currFrame.compared.includes(
-										index,
-									)}
-									swapped={currFrame.swapped.includes(
-										index,
-									)}
-									stateFirstOrLastElement={currFrame.workingRegion.includes(
-										index,
-									)}
-									pivot={
-										index === currFrame.pivot
-									}
-									pivotPosition={
-										index ===
-										currFrame.pivotPosition
-									}
-								/>
-							);
-						},
-					)}
-				</Box>
-				<Stack
-					direction="row"
-					spacing={2}
+					<Grid
+						container
+						columns={size}
+						className="renderer-container"
+						height={`${heightPx}px`}
+					>
+						{currFrame.elementStates.map(
+							(value, index) => {
+								return (
+									<RendererElement
+										key={`key-${index}`}
+										maxValue={maxValue}
+										value={value}
+										compared={currFrame.compared.includes(
+											index,
+										)}
+										swapped={currFrame.swapped.includes(
+											index,
+										)}
+										terminalElement={currFrame.terminalElements.includes(
+											index,
+										)}
+										keyElement={
+											index ===
+											currFrame.keyElement
+										}
+										partitionKeyElement={
+											index ===
+											currFrame.partitionKeyElement
+										}
+									/>
+								);
+							},
+						)}
+					</Grid>
+				</Grid>
+				<Grid
+					item
+					xs={12}
+					sm={6}
 				>
 					<Button
 						fullWidth
@@ -233,6 +250,12 @@ export const RendererQuickSort: FC<
 					>
 						Previous Frame
 					</Button>
+				</Grid>
+				<Grid
+					item
+					xs={12}
+					sm={6}
+				>
 					<Button
 						fullWidth
 						variant="contained"
@@ -243,8 +266,8 @@ export const RendererQuickSort: FC<
 					>
 						Next Frame
 					</Button>
-				</Stack>
-			</Stack>
+				</Grid>
+			</Grid>
 		</Box>
 	);
 };

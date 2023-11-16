@@ -190,7 +190,7 @@ export const RendererInsertionSort: FC<
 					/>
 					<IconLabel
 						icon="🦐"
-						label="Key"
+						label="Key element"
 					/>
 				</Grid>
 				<Grid

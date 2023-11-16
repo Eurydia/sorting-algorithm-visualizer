@@ -1,11 +1,12 @@
 import { ReactNode, Fragment } from "react";
+
 type IndexDetails = {
 	compared: number[];
 	swapped: number[];
 
-	workingRegion: number[];
-	pivot: number;
-	pivotPosition: number;
+	terminalElements: number[];
+	keyElement: number;
+	partitionKeyElement: number;
 };
 
 export type FrameState = IndexDetails & {
@@ -40,36 +41,36 @@ export const quickSort = (
 		lowIndex: number,
 		highIndex: number,
 	): number => {
-		generateFrameState(
-			<Fragment>
-				Consider elements between{" "}
-				<code>
-					input[{lowIndex}:{highIndex}]
-				</code>
-				.
-			</Fragment>,
-			{
-				compared: [],
-				swapped: [],
-				workingRegion: [lowIndex, highIndex],
-				pivot: -1,
-				pivotPosition: -1,
-			},
-		);
+		// generateFrameState(
+		// 	<Fragment>
+		// 		Consider elements between{" "}
+		// 		<code>
+		// 			input[{lowIndex}:{highIndex}]
+		// 		</code>
+		// 		.
+		// 	</Fragment>,
+		// 	{
+		// 		compared: [],
+		// 		swapped: [],
+		// 		workingRegion: [lowIndex, highIndex],
+		// 		keyElement: -1,
+		// 		pivotPosition: -1,
+		// 	},
+		// );
 
-		generateFrameState(
-			<Fragment>
-				Consider <code>input[{highIndex}]</code>{" "}
-				as a pivot.
-			</Fragment>,
-			{
-				compared: [],
-				swapped: [],
-				workingRegion: [lowIndex, highIndex],
-				pivot: highIndex,
-				pivotPosition: lowIndex,
-			},
-		);
+		// generateFrameState(
+		// 	<Fragment>
+		// 		Consider <code>input[{highIndex}]</code>{" "}
+		// 		as a pivot.
+		// 	</Fragment>,
+		// 	{
+		// 		compared: [],
+		// 		swapped: [],
+		// 		workingRegion: [lowIndex, highIndex],
+		// 		keyElement: highIndex,
+		// 		pivotPosition: lowIndex,
+		// 	},
+		// );
 
 		let pivotIndex: number = lowIndex;
 		for (let i = lowIndex; i < highIndex; i++) {
@@ -77,15 +78,15 @@ export const quickSort = (
 
 			generateFrameState(
 				<Fragment>
-					Compare <code>input[{i}]</code> against{" "}
+					Compared <code>input[{i}]</code> against{" "}
 					<code>input[{highIndex}]</code>.
 				</Fragment>,
 				{
 					compared: [i, highIndex],
 					swapped: [],
-					workingRegion: [lowIndex, highIndex],
-					pivot: highIndex,
-					pivotPosition: pivotIndex,
+					terminalElements: [lowIndex, highIndex],
+					keyElement: highIndex,
+					partitionKeyElement: pivotIndex,
 				},
 			);
 
@@ -102,15 +103,15 @@ export const quickSort = (
 
 			generateFrameState(
 				<Fragment>
-					Swapped <code>input[{i}]</code> with{" "}
+					Swapped <code>input[{i}]</code> and{" "}
 					<code>input[{pivotIndex}]</code>.
 				</Fragment>,
 				{
 					compared: [],
 					swapped: [i, pivotIndex],
-					workingRegion: [lowIndex, highIndex],
-					pivot: highIndex,
-					pivotPosition: pivotIndex,
+					terminalElements: [lowIndex, highIndex],
+					keyElement: highIndex,
+					partitionKeyElement: pivotIndex,
 				},
 			);
 			pivotIndex++;
@@ -125,14 +126,14 @@ export const quickSort = (
 		generateFrameState(
 			<Fragment>
 				Swapped <code>input[{pivotIndex}]</code>{" "}
-				with <code>input[{highIndex}]</code>.
+				and <code>input[{highIndex}]</code>.
 			</Fragment>,
 			{
 				compared: [],
 				swapped: [pivotIndex, highIndex],
-				workingRegion: [lowIndex, highIndex],
-				pivot: highIndex,
-				pivotPosition: pivotIndex,
+				terminalElements: [lowIndex, highIndex],
+				keyElement: highIndex,
+				partitionKeyElement: pivotIndex,
 			},
 		);
 
@@ -163,9 +164,9 @@ export const quickSort = (
 		{
 			compared: [],
 			swapped: [],
-			workingRegion: [],
-			pivot: -1,
-			pivotPosition: -1,
+			terminalElements: [],
+			keyElement: -1,
+			partitionKeyElement: -1,
 		},
 	);
 
@@ -178,9 +179,9 @@ export const quickSort = (
 		{
 			compared: [],
 			swapped: [],
-			workingRegion: [],
-			pivot: -1,
-			pivotPosition: -1,
+			terminalElements: [],
+			keyElement: -1,
+			partitionKeyElement: -1,
 		},
 	);
 };

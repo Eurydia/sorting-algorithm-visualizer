@@ -192,7 +192,7 @@ export const RendererBubbleSort: FC<
 					/>
 					<IconLabel
 						icon="🧼"
-						label="Key"
+						label="Key element"
 					/>
 				</Grid>
 				<Grid

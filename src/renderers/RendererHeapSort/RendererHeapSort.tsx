@@ -190,11 +190,11 @@ export const RendererHeapSort: FC<
 					/>
 					<IconLabel
 						icon="🐔"
-						label="Parent"
+						label="Parent element"
 					/>
 					<IconLabel
 						icon="🐤"
-						label="Child"
+						label="Child element"
 					/>
 				</Grid>
 				<Grid

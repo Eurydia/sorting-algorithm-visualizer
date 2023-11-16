@@ -1,7 +1,7 @@
 import { Fragment, ReactNode } from "react";
 
 type IndexDetails = {
-	workingRegion: number[];
+	terminalElements: number[];
 	compared: number[];
 	mainMemRead: number;
 	mainMemWrote: number;
@@ -101,7 +101,10 @@ export const mergeSort = (
 					against <code>input[{rPtr}]</code>.
 				</Fragment>,
 				{
-					workingRegion: [startIndex, endIndex],
+					terminalElements: [
+						startIndex,
+						endIndex,
+					],
 					compared: [lPtr, rPtr],
 					mainMemRead: -1,
 					mainMemWrote: -1,
@@ -120,7 +123,10 @@ export const mergeSort = (
 						<code>auxMem[{auxPtr}]</code>.
 					</Fragment>,
 					{
-						workingRegion: [startIndex, endIndex],
+						terminalElements: [
+							startIndex,
+							endIndex,
+						],
 						compared: [],
 						mainMemRead: rPtr,
 						mainMemWrote: -1,
@@ -143,7 +149,10 @@ export const mergeSort = (
 					<code>auxMem[{auxPtr}]</code>.
 				</Fragment>,
 				{
-					workingRegion: [startIndex, endIndex],
+					terminalElements: [
+						startIndex,
+						endIndex,
+					],
 					compared: [],
 					mainMemRead: lPtr,
 					mainMemWrote: -1,
@@ -168,7 +177,10 @@ export const mergeSort = (
 					<code>auxMem[{auxPtr}]</code>.
 				</Fragment>,
 				{
-					workingRegion: [startIndex, endIndex],
+					terminalElements: [
+						startIndex,
+						endIndex,
+					],
 					compared: [],
 					mainMemRead: lPtr,
 					mainMemWrote: -1,
@@ -192,7 +204,10 @@ export const mergeSort = (
 					<code>auxMem[{auxPtr}]</code>.
 				</Fragment>,
 				{
-					workingRegion: [startIndex, endIndex],
+					terminalElements: [
+						startIndex,
+						endIndex,
+					],
 					compared: [],
 					mainMemRead: rPtr,
 					mainMemWrote: -1,
@@ -215,7 +230,10 @@ export const mergeSort = (
 					<code>input[{startIndex + i}]</code>.
 				</Fragment>,
 				{
-					workingRegion: [startIndex, endIndex],
+					terminalElements: [
+						startIndex,
+						endIndex,
+					],
 					compared: [],
 					mainMemRead: -1,
 					mainMemWrote: startIndex + i,
@@ -231,7 +249,7 @@ export const mergeSort = (
 			Unsorted <code>input[0:{size - 1}]</code>.
 		</Fragment>,
 		{
-			workingRegion: [],
+			terminalElements: [],
 			compared: [],
 			mainMemRead: -1,
 			mainMemWrote: -1,
@@ -249,7 +267,7 @@ export const mergeSort = (
 			Sorted <code>input[0:{size - 1}]</code>.
 		</Fragment>,
 		{
-			workingRegion: [],
+			terminalElements: [],
 			compared: [],
 			mainMemRead: -1,
 			mainMemWrote: -1,

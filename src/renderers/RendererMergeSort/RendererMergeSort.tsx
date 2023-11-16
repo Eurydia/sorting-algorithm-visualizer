@@ -27,9 +27,9 @@ type RendererElemenetProps = {
 	maxValue: number;
 	value: number;
 	compared: boolean;
-	read_: boolean;
-	wrote_: boolean;
-	leftMostOrRightMostElement: boolean;
+	readElement: boolean;
+	wroteElement: boolean;
+	terminalElement: boolean;
 };
 const RendererElement: FC<
 	RendererElemenetProps
@@ -38,9 +38,9 @@ const RendererElement: FC<
 		value,
 		maxValue,
 		compared,
-		read_,
-		wrote_,
-		leftMostOrRightMostElement,
+		readElement,
+		wroteElement,
+		terminalElement: leftMostOrRightMostElement,
 	} = props;
 
 	const height: number = (value / maxValue) * 100;
@@ -57,11 +57,11 @@ const RendererElement: FC<
 		bgColor = blue.A100;
 	}
 
-	if (read_) {
+	if (readElement) {
 		bgColor = teal.A100;
 	}
 
-	if (wrote_) {
+	if (wroteElement) {
 		bgColor = orange.A100;
 	}
 
@@ -173,7 +173,7 @@ export const RendererMergeSort: FC<
 					sm={6}
 				>
 					<IconLabel
-						label="Left-most right-most elements of working region"
+						label="Terminal element of working region"
 						icon={
 							<SquareRounded
 								htmlColor={pink.A100}
@@ -189,7 +189,7 @@ export const RendererMergeSort: FC<
 						}
 					/>
 					<IconLabel
-						label="Read from"
+						label="Element was read from"
 						icon={
 							<SquareRounded
 								htmlColor={teal.A100}
@@ -197,7 +197,7 @@ export const RendererMergeSort: FC<
 						}
 					/>
 					<IconLabel
-						label="Wrote to"
+						label="Element was written to"
 						icon={
 							<SquareRounded
 								htmlColor={orange.A100}
@@ -246,17 +246,17 @@ export const RendererMergeSort: FC<
 											key={`key-${index}`}
 											maxValue={maxValue}
 											value={value}
-											leftMostOrRightMostElement={currFrame.workingRegion.includes(
+											terminalElement={currFrame.terminalElements.includes(
 												index,
 											)}
 											compared={currFrame.compared.includes(
 												index,
 											)}
-											read_={
+											readElement={
 												index ===
 												currFrame.mainMemRead
 											}
-											wrote_={
+											wroteElement={
 												index ===
 												currFrame.mainMemWrote
 											}
@@ -292,14 +292,12 @@ export const RendererMergeSort: FC<
 										maxValue={maxValue}
 										value={value}
 										compared={false}
-										leftMostOrRightMostElement={
-											false
-										}
-										read_={
+										terminalElement={false}
+										readElement={
 											index ===
 											currFrame.auxiMemRead
 										}
-										wrote_={
+										wroteElement={
 											index ===
 											currFrame.auxiMemWrote
 										}

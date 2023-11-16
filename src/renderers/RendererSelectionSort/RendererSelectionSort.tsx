@@ -189,7 +189,7 @@ export const RendererSelectionSort: FC<
 					/>
 					<IconLabel
 						icon="👻"
-						label="Key"
+						label="Key element"
 					/>
 				</Grid>
 
