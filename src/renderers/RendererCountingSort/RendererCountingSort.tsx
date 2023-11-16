@@ -1,9 +1,15 @@
-import { FC, useState } from "react";
+import {
+	FC,
+	SyntheticEvent,
+	useState,
+} from "react";
 import {
 	Button,
 	Box,
-	Stack,
 	Typography,
+	Grid,
+	Tabs,
+	Tab,
 } from "@mui/material";
 import {
 	teal,
@@ -29,16 +35,16 @@ const RendererElement: FC<
 	RendererElemenetProps
 > = (props) => {
 	const {
-		size,
 		value,
 		maxValue,
 		stateRead,
 		stateWrite,
 	} = props;
 
-	const height: number = (value / maxValue) * 100;
+	const clampedValue: number = Math.max(value, 0);
 
-	const width: number = (1 / size) * 100;
+	const height: number =
+		(clampedValue / maxValue) * 100;
 
 	let bgColor: string = `hsl(0, 0%, ${
 		(value / maxValue) * 90
@@ -53,16 +59,13 @@ const RendererElement: FC<
 	}
 
 	return (
-		<Box
-			display="flex"
-			alignItems="baseline"
-			justifyContent="center"
-			sx={{
-				width: `${width}%`,
-				height: `${height}%`,
-				backgroundColor: bgColor,
-			}}
-		></Box>
+		<Grid
+			item
+			xs={1}
+			className="renderer-element"
+			height={`${height}%`}
+			bgcolor={bgColor}
+		/>
 	);
 };
 
@@ -79,14 +82,16 @@ export const RendererCountingSort: FC<
 	const maxValue: number = Math.max(...dataset);
 
 	const [frame, setFrame] = useState<number>(0);
+	const [tabPanelIndex, setTabPabelIndex] =
+		useState<number>(0);
 	const [frameStates] = useState<FrameState[]>(
 		() => {
 			const frameStates: FrameState[] = [];
-			countingSort(
-				[...dataset],
-				size,
-				frameStates,
-			);
+			const dd = [...dataset];
+			console.table(dd);
+			countingSort(dd, size, frameStates);
+
+			console.table(dd);
 			return frameStates;
 		},
 	);
@@ -110,32 +115,35 @@ export const RendererCountingSort: FC<
 			return prevFrame - 1;
 		});
 	};
+	const onTabPanelIndexChange = (
+		_: SyntheticEvent,
+		nextIndex: string,
+	) => {
+		setTabPabelIndex(Number.parseInt(nextIndex));
+	};
 
 	const currFrame: FrameState =
 		frameStates[frame];
 
 	return (
 		<Box>
-			<Stack spacing={2}>
-				<Box>
-					<IconLabel
-						label="Being read from"
-						icon={
-							<SquareRounded
-								htmlColor={teal.A100}
-							/>
-						}
-					/>
-					<IconLabel
-						label="Being written to"
-						icon={
-							<SquareRounded
-								htmlColor={orange.A100}
-							/>
-						}
-					/>
-				</Box>
-				<Box>
+			<Grid
+				container
+				spacing={2}
+			>
+				<Grid
+					item
+					xs={12}
+				>
+					<Typography variant="h3">
+						Counting sort
+					</Typography>
+				</Grid>
+				<Grid
+					item
+					xs={12}
+					sm={6}
+				>
 					<Typography variant="body1">
 						{`Frame ${frame + 1}/${
 							frameStates.length
@@ -147,114 +155,178 @@ export const RendererCountingSort: FC<
 					<Typography variant="body1">
 						{`Write: ${currFrame.memWriteCount}`}
 					</Typography>
-					<Typography variant="body1">
+					<Typography
+						variant="body1"
+						height="3rem"
+					>
 						{currFrame.frameDescription}
 					</Typography>
-				</Box>
-				<Typography variant="h3">
-					<code>input</code> memory
-				</Typography>
-				<Box
-					display="flex"
-					flexDirection="row"
-					alignItems="flex-end"
-					sx={{
-						width: "100%",
-						height: `${heightPx}px`,
-					}}
+				</Grid>
+				<Grid
+					item
+					xs={12}
+					sm={6}
 				>
-					{currFrame.elementStates.map(
-						(value, index) => {
-							return (
-								<RendererElement
-									key={`key-${index}`}
-									maxValue={maxValue}
-									size={size}
-									value={value}
-									stateRead={
-										index === currFrame.memRead
-									}
-									stateWrite={
-										index === currFrame.memWrite
-									}
-								/>
-							);
-						},
-					)}
-				</Box>
-				<Typography variant="h3">
-					<code>aux</code> memory
-				</Typography>
-				<Box
-					display="flex"
-					flexDirection="row"
-					alignItems="flex-end"
-					sx={{
-						width: "100%",
-						height: `${heightPx}px`,
-					}}
+					<IconLabel
+						label="Element was read from"
+						icon={
+							<SquareRounded
+								htmlColor={teal.A100}
+							/>
+						}
+					/>
+					<IconLabel
+						label="Element was written to"
+						icon={
+							<SquareRounded
+								htmlColor={orange.A100}
+							/>
+						}
+					/>
+				</Grid>
+				<Grid
+					item
+					xs={12}
 				>
-					{currFrame.auxStates.length === 0 &&
-						"The auxiliary memory is not used in at this time."}
-					{currFrame.auxStates.map(
-						(value, index) => {
-							return (
-								<RendererElement
-									key={`key-aux-${index}`}
-									maxValue={maxValue}
-									size={size}
-									value={value}
-									stateRead={
-										index === currFrame.memAuxRead
-									}
-									stateWrite={
-										index ===
-										currFrame.memAuxWrite
-									}
-								/>
-							);
-						},
-					)}
-				</Box>
-				<Typography variant="h3">
-					<code>sortedAux</code> memory
-				</Typography>
-				<Box
-					display="flex"
-					flexDirection="row"
-					alignItems="flex-end"
-					sx={{
-						width: "100%",
-						height: `${heightPx}px`,
-					}}
+					<Tabs
+						value={tabPanelIndex}
+						onChange={onTabPanelIndexChange}
+					>
+						<Tab
+							label="Primary memory"
+							value={0}
+						/>
+						<Tab
+							label="Auxiliary memory"
+							value={1}
+						/>
+						<Tab
+							label="Sorted memory"
+							value={2}
+						/>
+					</Tabs>
+				</Grid>
+				<Grid
+					item
+					xs={12}
+					display={
+						tabPanelIndex === 0
+							? undefined
+							: "none"
+					}
 				>
-					{currFrame.sortedAuxStates.length ===
-						0 &&
-						"The sorted auxiliary memory is not used in at this time."}
-					{currFrame.sortedAuxStates.map(
-						(value, index) => {
-							return (
-								<RendererElement
-									key={`key-sorted-aux-${index}`}
-									maxValue={maxValue}
-									size={size}
-									value={value}
-									stateRead={
-										index ===
-										currFrame.memSortedAuxRead
-									}
-									stateWrite={
-										index ===
-										currFrame.memSortedAuxWrite
-									}
-								/>
-							);
-						},
-					)}
-				</Box>
-				<Stack
-					direction="row"
-					spacing={2}
+					<Grid
+						container
+						columns={size}
+						className="renderer-container"
+						height={`${heightPx}px`}
+					>
+						{currFrame.mainElementStates.map(
+							(value, index) => {
+								return (
+									<RendererElement
+										key={`key-${index}`}
+										maxValue={maxValue}
+										size={size}
+										value={value}
+										stateRead={
+											index ===
+											currFrame.mainMemRead
+										}
+										stateWrite={
+											index ===
+											currFrame.mainMemWritten
+										}
+									/>
+								);
+							},
+						)}
+					</Grid>
+				</Grid>
+				<Grid
+					item
+					xs={12}
+					display={
+						tabPanelIndex === 1
+							? undefined
+							: "none"
+					}
+				>
+					<Grid
+						container
+						columns={maxValue + 1}
+						className="renderer-container"
+						height={`${heightPx}px`}
+					>
+						{currFrame.auxiElementStates
+							.length === 0 &&
+							"The auxiliary memory is not used in at this time."}
+						{currFrame.auxiElementStates.map(
+							(value, index) => {
+								return (
+									<RendererElement
+										key={`key-aux-${index}`}
+										maxValue={maxValue}
+										size={size}
+										value={value}
+										stateRead={
+											index ===
+											currFrame.auxiMemRead
+										}
+										stateWrite={
+											index ===
+											currFrame.auxiMemWritten
+										}
+									/>
+								);
+							},
+						)}
+					</Grid>
+				</Grid>
+				<Grid
+					item
+					xs={12}
+					display={
+						tabPanelIndex === 2
+							? undefined
+							: "none"
+					}
+				>
+					<Grid
+						container
+						columns={size}
+						className="renderer-container"
+						height={`${heightPx}px`}
+					>
+						{currFrame.auxiElementStates
+							.length === 0 &&
+							"The sorted memory is not used in at this time."}
+						{currFrame.sortElementStates.map(
+							(value, index) => {
+								return (
+									<RendererElement
+										key={`key-sorted-aux-${index}`}
+										maxValue={maxValue}
+										size={size}
+										value={value}
+										stateRead={
+											index ===
+											currFrame.sortMemRead
+										}
+										stateWrite={
+											index ===
+											currFrame.sortMemWritten
+										}
+									/>
+								);
+							},
+						)}
+					</Grid>
+				</Grid>
+				<Grid
+					item
+					xs={12}
+					sm={6}
 				>
 					<Button
 						fullWidth
@@ -264,6 +336,12 @@ export const RendererCountingSort: FC<
 					>
 						Previous Frame
 					</Button>
+				</Grid>
+				<Grid
+					item
+					xs={12}
+					sm={6}
+				>
 					<Button
 						fullWidth
 						variant="contained"
@@ -274,8 +352,8 @@ export const RendererCountingSort: FC<
 					>
 						Next Frame
 					</Button>
-				</Stack>
-			</Stack>
+				</Grid>
+			</Grid>
 		</Box>
 	);
 };

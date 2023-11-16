@@ -40,7 +40,7 @@ const RendererElement: FC<
 		compared,
 		readElement,
 		wroteElement,
-		terminalElement: leftMostOrRightMostElement,
+		terminalElement,
 	} = props;
 
 	const height: number = (value / maxValue) * 100;
@@ -49,7 +49,7 @@ const RendererElement: FC<
 		(value / maxValue) * 90
 	}%)`;
 
-	if (leftMostOrRightMostElement) {
+	if (terminalElement) {
 		bgColor = pink.A100;
 	}
 

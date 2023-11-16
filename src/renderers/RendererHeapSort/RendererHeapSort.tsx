@@ -228,7 +228,7 @@ export const RendererHeapSort: FC<
 											index ===
 											currFrame.parentElement
 										}
-										childElement={currFrame.childrenElements.includes(
+										childElement={currFrame.childElements.includes(
 											index,
 										)}
 									/>

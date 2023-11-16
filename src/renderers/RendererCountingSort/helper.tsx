@@ -1,19 +1,19 @@
 import { Fragment, ReactNode } from "react";
 
 type IndexDetails = {
-	memRead: number;
-	memWrite: number;
-	memAuxRead: number;
-	memAuxWrite: number;
-	memSortedAuxRead: number;
-	memSortedAuxWrite: number;
+	mainMemRead: number;
+	mainMemWritten: number;
+	auxiMemRead: number;
+	auxiMemWritten: number;
+	sortMemRead: number;
+	sortMemWritten: number;
 };
 
 export type FrameState = IndexDetails & {
 	frameDescription: ReactNode;
-	elementStates: number[];
-	auxStates: number[];
-	sortedAuxStates: number[];
+	mainElementStates: number[];
+	auxiElementStates: number[];
+	sortElementStates: number[];
 	memWriteCount: number;
 	memReadCount: number;
 };
@@ -28,8 +28,8 @@ export const countingSort = (
 	let memWriteCount: number = 0;
 	let memReadCount: number = 0;
 
-	const auxMemory: number[] = Array(maxValue);
-	const sortedAuxMemory: number[] = [];
+	const auxiMemory: number[] = [];
+	const sortMemory: number[] = [];
 
 	const generateFrameState = (
 		frameDescription: ReactNode,
@@ -37,9 +37,9 @@ export const countingSort = (
 	): void => {
 		frameStates.push({
 			frameDescription,
-			elementStates: [...dataset],
-			auxStates: [...auxMemory],
-			sortedAuxStates: [...sortedAuxMemory],
+			mainElementStates: [...dataset],
+			auxiElementStates: [...auxiMemory],
+			sortElementStates: [...sortMemory],
 			memReadCount,
 			memWriteCount,
 			...indexDetails,
@@ -51,124 +51,139 @@ export const countingSort = (
 			Unsorted <code>input[0:{size - 1}]</code>.
 		</Fragment>,
 		{
-			memRead: -1,
-			memWrite: -1,
-			memAuxRead: -1,
-			memAuxWrite: -1,
-			memSortedAuxRead: -1,
-			memSortedAuxWrite: -1,
+			mainMemRead: -1,
+			mainMemWritten: -1,
+			auxiMemRead: -1,
+			auxiMemWritten: -1,
+			sortMemRead: -1,
+			sortMemWritten: -1,
 		},
 	);
 
-	for (let i = 1; i < maxValue; i++) {
-		auxMemory[i] = 0;
-	}
-
-	for (let i = 1; i <= maxValue; i++) {
-		auxMemory[dataset[i]]++;
-		generateFrameState(
-			<Fragment>
-				Increment{" "}
-				<code>
-					input[{auxMemory[dataset[i]]}]
-				</code>{" "}
-				by one.
-			</Fragment>,
-			{
-				memRead: -1,
-				memWrite: -1,
-				memAuxRead: -1,
-				memAuxWrite: -1,
-				memSortedAuxRead: -1,
-				memSortedAuxWrite: -1,
-			},
-		);
-	}
-
-	generateFrameState(
-		<Fragment>
-			Prepare prefix sum array from{" "}
-			<code>aux[0:{size - 1}]</code>.
-		</Fragment>,
-		{
-			memRead: -1,
-			memWrite: -1,
-			memAuxRead: -1,
-			memAuxWrite: -1,
-			memSortedAuxRead: -1,
-			memSortedAuxWrite: -1,
-		},
-	);
-
-	for (let i = 1; i <= maxValue; i++) {
-		auxMemory[i] += auxMemory[i - 1];
-
-		memReadCount++;
+	for (let i = 0; i <= maxValue; i++) {
+		auxiMemory[i] = 0;
 		memWriteCount++;
 		generateFrameState(
 			<Fragment>
-				Write{" "}
-				<code>
-					aux[{i}] + aux[{i + 1}]
-				</code>{" "}
-				to <code>aux[{i + 1}]</code>.
+				Wrote 0 to <code>auxiMemory[{i}]</code>.
 			</Fragment>,
 			{
-				memRead: -1,
-				memWrite: -1,
-				memAuxRead: i,
-				memAuxWrite: i + 1,
-				memSortedAuxRead: -1,
-				memSortedAuxWrite: -1,
+				mainMemRead: -1,
+				mainMemWritten: -1,
+				auxiMemRead: -1,
+				auxiMemWritten: i,
+				sortMemRead: -1,
+				sortMemWritten: -1,
 			},
 		);
 	}
 
 	for (let i = 0; i < size; i++) {
-		sortedAuxMemory[auxMemory[dataset[i]]] =
+		auxiMemory[dataset[i]]++;
+
+		memReadCount++;
+		memWriteCount++;
+		generateFrameState(
+			<Fragment>
+				Increased <code>auxiMemory</code> at index{" "}
+				<code>input[{i}]</code> by one.
+			</Fragment>,
+			{
+				mainMemRead: i,
+				mainMemWritten: -1,
+				auxiMemRead: -1,
+				auxiMemWritten: dataset[i],
+				sortMemRead: -1,
+				sortMemWritten: -1,
+			},
+		);
+	}
+
+	for (let i = 1; i <= maxValue; i++) {
+		auxiMemory[i] += auxiMemory[i - 1];
+
+		memReadCount++;
+		memWriteCount++;
+		generateFrameState(
+			<Fragment>
+				Increased <code>auxiMemory[{i + 1}]</code>{" "}
+				by <code>auxiMemory[{i}]</code>
+			</Fragment>,
+			{
+				mainMemRead: -1,
+				mainMemWritten: -1,
+				auxiMemRead: i,
+				auxiMemWritten: i + 1,
+				sortMemRead: -1,
+				sortMemWritten: -1,
+			},
+		);
+	}
+
+	for (let i = size - 1; i >= 0; i--) {
+		sortMemory[auxiMemory[dataset[i]] - 1] =
 			dataset[i];
 
+		auxiMemory[dataset[i]]--;
+
+		memReadCount++;
 		memReadCount++;
 		memWriteCount++;
 		generateFrameState(
 			<Fragment>
-				Write <code>input[{i}]</code> to{" "}
-				<code>
-					sortedAux[{auxMemory[dataset[i]]}]
-				</code>
-				.
+				Wrote <code>input[{i}]</code> to{" "}
+				<code>sortedMemory</code> at index{" "}
+				<code>{auxiMemory[dataset[i]] - 1}</code>
 			</Fragment>,
 			{
-				memRead: i,
-				memWrite: -1,
-				memAuxRead: -1,
-				memAuxWrite: -1,
-				memSortedAuxRead: 0,
-				memSortedAuxWrite: auxMemory[dataset[i]],
+				mainMemRead: i,
+				mainMemWritten: -1,
+				auxiMemRead: dataset[i],
+				auxiMemWritten: -1,
+				sortMemRead: -1,
+				sortMemWritten:
+					auxiMemory[dataset[i]] - 1,
 			},
 		);
 
-		auxMemory[dataset[i]]--;
-	}
-
-	for (let i = 0; i < size; i++) {
-		dataset[i] = sortedAuxMemory[i];
+		auxiMemory[dataset[i]]--;
 
 		memReadCount++;
 		memWriteCount++;
 		generateFrameState(
 			<Fragment>
-				Write
-				<code>sortedAux[{i}]</code> to{" "}
+				Decreased <code>auxiMemory</code> at index{" "}
+				<code>input[{i}]</code> by one.
+			</Fragment>,
+			{
+				mainMemRead: i,
+				mainMemWritten: -1,
+				auxiMemRead: -1,
+				auxiMemWritten: dataset[i],
+				sortMemRead: -1,
+				sortMemWritten: -1,
+			},
+		);
+	}
+
+	for (let i = 0; i < size; i++) {
+		dataset[i] = sortMemory[i];
+
+		memReadCount++;
+		memWriteCount++;
+		generateFrameState(
+			<Fragment>
+				Wrote
+				<code>sortMemory[{i}]</code> to{" "}
 				<code>input[{i}]</code>.
 			</Fragment>,
 			{
-				memRead: -1,
-				memWrite: i,
-				memAuxRead: -1,
-				memAuxWrite: -1,
-				memSortedAuxRead: i,
-				memSortedAuxWrite: -1,
+				mainMemRead: -1,
+				mainMemWritten: i,
+				auxiMemRead: -1,
+				auxiMemWritten: -1,
+				sortMemRead: i,
+				sortMemWritten: -1,
 			},
 		);
 	}
@@ -178,12 +193,12 @@ export const countingSort = (
 			Sorted <code>input[0:{size - 1}]</code>
 		</Fragment>,
 		{
-			memRead: -1,
-			memWrite: -1,
-			memAuxRead: -1,
-			memAuxWrite: -1,
-			memSortedAuxRead: -1,
-			memSortedAuxWrite: -1,
+			mainMemRead: -1,
+			mainMemWritten: -1,
+			auxiMemRead: -1,
+			auxiMemWritten: -1,
+			sortMemRead: -1,
+			sortMemWritten: -1,
 		},
 	);
 };

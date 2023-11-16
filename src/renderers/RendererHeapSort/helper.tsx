@@ -4,7 +4,7 @@ type IndexDetails = {
 	compared: number[];
 	swapped: number[];
 	parentElement: number;
-	childrenElements: number[];
+	childElements: number[];
 	rightMostUnsortedElement: number;
 };
 
@@ -85,7 +85,7 @@ export const heapSort = (
 						],
 						swapped: [],
 						parentElement: parentIndex,
-						childrenElements: [
+						childElements: [
 							leftChildIndex,
 							rightChildIndex,
 						],
@@ -115,7 +115,7 @@ export const heapSort = (
 					],
 					swapped: [],
 					parentElement: parentIndex,
-					childrenElements: [
+					childElements: [
 						leftChildIndex,
 						rightChildIndex < _size
 							? rightChildIndex
@@ -151,7 +151,7 @@ export const heapSort = (
 						targetChildIndex,
 					],
 					parentElement: parentIndex,
-					childrenElements: [
+					childElements: [
 						leftChildIndex,
 						rightChildIndex < _size
 							? rightChildIndex
@@ -173,7 +173,7 @@ export const heapSort = (
 			compared: [],
 			swapped: [],
 			parentElement: -1,
-			childrenElements: [],
+			childElements: [],
 			rightMostUnsortedElement: -1,
 		},
 	);
@@ -198,7 +198,7 @@ export const heapSort = (
 				compared: [],
 				swapped: [0, i],
 				parentElement: -1,
-				childrenElements: [],
+				childElements: [],
 				rightMostUnsortedElement: -1,
 			},
 		);
@@ -214,7 +214,7 @@ export const heapSort = (
 			compared: [],
 			swapped: [],
 			parentElement: -1,
-			childrenElements: [],
+			childElements: [],
 			rightMostUnsortedElement: -1,
 		},
 	);
