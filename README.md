@@ -19,6 +19,7 @@ So far, common sorting algorithms are included:
 - [x] Merge sort
 - [x] Heapsort
 - [x] Quicksort
+- [x] Counting sort
 
 Also, the visualizer looks better on tall screens on wide screens for some reason.
 
