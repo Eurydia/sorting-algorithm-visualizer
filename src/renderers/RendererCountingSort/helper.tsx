@@ -85,8 +85,9 @@ export const countingSort = (
 		memWriteCount++;
 		generateFrameState(
 			<Fragment>
-				Increased <code>auxiMemory</code> at index{" "}
-				<code>input[{i}]</code> by one.
+				Increased{" "}
+				<code>auxiMemory[{dataset[i]}]</code> by
+				one.
 			</Fragment>,
 			{
 				mainMemRead: i,
@@ -106,8 +107,8 @@ export const countingSort = (
 		memWriteCount++;
 		generateFrameState(
 			<Fragment>
-				Increased <code>auxiMemory[{i + 1}]</code>{" "}
-				by <code>auxiMemory[{i}]</code>
+				Increased <code>auxiMemory[{i}]</code> by{" "}
+				<code>auxiMemory[{i - 1}]</code>
 			</Fragment>,
 			{
 				mainMemRead: -1,
@@ -132,8 +133,11 @@ export const countingSort = (
 		generateFrameState(
 			<Fragment>
 				Wrote <code>input[{i}]</code> to{" "}
-				<code>sortedMemory</code> at index{" "}
-				<code>auxiMemory[{dataset[i]}] - 1</code>.
+				<code>
+					sortedMemory[
+					{auxiMemory[dataset[i]] - 1}]
+				</code>
+				.
 			</Fragment>,
 			{
 				mainMemRead: i,
@@ -152,8 +156,9 @@ export const countingSort = (
 		memWriteCount++;
 		generateFrameState(
 			<Fragment>
-				Decreased <code>auxiMemory</code> at index{" "}
-				<code>input[{i}]</code> by one.
+				Decreased{" "}
+				<code>auxiMemory[{dataset[i]}]</code> by
+				one.
 			</Fragment>,
 			{
 				mainMemRead: i,
