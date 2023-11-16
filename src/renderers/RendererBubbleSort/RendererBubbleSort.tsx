@@ -22,10 +22,10 @@ type RendererElemenetProps = {
 	value: number;
 	maxValue: number;
 
-	comparing: boolean;
-	swapping: boolean;
+	compared: boolean;
+	swapped: boolean;
 	rightMostUnsortedElement: boolean;
-	bubbling: boolean;
+	keyElement: boolean;
 };
 const RendererElement: FC<
 	RendererElemenetProps
@@ -33,10 +33,10 @@ const RendererElement: FC<
 	const {
 		maxValue,
 		value,
-		comparing,
-		swapping,
+		compared,
+		swapped,
 		rightMostUnsortedElement,
-		bubbling,
+		keyElement,
 	} = props;
 
 	const height: number = (value / maxValue) * 100;
@@ -48,11 +48,11 @@ const RendererElement: FC<
 		bgColor = pink["A100"];
 	}
 
-	if (comparing) {
+	if (compared) {
 		bgColor = blue["A100"];
 	}
 
-	if (swapping) {
+	if (swapped) {
 		bgColor = deepOrange["A100"];
 	}
 
@@ -64,7 +64,7 @@ const RendererElement: FC<
 			height={`${height}%`}
 			bgcolor={bgColor}
 		>
-			{bubbling ? "🧼" : ""}
+			{keyElement ? "🧼" : ""}
 		</Grid>
 	);
 };
@@ -183,7 +183,7 @@ export const RendererBubbleSort: FC<
 						}
 					/>
 					<IconLabel
-						label="Swapped position"
+						label="Swapped places"
 						icon={
 							<SquareRounded
 								htmlColor={deepOrange.A100}
@@ -212,17 +212,17 @@ export const RendererBubbleSort: FC<
 										key={`key-${index}`}
 										maxValue={maxValue}
 										value={value}
-										comparing={currFrame.comparing.includes(
+										compared={currFrame.comparing.includes(
 											index,
 										)}
-										swapping={currFrame.swapping.includes(
+										swapped={currFrame.swapping.includes(
 											index,
 										)}
 										rightMostUnsortedElement={
 											index ===
 											currFrame.rightMostUnsortedElement
 										}
-										bubbling={
+										keyElement={
 											index ===
 											currFrame.keyElement
 										}

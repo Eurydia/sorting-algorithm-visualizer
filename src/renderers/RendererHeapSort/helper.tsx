@@ -3,9 +3,8 @@ import { ReactNode, Fragment } from "react";
 type IndexDetails = {
 	compared: number[];
 	swapped: number[];
-	_parent: number;
-	leftChild: number;
-	rightChild: number;
+	parentElement: number;
+	childrenElements: number[];
 	rightMostUnsortedElement: number;
 };
 
@@ -47,24 +46,25 @@ export const heapSort = (
 			const rightChildIndex: number =
 				leftChildIndex + 1;
 
-			generateFrameState(
-				<Fragment>
-					Consider{" "}
-					<code>input[{parentIndex}]</code> as a
-					parent.
-				</Fragment>,
-				{
-					compared: [],
-					swapped: [],
-					_parent: parentIndex,
-					leftChild: parentIndex * 2 + 1,
-					rightChild:
-						rightChildIndex < _size
-							? rightChildIndex
-							: -1,
-					rightMostUnsortedElement: _size - 1,
-				},
-			);
+			// generateFrameState(
+			// 	<Fragment>
+			// 		Consider{" "}
+			// 		<code>input[{parentIndex}]</code> as a
+			// 		parent.
+			// 	</Fragment>,
+			// 	{
+			// 		compared: [],
+			// 		swapped: [],
+			// 		parentElement: parentIndex,
+			// 		childElement: [
+			// 			parentIndex * 2 + 1,
+			// 			rightChildIndex < _size
+			// 				? rightChildIndex
+			// 				: -1,
+			// 		],
+			// 		rightMostUnsortedElement: _size - 1,
+			// 	},
+			// );
 
 			let targetChildIndex: number =
 				leftChildIndex;
@@ -73,7 +73,7 @@ export const heapSort = (
 				comparisonCount++;
 				generateFrameState(
 					<Fragment>
-						Compare{" "}
+						Compared{" "}
 						<code>input[{leftChildIndex}]</code>{" "}
 						against{" "}
 						<code>input[{rightChildIndex}]</code>.
@@ -84,9 +84,11 @@ export const heapSort = (
 							leftChildIndex + 1,
 						],
 						swapped: [],
-						_parent: parentIndex,
-						leftChild: leftChildIndex,
-						rightChild: rightChildIndex,
+						parentElement: parentIndex,
+						childrenElements: [
+							leftChildIndex,
+							rightChildIndex,
+						],
 						rightMostUnsortedElement: _size - 1,
 					},
 				);
@@ -101,7 +103,7 @@ export const heapSort = (
 
 			generateFrameState(
 				<Fragment>
-					Compare{" "}
+					Compared{" "}
 					<code>input[{parentIndex}]</code>{" "}
 					against{" "}
 					<code>input[{targetChildIndex}]</code>.
@@ -112,12 +114,13 @@ export const heapSort = (
 						targetChildIndex,
 					],
 					swapped: [],
-					_parent: parentIndex,
-					leftChild: leftChildIndex,
-					rightChild:
+					parentElement: parentIndex,
+					childrenElements: [
+						leftChildIndex,
 						rightChildIndex < _size
 							? rightChildIndex
 							: -1,
+					],
 					rightMostUnsortedElement: _size - 1,
 				},
 			);
@@ -147,12 +150,13 @@ export const heapSort = (
 						parentIndex,
 						targetChildIndex,
 					],
-					_parent: parentIndex,
-					leftChild: leftChildIndex,
-					rightChild:
+					parentElement: parentIndex,
+					childrenElements: [
+						leftChildIndex,
 						rightChildIndex < _size
 							? rightChildIndex
 							: -1,
+					],
 					rightMostUnsortedElement: _size - 1,
 				},
 			);
@@ -168,9 +172,8 @@ export const heapSort = (
 		{
 			compared: [],
 			swapped: [],
-			_parent: -1,
-			leftChild: -1,
-			rightChild: -1,
+			parentElement: -1,
+			childrenElements: [],
 			rightMostUnsortedElement: -1,
 		},
 	);
@@ -194,9 +197,8 @@ export const heapSort = (
 			{
 				compared: [],
 				swapped: [0, i],
-				_parent: -1,
-				leftChild: -1,
-				rightChild: -1,
+				parentElement: -1,
+				childrenElements: [],
 				rightMostUnsortedElement: -1,
 			},
 		);
@@ -211,9 +213,8 @@ export const heapSort = (
 		{
 			compared: [],
 			swapped: [],
-			_parent: -1,
-			leftChild: -1,
-			rightChild: -1,
+			parentElement: -1,
+			childrenElements: [],
 			rightMostUnsortedElement: -1,
 		},
 	);

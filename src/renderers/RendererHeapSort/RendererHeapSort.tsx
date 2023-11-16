@@ -2,7 +2,7 @@ import { FC, useState } from "react";
 import {
 	Box,
 	Button,
-	Stack,
+	Grid,
 	Typography,
 } from "@mui/material";
 import {
@@ -23,27 +23,24 @@ type RendererElemenetProps = {
 	compared: boolean;
 	swapped: boolean;
 	rightMostUnsortedElement: boolean;
-	_child: boolean;
-	_parent: boolean;
+	childElement: boolean;
+	parentElement: boolean;
 };
 const RendererElement: FC<
 	RendererElemenetProps
 > = (props) => {
 	const {
 		value,
-		size,
 		maxValue,
 
 		compared,
 		swapped,
 		rightMostUnsortedElement,
-		_child,
-		_parent,
+		childElement,
+		parentElement,
 	} = props;
 
 	const height: number = (value / maxValue) * 100;
-
-	const width: number = (1 / size) * 100;
 
 	let bgColor: string = `hsl(0, 0%, ${
 		(value / maxValue) * 90
@@ -62,26 +59,23 @@ const RendererElement: FC<
 	}
 
 	let label: string = "";
-	if (_parent) {
+	if (parentElement) {
 		label = "🐔";
 	}
-	if (_child) {
+	if (childElement) {
 		label = "🐤";
 	}
 
 	return (
-		<Box
-			display="flex"
-			alignItems="baseline"
-			justifyContent="center"
-			sx={{
-				width: `${width}%`,
-				height: `${height}%`,
-				backgroundColor: bgColor,
-			}}
+		<Grid
+			item
+			xs={1}
+			className="renderer-element"
+			height={`${height}%`}
+			bgcolor={bgColor}
 		>
 			{label}
-		</Box>
+		</Grid>
 	);
 };
 
@@ -131,8 +125,44 @@ export const RendererHeapSort: FC<
 
 	return (
 		<Box>
-			<Stack spacing={2}>
-				<Box>
+			<Grid
+				container
+				spacing={2}
+			>
+				<Grid
+					item
+					xs={12}
+					id="bubble-sort"
+				>
+					<Typography variant="h3">
+						Heapsort
+					</Typography>
+				</Grid>
+				<Grid
+					item
+					xs={12}
+					sm={6}
+				>
+					<Typography variant="body1">
+						{`Frame ${frame + 1}/${
+							frameStates.length
+						}`}
+					</Typography>
+					<Typography variant="body1">
+						{`Comparison: ${currFrame.comparisonCount}`}
+					</Typography>
+					<Typography variant="body1">
+						{`Swap: ${currFrame.swapCount}`}
+					</Typography>
+					<Typography variant="body1">
+						{currFrame.frameDescription}
+					</Typography>
+				</Grid>
+				<Grid
+					item
+					xs={12}
+					sm={6}
+				>
 					<IconLabel
 						icon={
 							<SquareRounded
@@ -147,7 +177,7 @@ export const RendererHeapSort: FC<
 								htmlColor={blue.A100}
 							/>
 						}
-						label="Being compared"
+						label="Compared"
 					/>
 
 					<IconLabel
@@ -166,67 +196,52 @@ export const RendererHeapSort: FC<
 						icon="🐤"
 						label="Child"
 					/>
-				</Box>
-				<Box>
-					<Typography variant="body1">
-						{`Frame ${frame + 1}/${
-							frameStates.length
-						}`}
-					</Typography>
-					<Typography variant="body1">
-						{`Comparison: ${currFrame.comparisonCount}`}
-					</Typography>
-					<Typography variant="body1">
-						{`Swap: ${currFrame.swapCount}`}
-					</Typography>
-					<Typography variant="body1">
-						{currFrame.frameDescription}
-					</Typography>
-				</Box>
-
-				<Box
-					display="flex"
-					flexDirection="row"
-					alignItems="flex-end"
-					sx={{
-						width: "100%",
-						height: `${heightPx}px`,
-					}}
+				</Grid>
+				<Grid
+					item
+					xs={12}
 				>
-					{currFrame.elementStates.map(
-						(value, index) => {
-							return (
-								<RendererElement
-									key={`key-${index}`}
-									maxValue={maxValue}
-									size={size}
-									value={value}
-									compared={currFrame.compared.includes(
-										index,
-									)}
-									swapped={currFrame.swapped.includes(
-										index,
-									)}
-									rightMostUnsortedElement={
-										index ===
-										currFrame.rightMostUnsortedElement
-									}
-									_parent={
-										index === currFrame._parent
-									}
-									_child={
-										index ===
-											currFrame.leftChild ||
-										index === currFrame.rightChild
-									}
-								/>
-							);
-						},
-					)}
-				</Box>
-				<Stack
-					direction="row"
-					spacing={2}
+					<Grid
+						container
+						columns={size}
+						height={`${heightPx}px`}
+						className="renderer-container"
+					>
+						{currFrame.elementStates.map(
+							(value, index) => {
+								return (
+									<RendererElement
+										key={`key-${index}`}
+										maxValue={maxValue}
+										size={size}
+										value={value}
+										compared={currFrame.compared.includes(
+											index,
+										)}
+										swapped={currFrame.swapped.includes(
+											index,
+										)}
+										rightMostUnsortedElement={
+											index ===
+											currFrame.rightMostUnsortedElement
+										}
+										parentElement={
+											index ===
+											currFrame.parentElement
+										}
+										childElement={currFrame.childrenElements.includes(
+											index,
+										)}
+									/>
+								);
+							},
+						)}
+					</Grid>
+				</Grid>
+				<Grid
+					item
+					xs={12}
+					sm={6}
 				>
 					<Button
 						fullWidth
@@ -236,6 +251,12 @@ export const RendererHeapSort: FC<
 					>
 						Previous Frame
 					</Button>
+				</Grid>
+				<Grid
+					item
+					xs={12}
+					sm={6}
+				>
 					<Button
 						fullWidth
 						variant="contained"
@@ -246,8 +267,8 @@ export const RendererHeapSort: FC<
 					>
 						Next Frame
 					</Button>
-				</Stack>
-			</Stack>
+				</Grid>
+			</Grid>
 		</Box>
 	);
 };

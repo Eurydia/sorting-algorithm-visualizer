@@ -25,7 +25,7 @@ type RendererElemenetProps = {
 
 	compared: boolean;
 	swapped: boolean;
-	firstOfUnsortedRegion: boolean;
+	leftMostUnsortedElement: boolean;
 	keyElement: boolean;
 };
 const RendererElement: FC<
@@ -36,7 +36,7 @@ const RendererElement: FC<
 		value,
 		compared,
 		swapped,
-		firstOfUnsortedRegion,
+		leftMostUnsortedElement,
 		keyElement,
 	} = props;
 
@@ -46,7 +46,7 @@ const RendererElement: FC<
 		(value / maxValue) * 90
 	}%)`;
 
-	if (firstOfUnsortedRegion) {
+	if (leftMostUnsortedElement) {
 		bgColor = pink.A100;
 	}
 
@@ -177,7 +177,7 @@ export const RendererSelectionSort: FC<
 								htmlColor={blue.A100}
 							/>
 						}
-						label="Being compared"
+						label="Compared"
 					/>
 					<IconLabel
 						icon={
@@ -216,7 +216,7 @@ export const RendererSelectionSort: FC<
 										swapped={currFrame.swapped.includes(
 											index,
 										)}
-										firstOfUnsortedRegion={
+										leftMostUnsortedElement={
 											index ===
 											currFrame.leftMostUnsortedElement
 										}

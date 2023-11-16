@@ -49,23 +49,23 @@ export const mergeSort = (
 		startIndex: number,
 		endIndex: number,
 	): void => {
-		generateFrameState(
-			<Fragment>
-				Consider elements between{" "}
-				<code>
-					input[{startIndex}:{endIndex}]
-				</code>
-				.
-			</Fragment>,
-			{
-				workingRegion: [startIndex, endIndex],
-				compared: [],
-				mainMemRead: -1,
-				mainMemWrote: -1,
-				auxiMemRead: -1,
-				auxiMemWrote: -1,
-			},
-		);
+		// generateFrameState(
+		// 	<Fragment>
+		// 		Consider elements between{" "}
+		// 		<code>
+		// 			input[{startIndex}:{endIndex}]
+		// 		</code>
+		// 		.
+		// 	</Fragment>,
+		// 	{
+		// 		workingRegion: [startIndex, endIndex],
+		// 		compared: [],
+		// 		mainMemRead: -1,
+		// 		mainMemWrote: -1,
+		// 		auxiMemRead: -1,
+		// 		auxiMemWrote: -1,
+		// 	},
+		// );
 
 		if (endIndex - startIndex === 0) {
 			return;

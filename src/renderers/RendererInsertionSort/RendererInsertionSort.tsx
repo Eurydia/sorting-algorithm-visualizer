@@ -172,7 +172,7 @@ export const RendererInsertionSort: FC<
 						}
 					/>
 					<IconLabel
-						label="Being compared"
+						label="Compared"
 						icon={
 							<SquareRounded
 								htmlColor={blue.A100}

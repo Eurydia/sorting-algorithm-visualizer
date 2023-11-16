@@ -173,7 +173,7 @@ export const RendererMergeSort: FC<
 					sm={6}
 				>
 					<IconLabel
-						label="Left-most and right-most element of working region"
+						label="Left-most right-most elements of working region"
 						icon={
 							<SquareRounded
 								htmlColor={pink.A100}
