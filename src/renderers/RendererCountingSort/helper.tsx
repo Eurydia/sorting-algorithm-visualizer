@@ -133,7 +133,7 @@ export const countingSort = (
 			<Fragment>
 				Wrote <code>input[{i}]</code> to{" "}
 				<code>sortedMemory</code> at index{" "}
-				<code>{auxiMemory[dataset[i]] - 1}</code>
+				<code>auxiMemory[{dataset[i]}] - 1</code>.
 			</Fragment>,
 			{
 				mainMemRead: i,
