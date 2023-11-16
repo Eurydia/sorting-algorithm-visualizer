@@ -6,10 +6,10 @@ import {
 import {
 	Button,
 	Box,
-	Stack,
 	Typography,
 	Tab,
 	Tabs,
+	Grid,
 } from "@mui/material";
 import {
 	blue,
@@ -24,62 +24,55 @@ import { IconLabel } from "components/IconLabel";
 import { mergeSort, FrameState } from "./helper";
 
 type RendererElemenetProps = {
-	size: number;
 	maxValue: number;
 	value: number;
-	compare: boolean;
-	stateRead: boolean;
-	stateWrite: boolean;
-	firstOrLastElement: boolean;
+	compared: boolean;
+	read_: boolean;
+	wrote_: boolean;
+	leftMostOrRightMostElement: boolean;
 };
 const RendererElement: FC<
 	RendererElemenetProps
 > = (props) => {
 	const {
-		size,
 		value,
 		maxValue,
-		compare: stateCompare,
-		stateRead,
-		stateWrite,
-		firstOrLastElement: stateFirstOrLastElement,
+		compared,
+		read_,
+		wrote_,
+		leftMostOrRightMostElement,
 	} = props;
 
 	const height: number = (value / maxValue) * 100;
-
-	const width: number = (1 / size) * 100;
 
 	let bgColor: string = `hsl(0, 0%, ${
 		(value / maxValue) * 90
 	}%)`;
 
-	if (stateFirstOrLastElement) {
+	if (leftMostOrRightMostElement) {
 		bgColor = pink.A100;
 	}
 
-	if (stateCompare) {
+	if (compared) {
 		bgColor = blue.A100;
 	}
 
-	if (stateRead) {
+	if (read_) {
 		bgColor = teal.A100;
 	}
 
-	if (stateWrite) {
+	if (wrote_) {
 		bgColor = orange.A100;
 	}
 
 	return (
-		<Box
-			display="flex"
-			alignItems="baseline"
-			justifyContent="center"
-			sx={{
-				width: `${width}%`,
-				height: `${height}%`,
-				backgroundColor: bgColor,
-			}}
-		></Box>
+		<Grid
+			item
+			xs={1}
+			bgcolor={bgColor}
+			height={`${height}%`}
+			className="renderer-element"
+		/>
 	);
 };
 
@@ -138,42 +131,24 @@ export const RendererMergeSort: FC<
 
 	return (
 		<Box>
-			<Stack spacing={2}>
-				<Box>
-					<IconLabel
-						label="Left-most and right-most element of working region"
-						icon={
-							<SquareRounded
-								htmlColor={pink.A100}
-							/>
-						}
-					/>
-					<IconLabel
-						label="Being compared"
-						icon={
-							<SquareRounded
-								htmlColor={blue.A100}
-							/>
-						}
-					/>
-					<IconLabel
-						label="Being read from"
-						icon={
-							<SquareRounded
-								htmlColor={teal.A100}
-							/>
-						}
-					/>
-					<IconLabel
-						label="Being written to"
-						icon={
-							<SquareRounded
-								htmlColor={orange.A100}
-							/>
-						}
-					/>
-				</Box>
-				<Box>
+			<Grid
+				container
+				spacing={2}
+			>
+				<Grid
+					item
+					xs={12}
+					id="insertion-sort"
+				>
+					<Typography variant="h3">
+						Merge sort
+					</Typography>
+				</Grid>
+				<Grid
+					item
+					xs={12}
+					sm={6}
+				>
 					<Typography variant="body1">
 						{`Frame ${frame + 1}/${
 							frameStates.length
@@ -191,85 +166,153 @@ export const RendererMergeSort: FC<
 					<Typography variant="body1">
 						{currFrame.frameDescription}
 					</Typography>
-				</Box>
-				<Tabs
-					value={tabPanelIndex}
-					onChange={onTabPanelIndexChange}
+				</Grid>
+				<Grid
+					item
+					xs={12}
+					sm={6}
 				>
-					<Tab
-						label="Primary memory"
-						value={0}
+					<IconLabel
+						label="Left-most and right-most element of working region"
+						icon={
+							<SquareRounded
+								htmlColor={pink.A100}
+							/>
+						}
 					/>
-					<Tab
-						label="Auxiliary memory"
-						value={1}
+					<IconLabel
+						label="Compared"
+						icon={
+							<SquareRounded
+								htmlColor={blue.A100}
+							/>
+						}
 					/>
-				</Tabs>
-				<Box
-					display="flex"
-					flexDirection="row"
-					alignItems="flex-end"
-					sx={{
-						width: "100%",
-						height: `${heightPx}px`,
-					}}
+					<IconLabel
+						label="Read from"
+						icon={
+							<SquareRounded
+								htmlColor={teal.A100}
+							/>
+						}
+					/>
+					<IconLabel
+						label="Wrote to"
+						icon={
+							<SquareRounded
+								htmlColor={orange.A100}
+							/>
+						}
+					/>
+				</Grid>
+				<Grid
+					item
+					xs={12}
 				>
-					{tabPanelIndex === 0 &&
-						currFrame.elementStates.map(
-							(value, index) => {
-								return (
-									<RendererElement
-										key={`key-${index}`}
-										maxValue={maxValue}
-										size={size}
-										value={value}
-										firstOrLastElement={currFrame.workingRegion.includes(
-											index,
-										)}
-										compare={currFrame.compared.includes(
-											index,
-										)}
-										stateRead={
-											index === currFrame.memRead
-										}
-										stateWrite={
-											index === currFrame.memWrite
-										}
-									/>
-								);
-							},
-						)}
-
-					{tabPanelIndex === 1 &&
-						currFrame.auxStates.length === 0 &&
-						"The auxiliary memory is not used in at this time."}
-					{tabPanelIndex === 1 &&
-						currFrame.auxStates.map(
+					<Tabs
+						value={tabPanelIndex}
+						onChange={onTabPanelIndexChange}
+					>
+						<Tab
+							label="Primary memory"
+							value={0}
+						/>
+						<Tab
+							label="Auxiliary memory"
+							value={1}
+						/>
+					</Tabs>
+				</Grid>
+				<Grid
+					item
+					xs={12}
+					display={
+						tabPanelIndex === 0
+							? undefined
+							: "none"
+					}
+				>
+					<Grid
+						container
+						columns={size}
+						className="renderer-container"
+						height={`${heightPx}px`}
+					>
+						{tabPanelIndex === 0 &&
+							currFrame.mainElementStates.map(
+								(value, index) => {
+									return (
+										<RendererElement
+											key={`key-${index}`}
+											maxValue={maxValue}
+											value={value}
+											leftMostOrRightMostElement={currFrame.workingRegion.includes(
+												index,
+											)}
+											compared={currFrame.compared.includes(
+												index,
+											)}
+											read_={
+												index ===
+												currFrame.mainMemRead
+											}
+											wrote_={
+												index ===
+												currFrame.mainMemWrote
+											}
+										/>
+									);
+								},
+							)}
+					</Grid>
+				</Grid>
+				<Grid
+					item
+					xs={12}
+					display={
+						tabPanelIndex === 1
+							? undefined
+							: "none"
+					}
+				>
+					<Grid
+						container
+						columns={size}
+						className="renderer-container"
+						height={`${heightPx}px`}
+					>
+						{currFrame.auxiElementStates
+							.length === 0 &&
+							"The auxiliary memory is not used in at this time."}
+						{currFrame.auxiElementStates.map(
 							(value, index) => {
 								return (
 									<RendererElement
 										key={`key-aux-${index}`}
 										maxValue={maxValue}
-										size={size}
 										value={value}
-										compare={false}
-										firstOrLastElement={false}
-										stateRead={
-											index ===
-											currFrame.memAuxRead
+										compared={false}
+										leftMostOrRightMostElement={
+											false
 										}
-										stateWrite={
+										read_={
 											index ===
-											currFrame.memAuxWrite
+											currFrame.auxiMemRead
+										}
+										wrote_={
+											index ===
+											currFrame.auxiMemWrote
 										}
 									/>
 								);
 							},
 						)}
-				</Box>
-				<Stack
-					direction="row"
-					spacing={2}
+					</Grid>
+				</Grid>
+				<Grid
+					item
+					xs={12}
+					sm={6}
 				>
 					<Button
 						fullWidth
@@ -279,6 +322,12 @@ export const RendererMergeSort: FC<
 					>
 						Previous Frame
 					</Button>
+				</Grid>
+				<Grid
+					item
+					xs={12}
+					sm={6}
+				>
 					<Button
 						fullWidth
 						variant="contained"
@@ -289,8 +338,8 @@ export const RendererMergeSort: FC<
 					>
 						Next Frame
 					</Button>
-				</Stack>
-			</Stack>
+				</Grid>
+			</Grid>
 		</Box>
 	);
 };

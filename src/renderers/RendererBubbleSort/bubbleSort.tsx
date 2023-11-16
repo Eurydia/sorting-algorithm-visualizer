@@ -56,8 +56,8 @@ export const bubbleSort = (
 			comparisonCount++;
 			generateFrameState(
 				<Fragment>
-					Compared <code>input[{i}]</code>
-					against <code>input[{i + 1}]</code>.
+					Compared <code>input[{i}]</code> against{" "}
+					<code>input[{i + 1}]</code>.
 				</Fragment>,
 				{
 					rightMostUnsortedElement:
@@ -78,7 +78,7 @@ export const bubbleSort = (
 						<code>input[{i + 1}]</code>.
 					</Fragment>,
 					{
-						comparing: [i, i + 1],
+						comparing: [],
 						swapping: [],
 						rightMostUnsortedElement:
 							size - offset - 1,

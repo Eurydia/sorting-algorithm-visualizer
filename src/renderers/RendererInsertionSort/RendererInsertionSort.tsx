@@ -132,7 +132,7 @@ export const RendererInsertionSort: FC<
 					id="insertion-sort"
 				>
 					<Typography variant="h3">
-						Insertion Sort
+						Insertion sort
 					</Typography>
 				</Grid>
 				<Grid

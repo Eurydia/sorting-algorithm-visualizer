@@ -14,7 +14,7 @@ export const IconLabel: FC<ColorLabelProps> = (
 		<Typography
 			width="100%"
 			display="flex"
-			alignItems="center"
+			alignItems=""
 			justifyContent="flex-start"
 		>
 			{icon} : {label}

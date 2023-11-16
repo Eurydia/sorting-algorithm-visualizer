@@ -128,7 +128,7 @@ export const App = () => {
 							value={0}
 						>
 							<RendererBubbleSort
-								heightPx={400}
+								heightPx={300}
 								dataset={dataset}
 							/>
 						</TabPanel>
@@ -137,7 +137,7 @@ export const App = () => {
 							value={1}
 						>
 							<RendererInsertionSort
-								heightPx={400}
+								heightPx={300}
 								dataset={dataset}
 							/>
 						</TabPanel>
@@ -146,7 +146,7 @@ export const App = () => {
 							value={2}
 						>
 							<RendererSelectionSort
-								heightPx={400}
+								heightPx={300}
 								dataset={dataset}
 							/>
 						</TabPanel>
@@ -156,7 +156,7 @@ export const App = () => {
 						>
 							<RendererMergeSort
 								dataset={dataset}
-								heightPx={400}
+								heightPx={300}
 							/>
 						</TabPanel>
 						<TabPanel
@@ -165,7 +165,7 @@ export const App = () => {
 						>
 							<RendererHeapSort
 								dataset={dataset}
-								heightPx={400}
+								heightPx={300}
 							/>
 						</TabPanel>
 						<TabPanel
@@ -174,7 +174,7 @@ export const App = () => {
 						>
 							<RendererQuickSort
 								dataset={dataset}
-								heightPx={400}
+								heightPx={300}
 							/>
 						</TabPanel>
 						<TabPanel
@@ -183,7 +183,7 @@ export const App = () => {
 						>
 							<RendererCountingSort
 								dataset={dataset}
-								heightPx={400}
+								heightPx={300}
 							/>
 						</TabPanel>
 					</Box>

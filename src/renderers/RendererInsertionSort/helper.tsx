@@ -53,6 +53,19 @@ export const insertionSort = (
 		pivotIndex < size;
 		pivotIndex++
 	) {
+		generateFrameState(
+			<Fragment>
+				Moved key to{" "}
+				<code>input[{pivotIndex}]</code>.
+			</Fragment>,
+			{
+				compared: [],
+				swapped: [],
+				leftMostUnsortedElement: pivotIndex,
+				keyElement: pivotIndex,
+			},
+		);
+
 		let mover: number = pivotIndex;
 		while (mover > 0) {
 			comparisonCount++;
@@ -93,19 +106,6 @@ export const insertionSort = (
 
 			mover--;
 		}
-
-		generateFrameState(
-			<Fragment>
-				Moved key to{" "}
-				<code>input[{pivotIndex + 1}]</code>.
-			</Fragment>,
-			{
-				compared: [],
-				swapped: [],
-				leftMostUnsortedElement: pivotIndex + 1,
-				keyElement: pivotIndex + 1,
-			},
-		);
 	}
 
 	generateFrameState(

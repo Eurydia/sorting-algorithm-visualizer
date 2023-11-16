@@ -3,23 +3,23 @@ import { Fragment, ReactNode } from "react";
 type IndexDetails = {
 	workingRegion: number[];
 	compared: number[];
-	memRead: number;
-	memWrite: number;
-	memAuxRead: number;
-	memAuxWrite: number;
+	mainMemRead: number;
+	mainMemWrote: number;
+	auxiMemRead: number;
+	auxiMemWrote: number;
 };
 
 export type FrameState = IndexDetails & {
 	frameDescription: ReactNode;
-	elementStates: number[];
-	auxStates: number[];
+	mainElementStates: number[];
+	auxiElementStates: number[];
 	memWriteCount: number;
 	memReadCount: number;
 	comparisonCount: number;
 };
 
 export const mergeSort = (
-	xs: number[],
+	dataset: number[],
 	size: number,
 	frameStates: FrameState[],
 ) => {
@@ -27,15 +27,16 @@ export const mergeSort = (
 	let memReadCount: number = 0;
 	let comparisonCount: number = 0;
 
+	let auxiMemory: number[] = [];
+
 	const generateFrameState = (
 		frameDescription: ReactNode,
-		auxMemory: number[],
 		indexDetails: IndexDetails,
 	): void => {
 		frameStates.push({
 			frameDescription,
-			auxStates: auxMemory,
-			elementStates: [...xs],
+			auxiElementStates: [...auxiMemory],
+			mainElementStates: [...dataset],
 			memWriteCount,
 			memReadCount,
 			comparisonCount,
@@ -56,14 +57,13 @@ export const mergeSort = (
 				</code>
 				.
 			</Fragment>,
-			[],
 			{
 				workingRegion: [startIndex, endIndex],
 				compared: [],
-				memRead: -1,
-				memWrite: -1,
-				memAuxRead: -1,
-				memAuxWrite: -1,
+				mainMemRead: -1,
+				mainMemWrote: -1,
+				auxiMemRead: -1,
+				auxiMemWrote: -1,
 			},
 		);
 
@@ -88,7 +88,7 @@ export const mergeSort = (
 		let lPtr: number = startIndex;
 		let rPtr: number = middleIndex + 1;
 		let auxPtr: number = 0;
-		const auxMemory = [];
+		auxiMemory = [];
 
 		while (
 			lPtr <= middleIndex &&
@@ -97,38 +97,35 @@ export const mergeSort = (
 			comparisonCount++;
 			generateFrameState(
 				<Fragment>
-					Compare <code>input[{lPtr}]</code>{" "}
+					Compared <code>input[{lPtr}]</code>{" "}
 					against <code>input[{rPtr}]</code>.
 				</Fragment>,
-				[...auxMemory],
 				{
 					workingRegion: [startIndex, endIndex],
 					compared: [lPtr, rPtr],
-					memRead: -1,
-					memWrite: -1,
-					memAuxRead: -1,
-					memAuxWrite: -1,
+					mainMemRead: -1,
+					mainMemWrote: -1,
+					auxiMemRead: -1,
+					auxiMemWrote: -1,
 				},
 			);
-			if (xs[lPtr] > xs[rPtr]) {
+			if (dataset[lPtr] > dataset[rPtr]) {
 				memReadCount++;
 				memWriteCount++;
-				auxMemory[auxPtr] = xs[rPtr];
+				auxiMemory[auxPtr] = dataset[rPtr];
 
 				generateFrameState(
 					<Fragment>
-						Write <code>input[{rPtr}]</code> to{" "}
+						Wrote <code>input[{rPtr}]</code> to{" "}
 						<code>auxMem[{auxPtr}]</code>.
 					</Fragment>,
-					[...auxMemory],
-
 					{
 						workingRegion: [startIndex, endIndex],
 						compared: [],
-						memRead: rPtr,
-						memWrite: -1,
-						memAuxRead: -1,
-						memAuxWrite: auxPtr,
+						mainMemRead: rPtr,
+						mainMemWrote: -1,
+						auxiMemRead: -1,
+						auxiMemWrote: auxPtr,
 					},
 				);
 
@@ -139,20 +136,19 @@ export const mergeSort = (
 
 			memReadCount++;
 			memWriteCount++;
-			auxMemory[auxPtr] = xs[lPtr];
+			auxiMemory[auxPtr] = dataset[lPtr];
 			generateFrameState(
 				<Fragment>
-					Write <code>input[{lPtr}]</code> to{" "}
+					Wrote <code>input[{lPtr}]</code> to{" "}
 					<code>auxMem[{auxPtr}]</code>.
 				</Fragment>,
-				[...auxMemory],
 				{
 					workingRegion: [startIndex, endIndex],
 					compared: [],
-					memRead: lPtr,
-					memWrite: -1,
-					memAuxRead: -1,
-					memAuxWrite: auxPtr,
+					mainMemRead: lPtr,
+					mainMemWrote: -1,
+					auxiMemRead: -1,
+					auxiMemWrote: auxPtr,
 				},
 			);
 
@@ -164,21 +160,20 @@ export const mergeSort = (
 			memReadCount++;
 			memWriteCount++;
 
-			auxMemory[auxPtr] = xs[lPtr];
+			auxiMemory[auxPtr] = dataset[lPtr];
 
 			generateFrameState(
 				<Fragment>
-					Write <code>input[{lPtr}]</code> to{" "}
+					Wrote <code>input[{lPtr}]</code> to{" "}
 					<code>auxMem[{auxPtr}]</code>.
 				</Fragment>,
-				[...auxMemory],
 				{
 					workingRegion: [startIndex, endIndex],
 					compared: [],
-					memRead: lPtr,
-					memWrite: -1,
-					memAuxRead: -1,
-					memAuxWrite: auxPtr,
+					mainMemRead: lPtr,
+					mainMemWrote: -1,
+					auxiMemRead: -1,
+					auxiMemWrote: auxPtr,
 				},
 			);
 
@@ -189,21 +184,20 @@ export const mergeSort = (
 		while (rPtr <= endIndex) {
 			memReadCount++;
 			memWriteCount++;
-			auxMemory[auxPtr] = xs[rPtr];
+			auxiMemory[auxPtr] = dataset[rPtr];
 
 			generateFrameState(
 				<Fragment>
-					Write <code>input[{lPtr}]</code> to{" "}
+					Wrote <code>input[{lPtr}]</code> to{" "}
 					<code>auxMem[{auxPtr}]</code>.
 				</Fragment>,
-				[...auxMemory],
 				{
 					workingRegion: [startIndex, endIndex],
 					compared: [],
-					memRead: rPtr,
-					memWrite: -1,
-					memAuxRead: -1,
-					memAuxWrite: auxPtr,
+					mainMemRead: rPtr,
+					mainMemWrote: -1,
+					auxiMemRead: -1,
+					auxiMemWrote: auxPtr,
 				},
 			);
 
@@ -214,20 +208,19 @@ export const mergeSort = (
 		for (let i = 0; i < auxPtr; i++) {
 			memReadCount++;
 			memWriteCount++;
-			xs[startIndex + i] = auxMemory[i];
+			dataset[startIndex + i] = auxiMemory[i];
 			generateFrameState(
 				<Fragment>
-					Write <code>auxMem[{i}]</code> to{" "}
+					Wrote <code>auxMem[{i}]</code> to{" "}
 					<code>input[{startIndex + i}]</code>.
 				</Fragment>,
-				[...auxMemory],
 				{
 					workingRegion: [startIndex, endIndex],
 					compared: [],
-					memRead: -1,
-					memWrite: startIndex + i,
-					memAuxRead: i,
-					memAuxWrite: -1,
+					mainMemRead: -1,
+					mainMemWrote: startIndex + i,
+					auxiMemRead: i,
+					auxiMemWrote: -1,
 				},
 			);
 		}
@@ -237,31 +230,31 @@ export const mergeSort = (
 		<Fragment>
 			Unsorted <code>input[0:{size - 1}]</code>.
 		</Fragment>,
-		[],
 		{
 			workingRegion: [],
 			compared: [],
-			memRead: -1,
-			memWrite: -1,
-			memAuxRead: -1,
-			memAuxWrite: -1,
+			mainMemRead: -1,
+			mainMemWrote: -1,
+			auxiMemRead: -1,
+			auxiMemWrote: -1,
 		},
 	);
 
 	__top_down_merge_sort(0, size - 1);
 
+	auxiMemory = [];
+
 	generateFrameState(
 		<Fragment>
 			Sorted <code>input[0:{size - 1}]</code>.
 		</Fragment>,
-		[],
 		{
 			workingRegion: [],
 			compared: [],
-			memRead: -1,
-			memWrite: -1,
-			memAuxRead: -1,
-			memAuxWrite: -1,
+			mainMemRead: -1,
+			mainMemWrote: -1,
+			auxiMemRead: -1,
+			auxiMemWrote: -1,
 		},
 	);
 };
