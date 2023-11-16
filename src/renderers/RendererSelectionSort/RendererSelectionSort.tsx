@@ -129,7 +129,6 @@ export const RendererSelectionSort: FC<
 				<Grid
 					item
 					xs={12}
-					id="selection-sort"
 				>
 					<Typography variant="h3">
 						Selection sort

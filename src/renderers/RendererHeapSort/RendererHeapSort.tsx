@@ -132,7 +132,6 @@ export const RendererHeapSort: FC<
 				<Grid
 					item
 					xs={12}
-					id="bubble-sort"
 				>
 					<Typography variant="h3">
 						Heapsort

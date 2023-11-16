@@ -3,6 +3,7 @@ import { Fragment, ReactNode } from "react";
 type IndexDetails = {
 	compared: number[];
 	swapped: number[];
+
 	keyElement: number;
 	leftMostUnsortedElement: number;
 };

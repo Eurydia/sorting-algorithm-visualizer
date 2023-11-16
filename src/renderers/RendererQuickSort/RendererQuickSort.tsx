@@ -133,10 +133,9 @@ export const RendererQuickSort: FC<
 				<Grid
 					item
 					xs={12}
-					id="insertion-sort"
 				>
 					<Typography variant="h3">
-						Insertion sort
+						Quicksort
 					</Typography>
 				</Grid>
 				<Grid

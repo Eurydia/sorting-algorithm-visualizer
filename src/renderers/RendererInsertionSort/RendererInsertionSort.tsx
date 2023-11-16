@@ -129,7 +129,6 @@ export const RendererInsertionSort: FC<
 				<Grid
 					item
 					xs={12}
-					id="insertion-sort"
 				>
 					<Typography variant="h3">
 						Insertion sort

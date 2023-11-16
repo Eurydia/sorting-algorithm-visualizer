@@ -138,7 +138,6 @@ export const RendererMergeSort: FC<
 				<Grid
 					item
 					xs={12}
-					id="insertion-sort"
 				>
 					<Typography variant="h3">
 						Merge sort
