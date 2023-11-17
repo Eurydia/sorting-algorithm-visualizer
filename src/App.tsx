@@ -13,13 +13,13 @@ import {
 	Typography,
 } from "@mui/material";
 
-import { RendererBubbleSort } from "./renderers/RendererBubbleSort";
-import { RendererInsertionSort } from "./renderers/RendererInsertionSort";
-import { RendererSelectionSort } from "./renderers/RendererSelectionSort";
-import { RendererMergeSort } from "./renderers/RendererMergeSort";
-import { RendererHeapSort } from "./renderers/RendererHeapSort";
-import { RendererQuickSort } from "./renderers/RendererQuickSort";
-import { RendererCountingSort } from "./renderers/RendererCountingSort";
+import { RendererBubbleSort } from "renderers/RendererBubbleSort";
+import { RendererInsertionSort } from "renderers/RendererInsertionSort";
+import { RendererSelectionSort } from "renderers/RendererSelectionSort";
+import { RendererMergeSort } from "renderers/RendererMergeSort";
+import { RendererHeapSort } from "renderers/RendererHeapSort";
+import { RendererQuickSort } from "renderers/RendererQuickSort";
+import { RendererCountingSort } from "renderers/RendererCountingSort";
 import { generateDataset } from "renderers/helper/shuffle";
 import { RendererRadixSort } from "renderers/RendererRadixSort/RendererRadixSort";
 
