@@ -52,3 +52,5 @@ Comparison-based sorting algorithms:
 Non-comparison sorting algorithms:
 
 - Counting sort (Wikipedia): https://en.wikipedia.org/wiki/Counting_sort
+- Radix sort (Wikipedia): https://en.wikipedia.org/wiki/Radix_sort
+- Radix sort (geeksforgeeks): https://www.geeksforgeeks.org/radix-sort/

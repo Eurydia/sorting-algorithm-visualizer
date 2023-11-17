@@ -21,6 +21,7 @@ import { RendererHeapSort } from "./renderers/RendererHeapSort";
 import { RendererQuickSort } from "./renderers/RendererQuickSort";
 import { RendererCountingSort } from "./renderers/RendererCountingSort";
 import { generateDataset } from "renderers/helper/shuffle";
+import { RendererRadixSort } from "renderers/RendererRadixSort/RendererCountingSort";
 
 type TabPanelProps = {
 	index: number;
@@ -121,6 +122,10 @@ export const App = () => {
 							value={6}
 							label="Counting sort"
 						/>
+						<Tab
+							value={7}
+							label="Radix sort"
+						/>
 					</Tabs>
 					<Box>
 						<TabPanel
@@ -182,6 +187,15 @@ export const App = () => {
 							value={6}
 						>
 							<RendererCountingSort
+								dataset={dataset}
+								heightPx={300}
+							/>
+						</TabPanel>
+						<TabPanel
+							index={tabIndex}
+							value={7}
+						>
+							<RendererRadixSort
 								dataset={dataset}
 								heightPx={300}
 							/>
