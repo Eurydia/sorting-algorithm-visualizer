@@ -1,1 +1,1 @@
-export { RendererRadixSort as RendererCountingSort } from "./RendererCountingSort";
+export { RendererRadixSort as RendererCountingSort } from "./RendererRadixSort";

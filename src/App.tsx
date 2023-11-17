@@ -21,7 +21,7 @@ import { RendererHeapSort } from "./renderers/RendererHeapSort";
 import { RendererQuickSort } from "./renderers/RendererQuickSort";
 import { RendererCountingSort } from "./renderers/RendererCountingSort";
 import { generateDataset } from "renderers/helper/shuffle";
-import { RendererRadixSort } from "renderers/RendererRadixSort/RendererCountingSort";
+import { RendererRadixSort } from "renderers/RendererRadixSort/RendererRadixSort";
 
 type TabPanelProps = {
 	index: number;
