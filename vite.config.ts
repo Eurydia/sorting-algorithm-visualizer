@@ -5,5 +5,5 @@ import tsconfigPaths from "vite-tsconfig-paths";
 // https://vitejs.dev/config/
 export default defineConfig({
 	plugins: [react(), tsconfigPaths()],
-	base: "https://eurydia.github.io/sorting-algorithm-visualizer/",
+	base: "https://eurydia.github.io/project-sorting-algorithm-visualizer/",
 });
